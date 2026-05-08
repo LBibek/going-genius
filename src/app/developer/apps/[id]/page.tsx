@@ -89,7 +89,10 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
           </div>
 
           <div className="glass-card">
-            <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Social Connection Preview</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Social Connection Preview</h2>
+              <Link href="/demo/auth" className="form-link-sm">View Full Demo →</Link>
+            </div>
             <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
               This is how your application's login screen will appear to your users. Configure social providers in the settings to enable one-click sign-in.
             </p>
