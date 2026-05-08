@@ -12,6 +12,7 @@ import { AppSocialProviders } from '../../components/AppSocialProviders';
 import { AppAIAgents } from '../../components/AppAIAgents';
 import { AppLoginPreview } from '../../components/AppLoginPreview';
 import { AppBilling } from '../../components/AppBilling';
+import { AppBotPreview } from '../../components/AppBotPreview';
 
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
@@ -93,6 +94,14 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
               This is how your application's login screen will appear to your users. Configure social providers in the settings to enable one-click sign-in.
             </p>
             <AppLoginPreview app={app} />
+          </div>
+
+          <div className="glass-card">
+            <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>AI Agent Preview</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+              Test your application's integrated AI agent. This uses your configured API keys to simulate user interactions.
+            </p>
+            <AppBotPreview app={app} />
           </div>
 
           <div className="glass-card">
