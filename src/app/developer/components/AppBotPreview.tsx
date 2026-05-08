@@ -1,14 +1,17 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, User, Sparkles, Terminal } from 'lucide-react';
+import { Bot, Send, User, Sparkles, Terminal, AlertCircle } from 'lucide-react';
+import { runFlow } from '@genkit-ai/next/client';
+import { appBotFlow } from '@/lib/ai/flows';
 
 export function AppBotPreview({ app }: { app: any }) {
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: `Hello! I'm your integrated AI agent for ${app.name}. How can I help you today?` }
+    { role: 'assistant', content: `Hello! I'm your integrated AI agent for ${app.name}. I can help you with technical details or configuration. How can I help you today?` }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,23 +20,45 @@ export function AppBotPreview({ app }: { app: any }) {
     }
   }, [messages, isTyping]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isTyping) return;
 
     const userMessage = input.trim();
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const newMessages = [...messages, { role: 'user', content: userMessage }];
+    
+    setMessages(newMessages);
     setInput('');
     setIsTyping(true);
+    setError(null);
 
-    // Simulate bot response
-    setTimeout(() => {
-      setIsTyping(false);
+    try {
+      // Map history to Genkit format
+      const history = messages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        content: [{ text: m.content }]
+      }));
+
+      const response = await runFlow(appBotFlow, {
+        appId: app.id,
+        message: userMessage,
+        history: history as any
+      });
+
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: `As an agent for ${app.name}, I've processed your request: "${userMessage}". Since this is a preview, I'm simulating a response using your configured provider.` 
+        content: response.text 
       }]);
-    }, 1500);
+    } catch (err: any) {
+      console.error('AI Agent Error:', err);
+      setError('Failed to connect to the AI agent. Please ensure GOOGLE_GENAI_API_KEY is configured.');
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: "I'm having trouble connecting to my brain right now. Please check if the API keys are correctly configured in the environment." 
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -46,11 +71,12 @@ export function AppBotPreview({ app }: { app: any }) {
           <div>
             <div className="bot-name">{app.name} Agent</div>
             <div className="bot-status">
-              <span className="status-dot" /> Online
+              <span className="status-dot" /> Live Agent
             </div>
           </div>
         </div>
         <div className="bot-actions">
+          {error && <AlertCircle size={14} className="error-icon" title={error} />}
           <Terminal size={14} className="icon-btn" />
         </div>
       </div>
@@ -83,8 +109,9 @@ export function AppBotPreview({ app }: { app: any }) {
           type="text" 
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Test your agent..." 
+          placeholder={error ? "Agent connection error..." : "Ask your agent anything..."}
           className="chat-input"
+          disabled={isTyping}
         />
         <button type="submit" className="send-btn" disabled={!input.trim() || isTyping}>
           <Send size={14} />
@@ -109,6 +136,8 @@ export function AppBotPreview({ app }: { app: any }) {
         .bot-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
         .bot-status { font-size: 0.65rem; color: var(--muted); display: flex; align-items: center; gap: 0.3rem; }
         .status-dot { width: 6px; height: 6px; background: #27c93f; border-radius: 50%; }
+        .bot-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .error-icon { color: #ff4b4b; }
         .icon-btn { color: var(--muted); cursor: pointer; }
 
         .chat-window {
@@ -125,6 +154,7 @@ export function AppBotPreview({ app }: { app: any }) {
         .message-bubble {
           padding: 0.75rem; border-radius: 12px; font-size: 0.8rem; line-height: 1.4;
           background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;
+          white-space: pre-wrap;
         }
         .user .message-bubble { background: var(--primary); color: #000; border: none; font-weight: 500; }
         
