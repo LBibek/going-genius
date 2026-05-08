@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Code2, Globe, Gamepad2, CheckCircle2, ArrowRight, User } from 'lucide-react';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 export function AppLoginPreview({ app }: { app: any }) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -82,11 +83,13 @@ export function AppLoginPreview({ app }: { app: any }) {
           </div>
           
           <div className="mini-app-intro">
-            {app.logoUrl ? (
-              <img src={app.logoUrl} alt="" className="mini-app-logo" />
-            ) : (
-              <div className="mini-app-logo-placeholder">{app.name.slice(0, 1).toUpperCase()}</div>
-            )}
+            <OptimizedImage 
+              src={app.logoUrl} 
+              alt={app.name} 
+              width={40} 
+              height={40} 
+              className="mini-app-logo" 
+            />
             <h3 className="mini-title">Log in to {app.name}</h3>
             <p className="mini-subtitle">to continue to the application</p>
           </div>
@@ -104,7 +107,7 @@ export function AppLoginPreview({ app }: { app: any }) {
           <div className="mini-socials">
             {isGoogleEnabled ? (
               <div className="mini-social-btn google" onClick={() => handleSocialLogin('Google')}>
-                <Globe size={14} /> Google
+                <OptimizedImage src="/images/social/google.png" alt="Google" width={16} height={16} /> Google
               </div>
             ) : (
               <div className="mini-social-btn disabled">
@@ -114,7 +117,7 @@ export function AppLoginPreview({ app }: { app: any }) {
 
             {isGithubEnabled ? (
               <div className="mini-social-btn github" onClick={() => handleSocialLogin('GitHub')}>
-                <Code2 size={14} /> GitHub
+                <OptimizedImage src="/images/social/github.png" alt="GitHub" width={16} height={16} /> GitHub
               </div>
             ) : (
               <div className="mini-social-btn disabled">
@@ -124,7 +127,7 @@ export function AppLoginPreview({ app }: { app: any }) {
 
             {isSteamEnabled ? (
               <div className="mini-social-btn steam" onClick={() => handleSocialLogin('Steam')}>
-                <Gamepad2 size={14} /> Steam
+                <OptimizedImage src="/images/social/steam.png" alt="Steam" width={16} height={16} /> Steam
               </div>
             ) : (
               <div className="mini-social-btn disabled">

@@ -6,6 +6,7 @@ import { AppChart } from './components/AppChart';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { getOverallAnalytics } from './actions';
 import { StatsRow, AppsGrid, DashboardStyles } from './components/ResponsiveGrids';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 export default async function DeveloperDashboard() {
   const session = await getSession();
@@ -75,13 +76,13 @@ export default async function DeveloperDashboard() {
               <Link href={`/developer/apps/${app.id}`} key={app.id} className="app-card">
                 <div className="app-card-content">
                   <div className="app-logo-wrapper">
-                    {app.logoUrl ? (
-                      <img src={app.logoUrl} alt={app.name} className="app-logo-img" />
-                    ) : (
-                      <div className="app-logo-placeholder">
-                        {app.name.slice(0, 1).toUpperCase()}
-                      </div>
-                    )}
+                    <OptimizedImage 
+                      src={app.logoUrl} 
+                      alt={app.name} 
+                      width={48} 
+                      height={48} 
+                      className="app-logo-img" 
+                    />
                   </div>
                   <div className="app-info">
                     <h3 className="app-name">{app.name}</h3>

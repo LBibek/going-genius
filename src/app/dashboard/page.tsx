@@ -8,6 +8,8 @@ import { UserTabs } from './components/UserTabs';
 import { Grid2Col, StatsRow } from '@/app/developer/components/ResponsiveGrids';
 import { LogOut, User as UserIcon, Shield, ExternalLink, Calendar, Monitor, Activity, Key } from 'lucide-react';
 
+import { OptimizedImage } from '@/components/OptimizedImage';
+
 export default async function DashboardPage() {
   const session = await getSession();
   if (!session) redirect('/auth/login');
@@ -64,13 +66,13 @@ export default async function DashboardPage() {
               {/* Profile Hero */}
               <div className="glass-card flex-responsive animate-fade-in" style={{ gap: '2rem', alignItems: 'center', padding: '2rem' }}>
                 <div className="dash-avatar" style={{ flexShrink: 0 }}>
-                  {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={user.displayName} style={{ width: '100px', height: '100px', borderRadius: '24px', objectFit: 'cover' }} />
-                  ) : (
-                    <div style={{ width: '100px', height: '100px', borderRadius: '24px', background: 'var(--primary)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 800 }}>
-                      {user.displayName.slice(0, 1).toUpperCase()}
-                    </div>
-                  )}
+                  <OptimizedImage 
+                    src={user.avatarUrl} 
+                    alt={user.displayName} 
+                    width={100} 
+                    height={100} 
+                    style={{ borderRadius: '24px', objectFit: 'cover' }} 
+                  />
                 </div>
 
                 <div className="dash-profile-info" style={{ flex: 1 }}>

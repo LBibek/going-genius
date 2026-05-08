@@ -3,7 +3,8 @@
 import Image, { ImageProps } from 'next/image';
 import { useState } from 'react';
 
-interface OptimizedImageProps extends Omit<ImageProps, 'onError'> {
+interface OptimizedImageProps extends Omit<ImageProps, 'src' | 'onError'> {
+  src?: string | null;
   fallbackIcon?: React.ReactNode;
 }
 
