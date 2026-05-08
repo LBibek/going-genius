@@ -72,7 +72,7 @@ export default async function DeveloperDashboard() {
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-          {apps.map((app) => (
+          {apps.map((app: any) => (
             <Link href={`/developer/apps/${app.id}`} key={app.id} className="glass-card" style={{ display: 'block', transition: 'transform 0.2s' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 {app.logoUrl ? (

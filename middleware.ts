@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decrypt } from '@/lib/session';
+import { decrypt } from '@/lib/auth-utils';
 
 const PROTECTED_ROUTES = ['/dashboard', '/developer'];
 const AUTH_ROUTES = ['/auth/login', '/auth/register', '/auth/verify', '/auth/forgot-password'];
