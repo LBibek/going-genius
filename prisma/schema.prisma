@@ -1,0 +1,231 @@
+// GGUser Identity Platform — Prisma Schema
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+// ─── Core User ────────────────────────────────────────────────────────────────
+
+model GGUser {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  username      String    @unique
+  phone         String?   @unique
+  phoneVerified Boolean   @default(false)
+  displayName   String
+  avatarUrl     String?
+  passwordHash  String?
+  bio           String?
+  role          Role      @default(USER)
+  isActive      Boolean   @default(true)
+
+  // Security tracking
+  loginAttempts Int       @default(0)
+  lockedUntil   DateTime?
+  lastLoginAt   DateTime?
+  lastLoginIp   String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  refreshTokens RefreshToken[]
+  oauthCodes    OAuthCode[]
+  oauthTokens   OAuthToken[]
+  ownedApps     OAuthApp[]    @relation("AppOwner")
+  appMemberships AppUser[]
+  subscriptions  Subscription[]
+}
+
+// ─── Sessions ─────────────────────────────────────────────────────────────────
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      GGUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ─── Refresh Tokens ───────────────────────────────────────────────────────────
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  token     String    @unique @default(cuid())
+  userId    String
+  user      GGUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ─── OAuth 2.0 — Registered Client Apps ──────────────────────────────────────
+
+model OAuthApp {
+  id           String      @id @default(cuid())
+  name         String
+  clientId     String      @unique @default(cuid())
+  clientSecret String      @default(cuid())
+  redirectUris String[]
+  logoUrl      String?
+  isActive     Boolean     @default(true)
+  ownerId      String
+  owner        GGUser      @relation("AppOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
+
+  codes        OAuthCode[]
+  tokens       OAuthToken[]
+  appUsers     AppUser[]
+  invites      AppInvite[]
+
+  // Social Auth Config (Developer managed)
+  googleClientId     String?
+  googleClientSecret String?
+  githubClientId     String?
+  githubClientSecret String?
+  steamApiKey        String?
+
+  // AI Agent Config (Developer managed)
+  openaiApiKey       String?
+  geminiApiKey       String?
+  anthropicApiKey    String?
+  deepseekApiKey     String?
+
+  isPremium    Boolean   @default(false)
+  khaltiPublicKey   String?
+  khaltiSecretKey   String?
+  esewaMerchantId   String?
+  esewaSecretKey   String?
+  plans         SubscriptionPlan[]
+  subscriptions Subscription[]
+
+  @@index([ownerId])
+}
+
+// ─── Billing & Subscriptions ────────────────────────────────────────────────
+
+model SubscriptionPlan {
+  id          String   @id @default(cuid())
+  appId       String
+  app         OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  name        String   // e.g., "Pro Plan"
+  description String?
+  price       Float    @default(0)
+  currency    String   @default("NPR")
+  interval    String   @default("monthly") // monthly, yearly, lifetime
+  features    Json?    // Array of feature strings
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  subscriptions Subscription[]
+
+  @@index([appId])
+}
+
+model Subscription {
+  id          String   @id @default(cuid())
+  appId       String
+  userId      String
+  planId      String
+  app         OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  user        GGUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        SubscriptionPlan @relation(fields: [planId], references: [id])
+  status      String   @default("active") // active, canceled, expired
+  startDate   DateTime @default(now())
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@unique([appId, userId])
+  @@index([appId])
+  @@index([userId])
+}
+
+// ─── App-specific User Metadata ──────────────────────────────────────────────
+
+model AppUser {
+  id        String   @id @default(cuid())
+  appId     String
+  app       OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  userId    String
+  user      GGUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metadata  Json?    // App-specific data for this user
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([appId, userId])
+  @@index([userId])
+  @@index([appId])
+}
+
+// ─── App Invites ─────────────────────────────────────────────────────────────
+
+model AppInvite {
+  id        String   @id @default(cuid())
+  appId     String
+  app       OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  email     String?  // Optional: restrict to a specific email
+  token     String   @unique @default(cuid())
+  role      Role     @default(USER)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([appId])
+}
+
+// ─── OAuth Authorization Codes (60s TTL) ─────────────────────────────────────
+
+model OAuthCode {
+  id            String    @id @default(cuid())
+  code          String    @unique @default(cuid())
+  userId        String
+  user          GGUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId         String
+  app           OAuthApp  @relation(fields: [appId], references: [id])
+  redirectUri   String
+  codeChallenge String?
+  scopes        String[]
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ─── OAuth Access + Refresh Tokens ───────────────────────────────────────────
+
+model OAuthToken {
+  id           String   @id @default(cuid())
+  accessToken  String   @unique @default(cuid())
+  refreshToken String   @unique @default(cuid())
+  userId       String
+  user         GGUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appId        String
+  app          OAuthApp @relation(fields: [appId], references: [id])
+  scopes       String[]
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}

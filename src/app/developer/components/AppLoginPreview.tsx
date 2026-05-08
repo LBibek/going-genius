@@ -1,0 +1,123 @@
+'use client';
+
+import { Code2, Globe, Gamepad2, Layout, Lock } from 'lucide-react';
+
+export function AppLoginPreview({ app }: { app: any }) {
+  const isGoogleEnabled = !!app.googleClientId;
+  const isGithubEnabled = !!app.githubClientId;
+  const isSteamEnabled = !!app.steamApiKey;
+
+  return (
+    <div className="preview-container">
+      <div className="preview-browser-header">
+        <div className="browser-dots">
+          <span className="dot red" />
+          <span className="dot yellow" />
+          <span className="dot green" />
+        </div>
+        <div className="browser-address">gguser.com/api/gg/authorize?client_id={app.clientId.slice(0, 8)}...</div>
+      </div>
+
+      <div className="preview-body">
+        <div className="mini-auth-card">
+          <div className="mini-logo">
+            <div className="mini-logo-icon">GG</div>
+            <span className="mini-logo-text">GGUser</span>
+          </div>
+          
+          <div className="mini-app-intro">
+            {app.logoUrl ? (
+              <img src={app.logoUrl} alt="" className="mini-app-logo" />
+            ) : (
+              <div className="mini-app-logo-placeholder">{app.name.slice(0, 1).toUpperCase()}</div>
+            )}
+            <h3 className="mini-title">Log in to {app.name}</h3>
+            <p className="mini-subtitle">to continue to the application</p>
+          </div>
+
+          <div className="mini-form">
+            <div className="mini-input" />
+            <div className="mini-input" />
+            <div className="mini-btn">Sign in with GGUser</div>
+          </div>
+
+          <div className="mini-divider"><span>or continue with</span></div>
+
+          <div className="mini-socials">
+            {isGoogleEnabled ? (
+              <div className="mini-social-btn google"><Globe size={14} /> Google</div>
+            ) : (
+              <div className="mini-social-btn disabled"><Globe size={14} /> (Not Configured)</div>
+            )}
+
+            {isGithubEnabled ? (
+              <div className="mini-social-btn github"><Code2 size={14} /> GitHub</div>
+            ) : (
+              <div className="mini-social-btn disabled"><Code2 size={14} /> (Not Configured)</div>
+            )}
+
+            {isSteamEnabled ? (
+              <div className="mini-social-btn steam"><Gamepad2 size={14} /> Steam</div>
+            ) : (
+              <div className="mini-social-btn disabled"><Gamepad2 size={14} /> (Not Configured)</div>
+            )}
+          </div>
+
+          <div className="mini-footer">
+            Don't have an account? <span>Sign up</span>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .preview-container {
+          background: #000; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .preview-browser-header {
+          background: #111; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem;
+          border-bottom: 1px solid var(--border);
+        }
+        .browser-dots { display: flex; gap: 0.4rem; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        .browser-address {
+          flex: 1; background: #000; padding: 0.25rem 0.75rem; border-radius: 6px;
+          font-size: 0.7rem; color: var(--muted); font-family: monospace; text-align: center;
+        }
+
+        .preview-body { padding: 2rem; display: flex; justify-content: center; background: radial-gradient(circle at top, rgba(255, 177, 22, 0.05) 0%, transparent 100%); }
+        .mini-auth-card {
+          width: 100%; max-width: 320px; background: rgba(255,255,255,0.03); 
+          border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .mini-logo { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1.5rem; justify-content: center; }
+        .mini-logo-icon { width: 24px; height: 24px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 900; color: #000; }
+        .mini-logo-text { font-size: 0.8rem; font-weight: 800; color: #fff; }
+
+        .mini-app-intro { text-align: center; margin-bottom: 1.25rem; }
+        .mini-app-logo { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 0.75rem; }
+        .mini-app-logo-placeholder { width: 40px; height: 40px; border-radius: 10px; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 0.75rem; }
+        .mini-title { font-size: 1rem; margin-bottom: 0.25rem; }
+        .mini-subtitle { font-size: 0.7rem; color: var(--muted); }
+
+        .mini-form { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+        .mini-input { height: 32px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; }
+        .mini-btn { height: 36px; background: var(--primary); color: #000; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+        .mini-divider { text-align: center; border-bottom: 1px solid var(--border); line-height: 0.1em; margin: 1.5rem 0; font-size: 0.6rem; color: var(--muted); }
+        .mini-divider span { background: #1a1a24; padding: 0 10px; }
+
+        .mini-socials { display: flex; flex-direction: column; gap: 0.5rem; }
+        .mini-social-btn { height: 34px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .mini-social-btn:hover { background: var(--glass-hover); }
+        .mini-social-btn.disabled { opacity: 0.3; cursor: not-allowed; border-style: dashed; }
+        
+        .mini-footer { margin-top: 1.5rem; text-align: center; font-size: 0.65rem; color: var(--muted); }
+        .mini-footer span { color: var(--primary); font-weight: 600; cursor: pointer; }
+      `}</style>
+    </div>
+  );
+}

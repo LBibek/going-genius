@@ -1,0 +1,149 @@
+
+> project@0.1.0 lint
+> eslint
+
+
+G:\Going Genius\prisma.config.ts
+  13:5  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+G:\Going Genius\src\app\actions\auth.ts
+   74:17  warning  'supaUser' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  137:7   error    'user' is never reassigned. Use 'const' instead  prefer-const
+
+G:\Going Genius\src\app\actions\developer.ts
+   15:44   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   45:59   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:78   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  234:110  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\api\gg\authorize\route.ts
+  4:8  warning  'crypto' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Going Genius\src\app\auth\login\page.tsx
+  24:24  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Going Genius\src\app\auth\login\page.tsx:24:24
+  22 |   // Auto-detect identifier type
+  23 |   useEffect(() => {
+> 24 |     if (!identifier) { setIdType(null); return; }
+     |                        ^^^^^^^^^ Avoid calling setState() directly within an effect
+  25 |     if (identifier.includes('@')) setIdType('email');
+  26 |     else if (/^\+?[\d\s\-()]{7,}$/.test(identifier)) setIdType('phone');
+  27 |     else setIdType('username');  react-hooks/set-state-in-effect
+
+G:\Going Genius\src\app\auth\register\page.tsx
+  39:32  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Going Genius\src\app\auth\register\page.tsx:39:32
+  37 |   // Real-time username availability check
+  38 |   useEffect(() => {
+> 39 |     if (username.length < 3) { setUsernameStatus('idle'); return; }
+     |                                ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |     if (!/^[a-z0-9_]+$/.test(username)) { setUsernameStatus('invalid'); return; }
+  41 |
+  42 |     setUsernameStatus('checking');  react-hooks/set-state-in-effect
+  80:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react/no-unescaped-entities
+
+G:\Going Genius\src\app\dashboard\page.tsx
+  54:15  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+G:\Going Genius\src\app\dashboard\profile\ProfileForm.tsx
+  7:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\apps\[id]\page.tsx
+  62:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  93:43  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+G:\Going Genius\src\app\developer\components\AppAIAgents.tsx
+  7:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\components\AppBilling.tsx
+    5:58  warning  'DollarSign' is defined but never used                           @typescript-eslint/no-unused-vars
+    7:51  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+    7:63  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  156:96  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+G:\Going Genius\src\app\developer\components\AppChart.tsx
+   4:3   warning  'LineChart' is defined but never used      @typescript-eslint/no-unused-vars
+   5:3   warning  'Line' is defined but never used           @typescript-eslint/no-unused-vars
+   6:3   warning  'XAxis' is defined but never used          @typescript-eslint/no-unused-vars
+   7:3   warning  'YAxis' is defined but never used          @typescript-eslint/no-unused-vars
+   8:3   warning  'CartesianGrid' is defined but never used  @typescript-eslint/no-unused-vars
+  15:44  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\components\AppCredentials.tsx
+  7:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\components\AppDocs.tsx
+   6:41  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+  11:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Going Genius\src\app\developer\components\AppDocs.tsx:11:5
+   9 |
+  10 |   useEffect(() => {
+> 11 |     setAppUrl(window.location.origin);
+     |     ^^^^^^^^^ Avoid calling setState() directly within an effect
+  12 |   }, []);
+  13 |
+  14 |   return (  react-hooks/set-state-in-effect
+  59:58  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react/no-unescaped-entities
+
+G:\Going Genius\src\app\developer\components\AppInvites.tsx
+  5:52  warning  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+  7:74  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\components\AppLoginPreview.tsx
+   3:34  warning  'Layout' is defined but never used                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   3:42  warning  'Lock' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   5:49  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  30:15  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  67:16  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+G:\Going Genius\src\app\developer\components\AppSettings.tsx
+  6:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\components\AppSocialProviders.tsx
+  5:40  warning  'Shield' is defined but never used        @typescript-eslint/no-unused-vars
+  7:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\components\AppUserList.tsx
+   5:20  warning  'UserMinus' is defined but never used     @typescript-eslint/no-unused-vars
+   5:39  warning  'Mail' is defined but never used          @typescript-eslint/no-unused-vars
+   5:45  warning  'AtSign' is defined but never used        @typescript-eslint/no-unused-vars
+   7:71  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  93:31  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Going Genius\src\app\developer\page.tsx
+  72:19  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+G:\Going Genius\src\app\join\[token]\page.tsx
+   3:10  warning  'notFound' is defined but never used                                                                                                                   @typescript-eslint/no-unused-vars
+  20:11  error    Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+G:\Going Genius\src\app\page.tsx
+   43:42  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   79:82  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  147:54  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  217:50  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+✖ 52 problems (32 errors, 20 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
