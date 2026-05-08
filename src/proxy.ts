@@ -8,7 +8,7 @@ const SECRET = process.env.SESSION_SECRET;
 const PROTECTED_ROUTES = ['/dashboard', '/developer', '/api/developer', '/api/billing'];
 const AUTH_ROUTES = ['/auth/login', '/join'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get(COOKIE_NAME)?.value;
 
