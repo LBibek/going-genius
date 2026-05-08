@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { AppChart } from './components/AppChart';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { getOverallAnalytics } from './actions';
 
 export default async function DeveloperDashboard() {
   const session = await getSession();
@@ -19,16 +20,7 @@ export default async function DeveloperDashboard() {
     orderBy: { createdAt: 'desc' }
   });
 
-  // Analytics data for the chart (mocking some growth)
-  const chartData = [
-    { name: 'Mon', users: 12 },
-    { name: 'Tue', users: 19 },
-    { name: 'Wed', users: 15 },
-    { name: 'Thu', users: 22 },
-    { name: 'Fri', users: 30 },
-    { name: 'Sat', users: 25 },
-    { name: 'Sun', users: 40 },
-  ];
+  const chartData = await getOverallAnalytics();
 
   return (
     <div className="container" style={{ padding: '2rem 1.5rem' }}>

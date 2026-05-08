@@ -13,6 +13,7 @@ import { AppAIAgents } from '../../components/AppAIAgents';
 import { AppLoginPreview } from '../../components/AppLoginPreview';
 import { AppBilling } from '../../components/AppBilling';
 import { AppBotPreview } from '../../components/AppBotPreview';
+import { getAppAnalytics } from '../../actions';
 
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
@@ -40,16 +41,7 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
 
   if (!app || app.ownerId !== session.userId) notFound();
 
-  // Mock analytics
-  const chartData = [
-    { name: 'Day 1', users: 5 },
-    { name: 'Day 2', users: 12 },
-    { name: 'Day 3', users: 8 },
-    { name: 'Day 4', users: 18 },
-    { name: 'Day 5', users: 24 },
-    { name: 'Day 6', users: 20 },
-    { name: 'Day 7', users: 32 },
-  ];
+  const chartData = await getAppAnalytics(id);
 
   return (
     <div className="container" style={{ padding: '2rem 1.5rem' }}>
