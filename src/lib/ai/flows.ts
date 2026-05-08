@@ -19,9 +19,7 @@ export const getAppInfo = ai.defineTool(
       select: {
         id: true,
         name: true,
-        description: true,
         redirectUris: true,
-        homepageUrl: true,
         createdAt: true,
         _count: {
           select: { appUsers: true }
@@ -76,18 +74,22 @@ export const appBotFlow = ai.defineFlow(
       });
     }
 
-    const chat = activeAi.chat({
+    // Map history roles to Genkit's expected roles (bot -> model)
+    const messages = [...(history?.map((msg: any) => ({
+      role: msg.role === 'bot' ? 'model' : msg.role,
+      content: typeof msg.content === 'string' ? [{ text: msg.content }] : msg.content,
+    })) || []), { role: 'user', content: [{ text: message }] }];
+
+    const response = await activeAi.generate({
       model: 'googleAI/gemini-2.5-flash',
       system: `You are the Going Genius App Assistant. 
       You help developers manage their OAuth applications. 
-      You have access to the 'getAppInfo' tool to look up details about the current application.
-      Be professional, concise, and helpful. 
-      If you don't know something, suggest checking the documentation.`,
-      history: history as any,
+      Use the provided tools to fetch information about the application if needed.
+      Current App Context: ID=${appId}`,
+      messages,
       tools: [getAppInfo],
     });
 
-    const result = await chat.send(message);
-    return { text: result.text };
+    return { text: response.text };
   }
 );

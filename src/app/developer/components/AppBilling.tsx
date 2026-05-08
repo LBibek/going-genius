@@ -44,18 +44,23 @@ export function AppBilling({ app, plans }: { app: any, plans: any[] }) {
         <p style={{ color: 'var(--muted)', fontSize: '0.85rem', margin: 0 }}>
           Manage your recurring revenue models and feature gating tiers.
         </p>
-        {!isAdding && (
-          <button className="btn btn-primary" onClick={() => setIsAdding(true)} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
-            <Plus size={14} style={{ marginRight: '4px' }} /> Create Plan
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <a href={`/demo/billing/${app.id}`} target="_blank" className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+             View Public Page ↗
+          </a>
+          {!isAdding && (
+            <button className="btn btn-primary" onClick={() => setIsAdding(true)} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+              <Plus size={14} style={{ marginRight: '4px' }} /> Create Plan
+            </button>
+          )}
+        </div>
       </div>
 
       {isAdding && (
         <form onSubmit={handleCreate} className="glass-card" style={{ padding: '1.25rem', border: '1px solid var(--primary)', background: 'rgba(255, 177, 22, 0.03)' }}>
           <h3 style={{ fontSize: '1rem', marginBottom: '1rem' }}>New Subscription Plan</h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div className="grid-2-col" style={{ marginBottom: '1rem' }}>
             <div className="form-group">
               <label className="form-label">Plan Name</label>
               <input 

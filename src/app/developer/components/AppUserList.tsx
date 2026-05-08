@@ -147,7 +147,7 @@ export function AppUserList({ appId, users }: { appId: string, users: any[] }) {
       {/* ─── Manual Add Form ─── */}
       {showAddForm === 'manual' && (
         <div className="glass-card" style={{ marginBottom: '1.5rem', padding: '1.25rem', border: '1px solid var(--primary)' }}>
-          <form onSubmit={handleManualAdd} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <form onSubmit={handleManualAdd} className="grid-2-col">
             <div className="form-group">
               <label className="detail-label">Full Name</label>
               <input 

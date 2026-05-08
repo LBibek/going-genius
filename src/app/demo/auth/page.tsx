@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Globe, Github, Gamepad2, Mail, Lock, User, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { Globe, Gamepad2, Mail, Lock, User, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SocialAuthDemo() {
@@ -65,7 +65,9 @@ export default function SocialAuthDemo() {
             </button>
             <div className="social-row">
               <button className="social-btn github">
-                <Github size={18} />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
                 <span>GitHub</span>
               </button>
               <button className="social-btn steam">
@@ -306,9 +308,19 @@ export default function SocialAuthDemo() {
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         @media (max-width: 900px) {
-          .auth-container { grid-template-columns: 1fr; gap: 2rem; }
+          .auth-container { 
+            grid-template-columns: 1fr; 
+            gap: 2rem; 
+            padding: 0 1rem;
+          }
           .info-side { display: none; }
-          .auth-card { padding: 2rem; }
+          .auth-card { padding: 2rem 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+          .auth-card { padding: 1.5rem 1rem; }
+          .social-row { grid-template-columns: 1fr; }
+          .auth-title { font-size: 1.5rem; }
         }
       `}</style>
     </div>

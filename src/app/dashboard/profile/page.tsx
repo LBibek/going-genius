@@ -21,7 +21,7 @@ export default async function ProfilePage() {
       </Link>
 
       <div className="glass-card animate-fade-in">
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.5rem' }}>Edit Profile</h1>
+        <h1 className="fluid-h3" style={{ marginBottom: '0.5rem' }}>Edit Profile</h1>
         <p style={{ color: 'var(--muted)', marginBottom: '2rem' }}>Update your personal identity and contact details.</p>
 
         <ProfileForm user={user} />
@@ -32,7 +32,7 @@ export default async function ProfilePage() {
         <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
           Deleting your account will permanently remove all your data and access to all linked applications.
         </p>
-        <button className="btn btn-outline" style={{ color: '#fca5a5', borderColor: 'rgba(239, 68, 68, 0.3)', width: '100%', justifyContent: 'center' }}>
+        <button className="btn btn-outline btn-submit" style={{ color: '#fca5a5', borderColor: 'rgba(239, 68, 68, 0.3)', width: '100%', justifyContent: 'center', background: 'transparent', boxShadow: 'none' }}>
           Delete Account
         </button>
       </div>

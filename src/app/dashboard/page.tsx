@@ -36,15 +36,15 @@ export default async function DashboardPage() {
       <div className="container">
 
         {/* Header bar */}
-        <nav className="dash-nav">
+        <nav className="flex-responsive" style={{ marginBottom: '2.5rem' }}>
           <div className="dash-nav-brand">
             <div className="auth-logo-icon" style={{ width: '36px', height: '36px', fontSize: '0.85rem' }}>GG</div>
             <span style={{ fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Outfit, sans-serif' }}>GGUser</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }} className="mobile-stack">
             <ThemeToggle />
-            <form action={logout}>
-              <button id="btn-logout" type="submit" className="btn btn-outline" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem' }}>
+            <form action={logout} style={{ width: '100%' }}>
+              <button id="btn-logout" type="submit" className="btn btn-outline" style={{ width: '100%', padding: '0.5rem 1.25rem', fontSize: '0.9rem' }}>
                 Sign out
               </button>
             </form>
@@ -52,8 +52,8 @@ export default async function DashboardPage() {
         </nav>
 
         {/* Profile Card */}
-        <div className="glass-card dash-profile animate-fade-in">
-          <div className="dash-avatar">
+        <div className="glass-card flex-responsive animate-fade-in" style={{ gap: '1.5rem', alignItems: 'center', textAlign: 'center' }}>
+          <div className="dash-avatar" style={{ margin: '0 auto' }}>
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt={user.displayName} className="dash-avatar-img" />
             ) : (
@@ -63,10 +63,10 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          <div className="dash-profile-info">
-            <h1 className="dash-display-name">{user.displayName}</h1>
+          <div className="dash-profile-info" style={{ flex: 1, textAlign: 'inherit' }}>
+            <h1 className="dash-display-name" style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)' }}>{user.displayName}</h1>
             <p className="dash-username">@{user.username}</p>
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', justifyContent: 'center' }} className="flex-responsive">
               <span className={`role-badge role-${user.role.toLowerCase()}`}>{user.role}</span>
               <Link href="/dashboard/profile" className="form-link-sm" style={{ textDecoration: 'none' }}>
                 ✎ Edit Profile
@@ -76,7 +76,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Stats row */}
-        <div className="dash-stats">
+        <div className="grid-auto-fill" style={{ marginTop: '1.5rem' }}>
           <div className="glass-card dash-stat">
             <p className="dash-stat-label">Member since</p>
             <p className="dash-stat-value">{joinedDate}</p>

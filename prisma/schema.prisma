@@ -49,6 +49,8 @@ model GGUser {
   ownedApps     OAuthApp[]    @relation("AppOwner")
   appMemberships AppUser[]
   subscriptions  Subscription[]
+  carts          Cart[]
+  transactions   Transaction[]
 }
 
 // ─── Sessions ─────────────────────────────────────────────────────────────────
@@ -118,6 +120,8 @@ model OAuthApp {
   esewaSecretKey   String?
   plans         SubscriptionPlan[]
   subscriptions Subscription[]
+  carts         Cart[]
+  transactions  Transaction[]
 
   @@index([ownerId])
 }
@@ -138,6 +142,8 @@ model SubscriptionPlan {
   createdAt   DateTime @default(now())
 
   subscriptions Subscription[]
+  cartItems     CartItem[]
+  transactions  Transaction[]
 
   @@index([appId])
 }
@@ -228,4 +234,54 @@ model OAuthToken {
   createdAt    DateTime @default(now())
 
   @@index([userId])
+}
+
+// ─── Cart & Checkout ────────────────────────────────────────────────────────
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String
+  appId     String
+  user      GGUser     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app       OAuthApp   @relation(fields: [appId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, appId])
+  @@index([userId])
+  @@index([appId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  planId    String
+  plan      SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@index([cartId])
+  @@index([planId])
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  appId       String
+  planId      String?
+  user        GGUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app         OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  plan        SubscriptionPlan? @relation(fields: [planId], references: [id])
+  amount      Float
+  currency    String   @default("NPR")
+  status      String   @default("pending") // pending, completed, failed
+  provider    String   // khalti, esewa
+  referenceId String?  @unique // Gateway reference
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([appId])
 }

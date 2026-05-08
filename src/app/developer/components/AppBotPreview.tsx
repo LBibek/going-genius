@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bot, Send, User, Sparkles, Terminal, AlertCircle } from 'lucide-react';
 import { runFlow } from '@genkit-ai/next/client';
-import { appBotFlow } from '@/lib/ai/flows';
+import type { appBotFlow } from '@/lib/ai/flows';
 
 export function AppBotPreview({ app }: { app: any }) {
   const [messages, setMessages] = useState([
@@ -39,10 +39,13 @@ export function AppBotPreview({ app }: { app: any }) {
         content: [{ text: m.content }]
       }));
 
-      const response = await runFlow(appBotFlow, {
-        appId: app.id,
-        message: userMessage,
-        history: history as any
+      const response = await runFlow<typeof appBotFlow>({
+        url: '/api/agent',
+        input: {
+          appId: app.id,
+          message: userMessage,
+          history: history as any
+        }
       });
 
       setMessages(prev => [...prev, { 
@@ -76,7 +79,7 @@ export function AppBotPreview({ app }: { app: any }) {
           </div>
         </div>
         <div className="bot-actions">
-          {error && <AlertCircle size={14} className="error-icon" title={error} />}
+          {error && <AlertCircle size={14} className="error-icon" />}
           <Terminal size={14} className="icon-btn" />
         </div>
       </div>

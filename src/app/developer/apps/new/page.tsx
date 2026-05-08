@@ -14,7 +14,7 @@ export default function NewAppPage() {
       </Link>
       
       <div className="glass-card">
-        <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>Create Application</h1>
+        <h1 className="fluid-h3" style={{ marginBottom: '0.5rem' }}>Create Application</h1>
         <p style={{ color: 'var(--muted)', marginBottom: '2rem' }}>Set up a new app to integrate GGUser authentication.</p>
 
         <form action={action} className="auth-form">
