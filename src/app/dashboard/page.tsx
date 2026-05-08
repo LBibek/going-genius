@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { UserTabs } from './components/UserTabs';
 import { Grid2Col, StatsRow } from '@/app/developer/components/ResponsiveGrids';
-import { LogOut, User as UserIcon, Shield, ExternalLink, Calendar, Monitor, Activity, Key } from 'lucide-react';
+import { LogOut, User as UserIcon, Shield, ExternalLink, Calendar, Monitor, Activity, Key, CreditCard, ShieldCheck } from 'lucide-react';
 
 import { OptimizedImage } from '@/components/OptimizedImage';
 
@@ -33,6 +33,12 @@ export default async function DashboardPage() {
   });
 
   if (!user) redirect('/auth/login');
+  
+  const subscriptions = await prisma.subscription.findMany({
+    where: { userId: session.userId },
+    include: { app: true, plan: true },
+    orderBy: { createdAt: 'desc' }
+  });
 
   const joinedDate = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(user.createdAt);
 
@@ -208,6 +214,49 @@ export default async function DashboardPage() {
                   Open Developer Console <ExternalLink size={16} />
                 </Link>
               </div>
+            </div>
+          }
+          billing={
+            <div className="glass-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <CreditCard size={20} /> My Subscriptions
+                </h2>
+                <Link href="/dashboard/subscriptions" className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem' }}>
+                  Billing History
+                </Link>
+              </div>
+
+              {subscriptions.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+                  <p className="text-muted">No active subscriptions found.</p>
+                  <Link href="/developer" className="btn btn-primary" style={{ marginTop: '1rem', fontSize: '0.8rem' }}>
+                    Explore Marketplace
+                  </Link>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                  {subscriptions.map((sub) => (
+                    <div key={sub.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
+                        <OptimizedImage src={sub.app.logoUrl} alt={sub.app.name} width={40} height={40} />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{sub.app.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <ShieldCheck size={12} /> {sub.plan.name}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>NPR {sub.plan.price}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>
+                          Next: {sub.expiresAt ? new Date(sub.expiresAt).toLocaleDateString() : 'Never'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           }
         />

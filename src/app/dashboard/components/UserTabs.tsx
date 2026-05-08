@@ -7,7 +7,9 @@ import {
   Settings, 
   Activity,
   Key,
-  Globe
+  Key,
+  Globe,
+  CreditCard
 } from 'lucide-react';
 
 interface TabProps {
@@ -15,6 +17,7 @@ interface TabProps {
   security: React.ReactNode;
   account: React.ReactNode;
   integrations: React.ReactNode;
+  billing: React.ReactNode;
 }
 
 export function UserTabs({ overview, security, account, integrations }: TabProps) {
@@ -25,6 +28,7 @@ export function UserTabs({ overview, security, account, integrations }: TabProps
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'account', label: 'Account', icon: Settings },
     { id: 'integrations', label: 'Integrations', icon: Globe },
+    { id: 'billing', label: 'Billing', icon: CreditCard },
   ];
 
   return (
@@ -47,6 +51,7 @@ export function UserTabs({ overview, security, account, integrations }: TabProps
         {activeTab === 'security' && security}
         {activeTab === 'account' && account}
         {activeTab === 'integrations' && integrations}
+        {activeTab === 'billing' && billing}
       </div>
 
       <style jsx>{`

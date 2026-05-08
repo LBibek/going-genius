@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const provider = searchParams.get('provider');
   const appId = searchParams.get('appId');
-  const txnId = searchParams.get('txnId'); // For Khalti
+  const txnId = searchParams.get('txnId'); // For Khalti redirect
 
   if (!appId) return NextResponse.json({ error: 'Missing appId' }, { status: 400 });
 
@@ -29,20 +29,17 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
 
     if (data.status === 'Completed') {
-      // Update transaction and create subscription
       await processSuccessfulPayment(txnId!, data.transaction_id, appId);
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/demo/billing/${appId}?status=success`);
     } else {
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/demo/billing/${appId}?status=failed`);
     }
   } else if (provider === 'esewa') {
-    // eSewa returns data in query or encoded
     const encodedData = searchParams.get('data');
     if (!encodedData) return NextResponse.json({ error: 'Missing data' }, { status: 400 });
 
     const decoded = JSON.parse(Buffer.from(encodedData, 'base64').toString('utf-8'));
     
-    // Verify signature
     const message = `transaction_code=${decoded.transaction_code},status=${decoded.status},total_amount=${decoded.total_amount},transaction_uuid=${decoded.transaction_uuid},product_code=${decoded.product_code},signed_field_names=${decoded.signed_field_names}`;
     const expectedSignature = crypto.createHmac('sha256', app.esewaSecretKey!).update(message).digest('base64');
 
@@ -57,37 +54,61 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ error: 'Invalid provider' }, { status: 400 });
 }
 
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { pidx, txnId, appId, status } = body;
+
+  if (status === 'Completed') {
+    try {
+      await processSuccessfulPayment(txnId, pidx, appId);
+      return NextResponse.json({ success: true });
+    } catch (error) {
+      console.error('Webhook processing failed:', error);
+      return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({ status: 'Ignored' });
+}
+
 async function processSuccessfulPayment(transactionId: string, referenceId: string, appId: string) {
-  const transaction = await prisma.transaction.update({
-    where: { id: transactionId },
-    data: { 
-      status: 'completed',
-      referenceId: referenceId
-    },
-    include: { user: true, app: true }
-  });
+  return await prisma.$transaction(async (tx) => {
+    // 1. Check if transaction is already completed (Idempotency)
+    const existingTx = await tx.transaction.findUnique({
+      where: { id: transactionId }
+    });
 
-  // Get items from cart and create subscriptions
-  const cart = await prisma.cart.findUnique({
-    where: { userId_appId: { userId: transaction.userId, appId } },
-    include: { items: true }
-  });
+    if (!existingTx || existingTx.status === 'completed') {
+      return;
+    }
 
-  if (cart) {
-    for (const item of cart.items) {
-      // Calculate expiresAt based on plan interval
-      let expiresAt: Date | null = null;
-      const plan = await prisma.subscriptionPlan.findUnique({ where: { id: item.planId } });
-      if (plan) {
-        if (plan.interval === 'monthly') {
+    // 2. Update transaction status
+    const transaction = await tx.transaction.update({
+      where: { id: transactionId },
+      data: { 
+        status: 'completed',
+        referenceId: referenceId
+      }
+    });
+
+    // 3. Get items from cart
+    const cart = await tx.cart.findUnique({
+      where: { userId_appId: { userId: transaction.userId, appId } },
+      include: { items: { include: { plan: true } } }
+    });
+
+    if (cart && cart.items.length > 0) {
+      for (const item of cart.items) {
+        let expiresAt: Date | null = null;
+        if (item.plan.interval === 'monthly') {
           expiresAt = new Date();
           expiresAt.setMonth(expiresAt.getMonth() + 1);
-        } else if (plan.interval === 'yearly') {
+        } else if (item.plan.interval === 'yearly') {
           expiresAt = new Date();
           expiresAt.setFullYear(expiresAt.getFullYear() + 1);
         }
         
-        await prisma.subscription.upsert({
+        await tx.subscription.upsert({
           where: { appId_userId: { appId, userId: transaction.userId } },
           update: {
             planId: item.planId,
@@ -104,9 +125,9 @@ async function processSuccessfulPayment(transactionId: string, referenceId: stri
           }
         });
       }
-    }
 
-    // Clear cart
-    await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
-  }
+      // 4. Clear cart after successful subscription creation
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+    }
+  });
 }

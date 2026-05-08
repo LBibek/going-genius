@@ -73,6 +73,7 @@ export function AppLoginPreview({ app }: { app: any }) {
           <span className="dot green" />
         </div>
         <div className="browser-address">gguser.com/api/gg/authorize?client_id={app.clientId.slice(0, 8)}...</div>
+        <div className="live-badge">LIVE PREVIEW</div>
       </div>
 
       <div className="preview-body">
@@ -83,57 +84,81 @@ export function AppLoginPreview({ app }: { app: any }) {
           </div>
           
           <div className="mini-app-intro">
-            <OptimizedImage 
-              src={app.logoUrl} 
-              alt={app.name} 
-              width={40} 
-              height={40} 
-              className="mini-app-logo" 
-            />
+            {app.logoUrl ? (
+              <OptimizedImage 
+                src={app.logoUrl} 
+                alt={app.name} 
+                width={48} 
+                height={48} 
+                className="mini-app-logo" 
+              />
+            ) : (
+              <div className="mini-app-logo-placeholder">
+                {app.name.slice(0, 1).toUpperCase()}
+              </div>
+            )}
             <h3 className="mini-title">Log in to {app.name}</h3>
             <p className="mini-subtitle">to continue to the application</p>
           </div>
 
           <div className="mini-form">
-            <div className="mini-input" />
-            <div className="mini-input" />
-            <div className="mini-btn">
+            <div className="mini-input-group">
+              <div className="mini-label" />
+              <div className="mini-input" />
+            </div>
+            <div className="mini-input-group">
+              <div className="mini-label" />
+              <div className="mini-input" />
+            </div>
+            <div className="mini-btn" onClick={() => handleSocialLogin('GGUser')}>
               {isLoggingIn ? 'Authenticating...' : 'Sign in with GGUser'}
             </div>
           </div>
 
-          <div className="mini-divider"><span>or continue with</span></div>
+          <div className="mini-divider">
+            <div className="divider-line"></div>
+            <span>or continue with</span>
+            <div className="divider-line"></div>
+          </div>
 
           <div className="mini-socials">
             {isGoogleEnabled ? (
               <div className="mini-social-btn google" onClick={() => handleSocialLogin('Google')}>
-                <OptimizedImage src="/images/social/google.png" alt="Google" width={16} height={16} /> Google
+                <OptimizedImage src="/images/social/google.png" alt="Google" width={18} height={18} />
+                <span>Google</span>
               </div>
             ) : (
-              <div className="mini-social-btn disabled">
-                <Globe size={14} /> (Not Configured)
+              <div className="mini-social-btn google disabled" title="Configure Google Auth to enable">
+                <Globe size={14} />
+                <span>Google</span>
               </div>
             )}
 
-            {isGithubEnabled ? (
-              <div className="mini-social-btn github" onClick={() => handleSocialLogin('GitHub')}>
-                <OptimizedImage src="/images/social/github.png" alt="GitHub" width={16} height={16} /> GitHub
-              </div>
-            ) : (
-              <div className="mini-social-btn disabled">
-                <Code2 size={14} /> (Not Configured)
-              </div>
-            )}
+            <div className="social-row">
+              {isGithubEnabled ? (
+                <div className="mini-social-btn github" onClick={() => handleSocialLogin('GitHub')}>
+                  <OptimizedImage src="/images/social/github.png" alt="GitHub" width={18} height={18} />
+                  <span>GitHub</span>
+                </div>
+              ) : (
+                <div className="mini-social-btn github disabled" title="Configure GitHub Auth to enable">
+                  <Code2 size={14} />
+                  <span>GitHub</span>
+                </div>
+              )}
 
-            {isSteamEnabled ? (
-              <div className="mini-social-btn steam" onClick={() => handleSocialLogin('Steam')}>
-                <OptimizedImage src="/images/social/steam.png" alt="Steam" width={16} height={16} /> Steam
-              </div>
-            ) : (
-              <div className="mini-social-btn disabled">
-                <Gamepad2 size={14} /> (Not Configured)
-              </div>
-            )}
+              {isSteamEnabled ? (
+                <div className="mini-social-btn steam" onClick={() => handleSocialLogin('Steam')}>
+                  <OptimizedImage src="/images/social/steam.png" alt="Steam" width={18} height={18} />
+                  <span>Steam</span>
+                </div>
+              ) : (
+                <div className="mini-social-btn steam disabled" title="Configure Steam Auth to enable">
+                  <Gamepad2 size={14} />
+                  <span>Steam</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="mini-footer">
@@ -152,7 +177,8 @@ const styles = (
     .preview-container {
       background: #000; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
       box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      min-height: 380px;
+      min-height: 420px;
+      position: relative;
     }
     .preview-browser-header {
       background: #111; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem;
@@ -164,54 +190,82 @@ const styles = (
     .browser-address {
       flex: 1; background: #000; padding: 0.25rem 0.75rem; border-radius: 6px;
       font-size: 0.7rem; color: var(--muted); font-family: monospace; text-align: center;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .live-badge {
+      font-size: 0.6rem; font-weight: 800; color: var(--primary);
+      background: rgba(255, 177, 22, 0.1); padding: 2px 6px; border-radius: 4px;
+      letter-spacing: 0.05em;
     }
 
     .preview-body { 
-      padding: 1.5rem; 
+      padding: 2rem 1.5rem; 
       display: flex; 
       justify-content: center; 
       align-items: center;
-      min-height: 320px;
+      min-height: 360px;
       background: radial-gradient(circle at top, rgba(255, 177, 22, 0.05) 0%, transparent 100%); 
     }
     @media (max-width: 400px) {
-      .preview-body { padding: 0.75rem; }
-      .mini-auth-card { padding: 1rem; }
+      .preview-body { padding: 1rem 0.75rem; }
+      .mini-auth-card { padding: 1.25rem 1rem; }
     }
     .mini-auth-card {
       width: 100%; max-width: 320px; background: rgba(255,255,255,0.03); 
-      border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.75rem;
       backdrop-filter: blur(10px);
       text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
     .mini-logo { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1.5rem; justify-content: center; }
     .mini-logo-icon { width: 24px; height: 24px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 900; color: #000; }
     .mini-logo-text { font-size: 0.8rem; font-weight: 800; color: #fff; }
 
-    .mini-app-intro { text-align: center; margin-bottom: 1.25rem; }
-    .mini-app-logo { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 0.75rem; }
-    .mini-app-logo-placeholder { width: 40px; height: 40px; border-radius: 10px; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 0.75rem; }
-    .mini-title { font-size: clamp(0.9rem, 2vw, 1rem); margin-bottom: 0.25rem; }
-    .mini-subtitle { font-size: clamp(0.6rem, 1.5vw, 0.7rem); color: var(--muted); }
+    .mini-app-intro { text-align: center; margin-bottom: 1.5rem; }
+    :global(.mini-app-logo) { width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 0.75rem; display: block; }
+    .mini-app-logo-placeholder { width: 48px; height: 48px; border-radius: 12px; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 0.75rem; font-size: 1.2rem; }
+    .mini-title { font-size: 1rem; margin-bottom: 0.25rem; font-weight: 700; color: #fff; }
+    .mini-subtitle { font-size: 0.75rem; color: var(--muted); }
 
-    .mini-form { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
-    .mini-input { height: 32px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; }
+    .mini-form { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .mini-input-group { display: flex; flex-direction: column; gap: 0.25rem; text-align: left; }
+    .mini-label { height: 6px; width: 40px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+    .mini-input { height: 36px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; }
     .mini-btn { 
-      height: 36px; background: var(--primary); color: #000; border-radius: 8px; 
-      font-size: clamp(0.7rem, 1.5vw, 0.75rem); font-weight: 700; display: flex; align-items: center; 
-      justify-content: center; cursor: pointer; transition: transform 0.2s;
+      height: 40px; background: var(--primary); color: #000; border-radius: 8px; 
+      font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; 
+      justify-content: center; cursor: pointer; transition: all 0.2s;
+      margin-top: 0.25rem;
     }
-    .mini-btn:hover { transform: scale(1.02); }
+    .mini-btn:hover { background: #ffc14d; transform: translateY(-1px); }
+    .mini-btn:active { transform: translateY(0); }
     .mini-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; margin-top: 1rem; }
+    .mini-btn.secondary:hover { background: rgba(255,255,255,0.15); }
 
-    .mini-divider { text-align: center; border-bottom: 1px solid var(--border); line-height: 0.1em; margin: 1.5rem 0; font-size: 0.6rem; color: var(--muted); }
-    .mini-divider span { background: #0d0d12; padding: 0 10px; }
+    .mini-divider { 
+      display: flex; align-items: center; gap: 0.75rem; margin: 1.5rem 0; 
+      font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
 
-    .mini-socials { display: flex; flex-direction: column; gap: 0.5rem; }
-    .mini-social-btn { height: 34px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-    .mini-social-btn:hover { background: var(--glass-hover); border-color: var(--primary); }
-    .mini-social-btn.disabled { opacity: 0.3; cursor: not-allowed; border-style: dashed; }
+    .mini-socials { 
+      display: flex; 
+      flex-direction: column;
+      gap: 0.75rem; 
+      margin-top: 1rem;
+    }
+    .social-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .mini-social-btn { 
+      height: 40px; border: 1px solid var(--border); border-radius: 10px; 
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem; 
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      background: rgba(255,255,255,0.02);
+      white-space: nowrap;
+      color: #fff;
+    }
+    .mini-social-btn:hover:not(.disabled) { background: rgba(255,255,255,0.05); border-color: var(--primary); transform: translateY(-1px); }
+    .mini-social-btn.disabled { opacity: 0.35; cursor: not-allowed; background: rgba(255,255,255,0.01); border-style: dashed; color: var(--muted); }
     
     .success-icon { margin-bottom: 1rem; display: flex; justify-content: center; }
     .user-profile-mini { 
@@ -219,10 +273,11 @@ const styles = (
       border-radius: 12px; display: flex; align-items: center; gap: 0.75rem; text-align: left;
     }
     .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; }
-    .user-name { font-size: 0.8rem; font-weight: 600; }
+    .user-name { font-size: 0.8rem; font-weight: 600; color: #fff; }
     .user-email { font-size: 0.65rem; color: var(--muted); }
 
-    .mini-footer { margin-top: 1.5rem; text-align: center; font-size: 0.65rem; color: var(--muted); }
+    .mini-footer { margin-top: 1.75rem; text-align: center; font-size: 0.7rem; color: var(--muted); }
     .mini-footer span { color: var(--primary); font-weight: 600; cursor: pointer; }
   `}</style>
 );
+

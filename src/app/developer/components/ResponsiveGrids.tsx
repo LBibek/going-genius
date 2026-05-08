@@ -7,12 +7,18 @@ export function Grid2Col({ children }: { children: React.ReactNode }) {
       <style jsx>{`
         .grid-2-col {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
           gap: 1.5rem;
+        }
+        .grid-2-col :global(.span-2) {
+          grid-column: span 2;
         }
         @media (max-width: 768px) {
           .grid-2-col {
             grid-template-columns: 1fr;
+          }
+          .grid-2-col :global(.span-2) {
+            grid-column: span 1;
           }
         }
       `}</style>

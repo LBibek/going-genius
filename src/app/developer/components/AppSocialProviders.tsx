@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { updateAppSocialProviders } from '@/app/actions/developer';
-import { Code2, Globe, Gamepad2, Save, Shield } from 'lucide-react';
+import { Save } from 'lucide-react';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 export function AppSocialProviders({ app }: { app: any }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -15,6 +17,8 @@ export function AppSocialProviders({ app }: { app: any }) {
   });
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
+  const router = useRouter();
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -24,6 +28,7 @@ export function AppSocialProviders({ app }: { app: any }) {
       const result = await updateAppSocialProviders(app.id, formData);
       if (result.success) {
         setMessage({ text: 'Social keys saved successfully.', type: 'success' });
+        router.refresh();
       } else {
         setMessage({ text: result.message || 'Failed to save keys.', type: 'error' });
       }
@@ -45,7 +50,7 @@ export function AppSocialProviders({ app }: { app: any }) {
       {/* Google */}
       <div className="provider-group">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <div className="social-icon google"><Globe size={14} /></div>
+          <OptimizedImage src="/images/social/google.png" alt="Google" width={18} height={18} />
           <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Google OAuth</span>
         </div>
         <div className="form-group" style={{ gap: '0.5rem' }}>
@@ -72,7 +77,7 @@ export function AppSocialProviders({ app }: { app: any }) {
       {/* GitHub */}
       <div className="provider-group">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <div className="social-icon github"><Code2 size={14} /></div>
+          <OptimizedImage src="/images/social/github.png" alt="GitHub" width={18} height={18} />
           <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>GitHub OAuth</span>
         </div>
         <div className="form-group" style={{ gap: '0.5rem' }}>
@@ -99,7 +104,7 @@ export function AppSocialProviders({ app }: { app: any }) {
       {/* Steam */}
       <div className="provider-group">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <div className="social-icon steam"><Gamepad2 size={14} /></div>
+          <OptimizedImage src="/images/social/steam.png" alt="Steam" width={18} height={18} />
           <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Steam OpenID</span>
         </div>
         <div className="form-group">

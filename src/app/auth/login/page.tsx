@@ -4,6 +4,7 @@ import { useActionState, useState, useEffect, Suspense } from 'react';
 import { login, sendPhoneOtp } from '@/app/actions/auth';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 
 type Tab = 'password' | 'phone';
 
@@ -41,6 +42,9 @@ function LoginForm() {
 
       <h1 className="auth-title">Welcome back</h1>
       <p className="auth-subtitle">Sign in to your Going Genius account</p>
+
+      {/* Social Auth */}
+      <SocialAuthButtons isLoading={loginPending} />
 
       {/* Tabs */}
       <div className="auth-tabs">

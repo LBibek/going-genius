@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { regenerateClientSecret } from '@/app/actions/developer';
 import { Copy, RefreshCw, Eye, EyeOff, Check } from 'lucide-react';
 
@@ -16,12 +17,15 @@ export function AppCredentials({ app }: { app: any }) {
     setTimeout(() => setter(false), 2000);
   };
 
+  const router = useRouter();
+
   const handleRegenerate = async () => {
     if (!confirm('Are you sure? Previous secrets will stop working immediately.')) return;
     setIsRegenerating(true);
     await regenerateClientSecret(app.id);
     setIsRegenerating(false);
     setShowSecret(true);
+    router.refresh();
   };
 
   return (

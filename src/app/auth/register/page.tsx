@@ -4,6 +4,7 @@ import { useActionState, useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { register } from '@/app/actions/auth';
 import Link from 'next/link';
+import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 
 const STRENGTH_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
 const STRENGTH_COLORS = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981'];
@@ -81,6 +82,9 @@ function RegisterForm() {
           ✨ You've been invited! Register below to join the app.
         </div>
       )}
+
+      {/* Social Auth */}
+      <SocialAuthButtons isLoading={pending} />
 
       <form action={action} className="auth-form">
         <input type="hidden" name="invite" value={inviteToken || ''} />

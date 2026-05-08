@@ -14,8 +14,10 @@ import { AppLoginPreview } from '../../components/AppLoginPreview';
 import { AppBilling } from '../../components/AppBilling';
 import { AppBotPreview } from '../../components/AppBotPreview';
 import { AppTabs } from '../../components/AppTabs';
+import { AppAIPlayground } from '../../components/AppAIPlayground';
 import { Grid2Col } from '../../components/ResponsiveGrids';
 import { getAppAnalytics } from '../../actions';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
@@ -53,13 +55,13 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
 
       <div className="flex-responsive" style={{ marginBottom: '2.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          {app.logoUrl ? (
-            <img src={app.logoUrl} alt={app.name} style={{ width: '56px', height: '56px', borderRadius: '14px', objectFit: 'cover' }} />
-          ) : (
-            <div style={{ width: '56px', height: '56px', background: 'var(--primary)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 800, color: '#000' }}>
-              {app.name.slice(0, 1).toUpperCase()}
-            </div>
-          )}
+          <OptimizedImage 
+            src={app.logoUrl} 
+            alt={app.name} 
+            width={56} 
+            height={56} 
+            style={{ borderRadius: '14px', objectFit: 'cover' }} 
+          />
           <div>
             <h1 className="fluid-h2" style={{ margin: 0 }}>{app.name}</h1>
             <p style={{ color: 'var(--muted)', fontSize: '0.8rem', wordBreak: 'break-all' }}>ID: {app.id}</p>
@@ -113,7 +115,7 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>Social Providers</h2>
               <AppSocialProviders app={app} />
             </div>
-            <div className="glass-card" style={{ gridColumn: 'span 2' }}>
+            <div className="glass-card span-2">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>AI Agents Config</h2>
               <AppAIAgents app={app} />
             </div>
@@ -141,6 +143,12 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
           <div className="glass-card">
             <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>General Settings</h2>
             <AppSettings app={app} />
+          </div>
+        }
+        playground={
+          <div className="glass-card">
+            <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>AI Agent Playground</h2>
+            <AppAIPlayground app={app} />
           </div>
         }
       />

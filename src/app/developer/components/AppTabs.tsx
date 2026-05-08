@@ -18,9 +18,10 @@ interface TabProps {
   config: React.ReactNode;
   billing: React.ReactNode;
   settings: React.ReactNode;
+  playground: React.ReactNode;
 }
 
-export function AppTabs({ overview, access, config, billing, settings }: TabProps) {
+export function AppTabs({ overview, access, config, billing, settings, playground }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
@@ -28,6 +29,7 @@ export function AppTabs({ overview, access, config, billing, settings }: TabProp
     { id: 'config', label: 'Configuration', icon: Key },
     { id: 'access', label: 'Access & Users', icon: Users },
     { id: 'billing', label: 'Billing', icon: CreditCard },
+    { id: 'playground', label: 'AI Playground', icon: Bot },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -51,6 +53,7 @@ export function AppTabs({ overview, access, config, billing, settings }: TabProp
         {activeTab === 'config' && config}
         {activeTab === 'access' && access}
         {activeTab === 'billing' && billing}
+        {activeTab === 'playground' && playground}
         {activeTab === 'settings' && settings}
       </div>
 

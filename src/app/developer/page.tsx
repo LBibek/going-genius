@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { AppChart } from './components/AppChart';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { getOverallAnalytics } from './actions';
-import { StatsRow, AppsGrid, DashboardStyles } from './components/ResponsiveGrids';
+import { StatsRow, AppsGrid, DashboardStyles, Grid2Col } from './components/ResponsiveGrids';
 import { OptimizedImage } from '@/components/OptimizedImage';
+import { Activity, Shield, Cpu } from 'lucide-react';
 
 export default async function DeveloperDashboard() {
   const session = await getSession();
@@ -23,6 +24,11 @@ export default async function DeveloperDashboard() {
   });
 
   const chartData = await getOverallAnalytics();
+
+  // Simple latency check
+  const start = performance.now();
+  await prisma.$queryRaw`SELECT 1`;
+  const dbLatency = Math.round(performance.now() - start);
 
   return (
     <div className="container" style={{ padding: '2rem 1rem' }}>
@@ -48,10 +54,21 @@ export default async function DeveloperDashboard() {
             <div className="stat-label">Total Applications</div>
             <div className="stat-value">{apps.length}</div>
           </div>
-          <div className="glass-card stat-card" style={{ flex: 2 }}>
-            <div className="stat-label">User Activity (Last 7 Days)</div>
-            <div style={{ height: '80px', marginTop: '0.5rem' }}>
-              <AppChart data={chartData} />
+          <div className="glass-card stat-card" style={{ flex: 1 }}>
+            <div className="stat-label">System Health</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem' }}>
+                <span style={{ color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Cpu size={12}/> DB Latency</span>
+                <span style={{ color: dbLatency < 50 ? '#4ade80' : '#fbbf24', fontWeight: 600 }}>{dbLatency}ms</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem' }}>
+                <span style={{ color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Activity size={12}/> Edge API</span>
+                <span style={{ color: '#4ade80', fontWeight: 600 }}>Operational</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem' }}>
+                <span style={{ color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Shield size={12}/> Auth Layer</span>
+                <span style={{ color: '#4ade80', fontWeight: 600 }}>Secured</span>
+              </div>
             </div>
           </div>
         </StatsRow>

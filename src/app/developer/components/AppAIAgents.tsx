@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { updateAppAIAgents } from '@/app/actions/developer';
 import { Bot, Save, Sparkles, Cpu, MessagesSquare } from 'lucide-react';
 
@@ -14,6 +15,8 @@ export function AppAIAgents({ app }: { app: any }) {
   });
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
+  const router = useRouter();
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -23,6 +26,7 @@ export function AppAIAgents({ app }: { app: any }) {
       const result = await updateAppAIAgents(app.id, formData);
       if (result.success) {
         setMessage({ text: 'AI Agent keys saved successfully.', type: 'success' });
+        router.refresh();
       } else {
         setMessage({ text: result.message || 'Failed to save keys.', type: 'error' });
       }

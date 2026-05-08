@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
@@ -38,11 +39,11 @@ export async function createSession(userId: string, role: string, ipAddress?: st
   return session.id;
 }
 
-export async function getSession(): Promise<SessionPayload | null> {
+export const getSession = cache(async (): Promise<SessionPayload | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   return decrypt(token);
-}
+});
 
 export async function refreshSession() {
   const cookieStore = await cookies();

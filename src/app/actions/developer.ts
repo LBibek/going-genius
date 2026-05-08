@@ -5,6 +5,8 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 import { z } from 'zod';
+import crypto from 'crypto';
+import { Monitor } from '@/lib/monitor';
 
 const AppSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -26,20 +28,22 @@ export async function createApp(prevState: any, formData: FormData) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
 
-  const { name, redirectUris, logoUrl } = validatedFields.data;
+  return await Monitor.trace('createApp', async () => {
+    const { name, redirectUris, logoUrl } = validatedFields.data;
 
-  const app = await prisma.oAuthApp.create({
-    data: {
-      name,
-      redirectUris,
-      logoUrl: logoUrl || null,
-      ownerId: session.userId,
-      clientSecret: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-    },
+    const app = await prisma.oAuthApp.create({
+      data: {
+        name,
+        redirectUris,
+        logoUrl: logoUrl || null,
+        ownerId: session.userId,
+        clientSecret: crypto.randomBytes(32).toString('hex'),
+      },
+    });
+
+    revalidatePath('/developer');
+    redirect(`/developer/apps/${app.id}`);
   });
-
-  revalidatePath('/developer');
-  redirect(`/developer/apps/${app.id}`);
 }
 
 export async function updateApp(appId: string, prevState: any, formData: FormData) {
@@ -77,10 +81,12 @@ export async function deleteApp(appId: string) {
   const app = await prisma.oAuthApp.findUnique({ where: { id: appId } });
   if (!app || app.ownerId !== session.userId) return { message: 'Forbidden' };
 
-  await prisma.oAuthApp.delete({ where: { id: appId } });
+  await Monitor.trace('deleteApp', async () => {
+    await prisma.oAuthApp.delete({ where: { id: appId } });
 
-  revalidatePath('/developer');
-  redirect('/developer');
+    revalidatePath('/developer');
+    redirect('/developer');
+  });
 }
 
 export async function updateAppUser(appId: string, userId: string, metadata: any) {
@@ -126,7 +132,7 @@ export async function regenerateClientSecret(appId: string) {
   const app = await prisma.oAuthApp.findUnique({ where: { id: appId } });
   if (!app || app.ownerId !== session.userId) return { message: 'Forbidden' };
 
-  const newSecret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  const newSecret = crypto.randomBytes(32).toString('hex');
 
   await prisma.oAuthApp.update({
     where: { id: appId },
