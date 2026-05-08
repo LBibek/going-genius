@@ -10,12 +10,12 @@ export async function GET() {
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await (prisma as any).gGUser.findUnique({
       where: { id: session.userId },
       select: {
         id: true,
         email: true,
-        name: true,
+        displayName: true,
         role: true,
       }
     });

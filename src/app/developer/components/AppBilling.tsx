@@ -126,7 +126,7 @@ export function AppBilling({ app, plans }: { app: any, plans: any[] }) {
             <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>No subscription plans defined yet.</p>
           </div>
         ) : (
-          plans.map(plan => (
+          plans.map((plan: any) => (
             <div key={plan.id} className="plan-card glass-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>

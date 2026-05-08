@@ -7,7 +7,6 @@ import {
   Settings, 
   Activity,
   Key,
-  Key,
   Globe,
   CreditCard
 } from 'lucide-react';
@@ -20,7 +19,7 @@ interface TabProps {
   billing: React.ReactNode;
 }
 
-export function UserTabs({ overview, security, account, integrations }: TabProps) {
+export function UserTabs({ overview, security, account, integrations, billing }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
@@ -34,7 +33,7 @@ export function UserTabs({ overview, security, account, integrations }: TabProps
   return (
     <div className="tabs-container">
       <div className="tabs-nav">
-        {tabs.map((tab) => (
+        {tabs.map((tab: any) => (
           <button
             key={tab.id}
             className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}

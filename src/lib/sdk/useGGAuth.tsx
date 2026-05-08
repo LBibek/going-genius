@@ -6,7 +6,7 @@ import { GoingGenius } from './gg-client';
 interface User {
   id: string;
   email: string;
-  name: string;
+  displayName: string;
   role: string;
 }
 
@@ -55,7 +55,7 @@ export function GGProvider({
   }, []);
 
   const login = () => {
-    const authUrl = gg.getAuthUrl(['profile', 'email']);
+    const authUrl = gg.getAuthUrl();
     window.location.href = authUrl;
   };
 

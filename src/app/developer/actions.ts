@@ -21,7 +21,7 @@ export async function getAppAnalytics(appId: string) {
   const days = 30;
   const startDate = subDays(startOfDay(new Date()), days);
 
-  const stats = await prisma.appUser.groupBy({
+  const stats = await (prisma as any).appUser.groupBy({
     by: ['createdAt'],
     where: {
       appId,
@@ -42,7 +42,7 @@ export async function getAppAnalytics(appId: string) {
     dailyData[dateStr] = 0;
   }
 
-  stats.forEach(stat => {
+  stats.forEach((stat: any) => {
     const dateStr = format(stat.createdAt, 'MMM dd');
     if (dailyData[dateStr] !== undefined) {
       dailyData[dateStr] += stat._count.id;
@@ -61,7 +61,7 @@ export async function getOverallAnalytics() {
   const days = 30;
   const startDate = subDays(startOfDay(new Date()), days);
 
-  const stats = await prisma.appUser.groupBy({
+  const stats = await (prisma as any).appUser.groupBy({
     by: ['createdAt'],
     where: {
       app: { ownerId: session.userId },
@@ -81,7 +81,7 @@ export async function getOverallAnalytics() {
     dailyData[dateStr] = 0;
   }
 
-  stats.forEach(stat => {
+  stats.forEach((stat: any) => {
     const dateStr = format(stat.createdAt, 'MMM dd');
     if (dailyData[dateStr] !== undefined) {
       dailyData[dateStr] += stat._count.id;

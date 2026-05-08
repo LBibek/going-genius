@@ -36,7 +36,7 @@ export function AppTabs({ overview, access, config, billing, settings, playgroun
   return (
     <div className="tabs-container">
       <div className="tabs-nav">
-        {tabs.map((tab) => (
+        {tabs.map((tab: any) => (
           <button
             key={tab.id}
             className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}

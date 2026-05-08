@@ -66,7 +66,7 @@ function VerifyForm() {
         <input type="hidden" name="otp" value={otpValue} />
 
         <div className="otp-inputs" onPaste={handleOtpPaste}>
-          {otp.map((digit, i) => (
+          {otp.map((digit: string, i: number) => (
             <input
               key={i}
               ref={(el) => { inputRefs.current[i] = el; }}

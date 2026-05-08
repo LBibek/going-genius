@@ -78,7 +78,7 @@ export function AppAIPlayground({ app }: { app: any }) {
             <p>Start a conversation to test your agent's responses and system instructions.</p>
           </div>
         ) : (
-          messages.map((msg, i) => (
+          messages.map((msg: any, i: number) => (
             <div key={i} className={`message-row ${msg.role}`}>
               <div className="message-bubble">
                 {msg.content}

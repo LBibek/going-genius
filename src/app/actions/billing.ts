@@ -112,7 +112,7 @@ export async function initiateCheckout(appId: string, provider: 'khalti' | 'esew
   const app = await prisma.oAuthApp.findUnique({ where: { id: appId } });
   if (!app) throw new Error('App not found');
 
-  const totalAmount = cart.items.reduce((acc, item) => acc + (item.plan.price * item.quantity), 0);
+  const totalAmount = cart.items.reduce((acc: number, item: any) => acc + (item.plan.price * item.quantity), 0);
 
   // Create a pending transaction
   const transaction = await prisma.transaction.create({

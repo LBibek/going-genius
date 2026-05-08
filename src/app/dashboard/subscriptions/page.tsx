@@ -21,7 +21,7 @@ export default async function SubscriptionsPage() {
   return (
     <div className="dashboard-container" style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ marginBottom: '2.5rem' }}>
-        <h1 className="h1" style={{ marginBottom: '0.5rem' }}>Your Subscriptions</h1>
+        <h1 style={{ fontFamily: 'var(--font-outfit)', fontWeight: 800, letterSpacing: '-0.03em', fontSize: '2.5rem', marginBottom: '0.5rem' }}>Your Subscriptions</h1>
         <p className="text-muted" style={{ fontSize: '0.9rem' }}>
           Manage your active plans and billing history across the Going Genius ecosystem.
         </p>
@@ -29,10 +29,10 @@ export default async function SubscriptionsPage() {
 
       {subscriptions.length === 0 ? (
         <div className="glass-card" style={{ padding: '4rem', textAlign: 'center' }}>
-          <div style={{ background: 'var(--primary-glow)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyCenter: 'center', margin: '0 auto 1.5rem' }}>
+          <div style={{ background: 'var(--primary-glow)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
             <CreditCard size={32} color="var(--primary)" />
           </div>
-          <h3 className="h3">No active subscriptions</h3>
+          <h3 style={{ fontFamily: 'var(--font-outfit)', fontWeight: 700, fontSize: '1.5rem' }}>No active subscriptions</h3>
           <p className="text-muted" style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
             You haven't subscribed to any premium apps yet.
           </p>
@@ -42,7 +42,7 @@ export default async function SubscriptionsPage() {
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-          {subscriptions.map((sub) => (
+          {subscriptions.map((sub: any) => (
             <div key={sub.id} className="glass-card" style={{ position: 'relative', overflow: 'hidden' }}>
               <div style={{ 
                 position: 'absolute', 
@@ -110,11 +110,6 @@ export default async function SubscriptionsPage() {
           ))}
         </div>
       )}
-
-      <style jsx>{`
-        .h1 { font-family: var(--font-outfit); font-weight: 800; letter-spacing: -0.03em; }
-        .h3 { font-family: var(--font-outfit); font-weight: 700; }
-      `}</style>
     </div>
   );
 }

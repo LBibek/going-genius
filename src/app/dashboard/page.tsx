@@ -236,7 +236,7 @@ export default async function DashboardPage() {
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                  {subscriptions.map((sub) => (
+                  {subscriptions.map((sub: any) => (
                     <div key={sub.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--border)' }}>
                       <div style={{ width: '40px', height: '40px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
                         <OptimizedImage src={sub.app.logoUrl} alt={sub.app.name} width={40} height={40} />

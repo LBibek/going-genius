@@ -34,7 +34,7 @@ export function AppBotPreview({ app }: { app: any }) {
 
     try {
       // Map history to Genkit format
-      const history = messages.map(m => ({
+      const history = messages.map((m: any) => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         content: [{ text: m.content }]
       }));
@@ -85,7 +85,7 @@ export function AppBotPreview({ app }: { app: any }) {
       </div>
 
       <div className="chat-window" ref={scrollRef}>
-        {messages.map((msg, i) => (
+        {messages.map((msg: any, i: number) => (
           <div key={i} className={`message-wrapper ${msg.role}`}>
             <div className="message-icon">
               {msg.role === 'assistant' ? <Sparkles size={12} /> : <User size={12} />}

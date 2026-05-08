@@ -201,7 +201,7 @@ export function AppUserList({ appId, users }: { appId: string, users: any[] }) {
               </tr>
             </thead>
             <tbody>
-              {users.map((item) => (
+              {users.map((item: any) => (
                 <tr key={item.user.id} style={{ borderBottom: '1px solid var(--border)' }}>
                   <td style={{ padding: '1rem 0' }}>
                     {editingUserId === item.user.id ? (

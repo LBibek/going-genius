@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       history: history || []
     });
 
-    return NextResponse.json({ reply: result.text });
+    return NextResponse.json({ reply: (result as any).text });
   } catch (error: any) {
     console.error('AI Agent Chat Error:', error);
     return NextResponse.json({ 

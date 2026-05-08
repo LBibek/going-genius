@@ -63,7 +63,7 @@ export function AppInvites({ appId, invites }: { appId: string, invites: any[] }
         </p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
-          {invites.map((invite) => (
+          {invites.map((invite: any) => (
             <div key={invite.id} className="glass-card" style={{ padding: '1rem', borderRadius: '14px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

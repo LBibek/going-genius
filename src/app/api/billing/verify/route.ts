@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function processSuccessfulPayment(transactionId: string, referenceId: string, appId: string) {
-  return await prisma.$transaction(async (tx) => {
+  return await (prisma as any).$transaction(async (tx: any) => {
     // 1. Check if transaction is already completed (Idempotency)
     const existingTx = await tx.transaction.findUnique({
       where: { id: transactionId }

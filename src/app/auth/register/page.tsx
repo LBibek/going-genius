@@ -182,7 +182,7 @@ function RegisterForm() {
           {password && (
             <div className="strength-meter">
               <div className="strength-bar">
-                {[1, 2, 3, 4, 5].map((n) => (
+                {[1, 2, 3, 4, 5].map((n: number) => (
                   <div
                     key={n}
                     className="strength-segment"
@@ -197,7 +197,7 @@ function RegisterForm() {
           )}
           {state?.errors?.password && (
             <ul className="form-error-list">
-              {state.errors.password.map((e) => <li key={e}>{e}</li>)}
+              {state.errors.password.map((e: string) => <li key={e}>{e}</li>)}
             </ul>
           )}
         </div>
