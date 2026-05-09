@@ -122,3 +122,33 @@ export async function getEcosystemBillingSummary(userId: string) {
     }))
   };
 }
+
+/**
+ * Synchronizes all subscriptions in the platform.
+ * Marks expired subscriptions as 'expired' and triggers revalidation.
+ */
+export async function syncAllSubscriptions() {
+  const now = new Date();
+  
+  const expiredSubscriptions = await prisma.subscription.findMany({
+    where: {
+      status: 'active',
+      expiresAt: { lt: now }
+    }
+  });
+
+  if (expiredSubscriptions.length === 0) {
+    return { count: 0 };
+  }
+
+  const result = await prisma.subscription.updateMany({
+    where: {
+      id: { in: expiredSubscriptions.map((s: { id: string }) => s.id) }
+    },
+    data: {
+      status: 'expired'
+    }
+  });
+
+  return { count: result.count };
+}

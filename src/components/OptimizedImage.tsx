@@ -2,6 +2,7 @@
 
 import Image, { ImageProps } from 'next/image';
 import { useState } from 'react';
+import { uploadcare } from '@/lib/uploadcare';
 
 interface OptimizedImageProps extends Omit<ImageProps, 'src' | 'onError'> {
   src?: string | null;
@@ -46,15 +47,10 @@ export function OptimizedImage({
   }
 
   // Handle Uploadcare optimization
-  let optimizedSrc = src;
-  if (typeof src === 'string' && src.includes('ucarecdn.com')) {
-    // Add quality and preview transformations if not already present
-    if (!src.includes('-/preview/')) {
-      const w = props.width && typeof props.width === 'number' ? props.width : 400;
-      const h = props.height && typeof props.height === 'number' ? props.height : 400;
-      optimizedSrc = `${src}-/preview/${w}x${h}/-/quality/smart/-/format/auto/`;
-    }
-  }
+  const optimizedSrc = uploadcare.getOptimizedUrl(src, {
+    width: typeof props.width === 'number' ? props.width : undefined,
+    height: typeof props.height === 'number' ? props.height : undefined,
+  }) || '';
 
   return (
     <Image

@@ -44,6 +44,7 @@ export async function getGlobalPlatformStats() {
     totalUsers,
     totalApps,
     totalRevenue: totalRevenue._sum.amount || 0,
+    platformProfit: (totalRevenue._sum.amount || 0) * 0.025, // 2.5% Platform Fee
     totalLeads,
     activeSubs
   };

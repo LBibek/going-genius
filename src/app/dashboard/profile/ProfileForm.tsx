@@ -3,13 +3,16 @@
 
 import { useState } from 'react';
 import { updateUserProfile } from '@/app/actions/auth';
-import { User, AtSign, Phone, Save, CheckCircle } from 'lucide-react';
+import { User, AtSign, Phone, Save, CheckCircle, Image as ImageIcon } from 'lucide-react';
+import { ImageUpload } from '@/components/ImageUpload';
+import { uploadcare } from '@/lib/uploadcare';
 
 export function ProfileForm({ user }: { user: any }) {
   const [formData, setFormData] = useState({
     displayName: user.displayName || '',
     username: user.username || '',
-    phone: user.phone || ''
+    phone: user.phone || '',
+    avatarUrl: user.avatarUrl || ''
   });
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
@@ -37,6 +40,14 @@ export function ProfileForm({ user }: { user: any }) {
           {message.text}
         </div>
       )}
+
+      <div className="form-group">
+        <ImageUpload 
+          label="Profile Picture"
+          value={formData.avatarUrl}
+          onUploadComplete={(url) => setFormData({...formData, avatarUrl: url})}
+        />
+      </div>
 
       <div className="form-group">
         <label className="form-label">Full Name</label>

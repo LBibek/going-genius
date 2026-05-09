@@ -286,7 +286,7 @@ export async function logout(): Promise<void> {
   redirect('/auth/login');
 }
 
-export async function updateUserProfile(data: { displayName?: string, username?: string, phone?: string }) {
+export async function updateUserProfile(data: { displayName?: string, username?: string, phone?: string, avatarUrl?: string }) {
   const session = await getSession();
   if (!session) return { message: 'Unauthorized' };
 
@@ -305,7 +305,8 @@ export async function updateUserProfile(data: { displayName?: string, username?:
       data: {
         displayName: data.displayName,
         username: data.username?.toLowerCase(),
-        phone: data.phone
+        phone: data.phone,
+        avatarUrl: data.avatarUrl
       }
     });
 

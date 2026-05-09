@@ -7,6 +7,7 @@ interface AdminStatsProps {
     totalUsers: number;
     totalApps: number;
     totalRevenue: number;
+    platformProfit: number;
     totalLeads: number;
     activeSubs: number;
   }
@@ -17,8 +18,9 @@ export function AdminStats({ stats }: AdminStatsProps) {
     { label: 'Total Platform Users', value: stats.totalUsers, icon: Users, color: '#3b82f6' },
     { label: 'Total Apps Hosted', value: stats.totalApps, icon: Layout, color: '#a855f7' },
     { label: 'Platform Revenue', value: `Rs. ${stats.totalRevenue.toLocaleString()}`, icon: CreditCard, color: '#10b981' },
-    { label: 'Global Leads Captured', value: stats.totalLeads, icon: TrendingUp, color: '#fbbf24' },
-    { label: 'Active Subscriptions', value: stats.activeSubs, icon: Sparkles, color: '#f43f5e' },
+    { label: 'Platform Profit (2.5%)', value: `Rs. ${stats.platformProfit.toLocaleString()}`, icon: TrendingUp, color: '#fbbf24' },
+    { label: 'Global Leads Captured', value: stats.totalLeads, icon: Sparkles, color: '#f43f5e' },
+    { label: 'Active Subscriptions', value: stats.activeSubs, icon: CreditCard, color: '#0ea5e9' },
   ];
 
   return (

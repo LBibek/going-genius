@@ -3,10 +3,12 @@
 
 import { useActionState, useState } from 'react';
 import { updateApp, deleteApp } from '@/app/actions/developer';
+import { ImageUpload } from '@/components/ImageUpload';
 
 export function AppSettings({ app }: { app: any }) {
   const [updateState, updateAction, updatePending] = useActionState(updateApp.bind(null, app.id), undefined);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(app.logoUrl || '');
 
   async function handleDelete() {
     if (!confirm('Are you absolutely sure? This will delete the app and all associated data. This action cannot be undone.')) return;
@@ -40,13 +42,12 @@ export function AppSettings({ app }: { app: any }) {
         </div>
 
         <div className="form-group">
-          <label className="form-label" style={{ fontSize: '0.8rem' }}>Logo URL</label>
-          <input
-            name="logoUrl"
-            defaultValue={app.logoUrl || ''}
-            className="form-input"
-            style={{ fontSize: '0.85rem', padding: '0.6rem 0.8rem' }}
+          <ImageUpload 
+            label="App Logo"
+            value={logoUrl}
+            onUploadComplete={(url) => setLogoUrl(url)}
           />
+          <input type="hidden" name="logoUrl" value={logoUrl} />
         </div>
 
         {updateState?.message && (

@@ -3,6 +3,7 @@ import { genkit, z } from 'genkit';
 import { ai } from '../genkit';
 import { prisma } from '../prisma';
 import { googleAI } from '@genkit-ai/google-genai';
+import { logAiUsage } from './metering';
 
 /**
  * Tool to fetch application details from the database.
@@ -111,6 +112,15 @@ export const appBotFlow = ai.defineFlow(
       tools: isLeadGen ? [getAppInfo, saveLead] : [getAppInfo],
     });
 
+    // Log AI usage for metering and billing
+    const usage = (response as any).usage || {};
+    await logAiUsage({
+      appId,
+      model: 'gemini-2.0-flash',
+      tokens: usage.totalTokens || 0,
+      type: 'ai_tokens'
+    });
+
     return { text: response.text };
   }
 );
@@ -196,6 +206,15 @@ export const leadGenFlow = ai.defineFlow(
       tools: [saveLead],
     });
 
+    // Log AI usage for metering and billing
+    const usage = (response as any).usage || {};
+    await logAiUsage({
+      appId,
+      model: 'gemini-2.0-flash',
+      tokens: usage.totalTokens || 0,
+      type: 'ai_tokens'
+    });
+
     return { text: response.text };
   }
 );
@@ -240,6 +259,16 @@ export const walletAssistantFlow = ai.defineFlow(
       User Context: User ID is ${userId}`,
       messages: [...(history || []), { role: 'user', content: [{ text: message }] }],
       tools: [getBillingSummaryTool],
+    });
+
+    // Log AI usage for metering and billing
+    const usage = (response as any).usage || {};
+    await logAiUsage({
+      appId: 'system-wallet', // Use a system ID for wallet internal actions
+      userId,
+      model: 'gemini-2.0-flash',
+      tokens: usage.totalTokens || 0,
+      type: 'ai_tokens'
     });
 
     return { text: response.text };

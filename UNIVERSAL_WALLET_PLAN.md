@@ -30,10 +30,11 @@ The **Universal Wallet** is the cornerstone of the Going Genius end-user experie
 *   **Feature**: "One-Click Renewal" for expired subscriptions.
 *   **Tech**: Next.js Server Components with `Suspense` for skeleton loading of app logos.
 
-### Phase 2: AI-Driven "Smart Wallet" (Next 4 Weeks)
+### Phase 2: AI-Driven "Smart Wallet" (✅ COMPLETED)
 *   **Feature**: **GG-Wallet-Bot**. An AI agent using **Firebase Genkit** that helps users understand their spending.
 *   **Capability**: "Show me all my active subscriptions," "How much will I spend next month?", "Cancel my subscription to App X."
-*   **Orchestration**: Genkit tools mapping to `cancelSubscription` and `getGGAppPlans` actions.
+*   **Orchestration**: Genkit tools mapping to `getBillingSummaryTool` and future `cancelSubscription` actions.
+*   **Implementation**: Successfully implemented `walletAssistantFlow` and registered it via the Genkit MCP server.
 
 ### Phase 3: Global Payment Sync & Tokenization (Q4 2026)
 *   **Feature**: Saved Payment Methods. Store a secure reference to Khalti/eSewa identifiers (not credentials) to speed up checkout.
@@ -47,24 +48,7 @@ The **Universal Wallet** is the cornerstone of the Going Genius end-user experie
 We will utilize the existing `Subscription` and `Transaction` models but add a `metadata` field to `Transaction` to store gateway-specific response tokens for future reconciliation.
 
 ### B. AI Logic (Genkit)
-```typescript
-// Example Genkit Tool for the Wallet
-export const walletSummaryTool = tool(
-  {
-    name: 'getWalletSummary',
-    description: 'Summarizes active subscriptions and total spend for the current user.',
-    inputSchema: z.object({}),
-    outputSchema: z.object({
-      totalActive: z.number(),
-      monthlyBurn: z.number(),
-      activeApps: z.array(z.string()),
-    }),
-  },
-  async () => {
-    // Implementation using prisma.subscription.findMany
-  }
-);
-```
+Using `ai.defineFlow` and `ai.defineTool` to create a modular, scalable agent architecture as seen in `src/lib/ai/flows.ts`.
 
 ---
 

@@ -11,7 +11,7 @@ These features represent the absolute minimum required to prove the business mod
 | Pillar | Feature | Revenue Logic |
 | :--- | :--- | :--- |
 | **Identity** | **Universal OAuth2 Provider** | Onboards developers and users into the ecosystem. |
-| **Wallet** | **Khalti/eSewa "Verified" Webhooks** | Enables real money transactions (1.5% platform fee). |
+| **Wallet** | **Khalti/eSewa "Verified" Webhooks** | Enables real money transactions (2.5% platform fee). |
 | **Billing** | **Tiered Subscription Engine** | Automated plan gating (Free vs Pro) via Prisma. |
 | **AI** | **Genkit Wallet Assistant** | High-value utility that encourages user retention. |
 | **SDK** | **NPM React Hooks (`@gg/react`)** | Direct integration path for 3rd party revenue partners. |
@@ -55,7 +55,7 @@ To ensure a "Top Tier" product launch, follow this rigorous 4-step workflow:
 ---
 
 ## 💰 4. Revenue Generation Model
-1.  **Transaction Fees**: 2% surcharge on all payments processed via the Universal Wallet.
+1.  **Transaction Fees**: 2.5% surcharge on all payments processed via the Universal Wallet.
 2.  **AI Orchestration Markup**: 15% markup on raw LLM token costs (Gemini/DeepSeek) for the value-added Genkit orchestration.
 3.  **Developer SaaS**: A flat $19/mo "Pro" tier for developers who need more than 3 active apps.
 

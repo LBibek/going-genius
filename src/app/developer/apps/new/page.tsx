@@ -1,11 +1,13 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { createApp } from '@/app/actions/developer';
+import { ImageUpload } from '@/components/ImageUpload';
 import Link from 'next/link';
 
 export default function NewAppPage() {
   const [state, action, pending] = useActionState(createApp, undefined);
+  const [logoUrl, setLogoUrl] = useState('');
 
   return (
     <div className="container" style={{ maxWidth: '600px', padding: '4rem 1rem' }}>
@@ -50,14 +52,12 @@ export default function NewAppPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="logoUrl">Logo URL (optional)</label>
-            <input
-              id="logoUrl"
-              name="logoUrl"
-              type="url"
-              className={`form-input ${state?.errors?.logoUrl ? 'error' : ''}`}
-              placeholder="https://myapp.com/logo.png"
+            <ImageUpload 
+              label="App Logo"
+              value={logoUrl}
+              onUploadComplete={(url) => setLogoUrl(url)}
             />
+            <input type="hidden" name="logoUrl" value={logoUrl} />
             {state?.errors?.logoUrl && <p className="form-error">{state.errors.logoUrl[0]}</p>}
           </div>
 

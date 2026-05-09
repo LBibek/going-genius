@@ -22,14 +22,14 @@ Going Genius is positioned as an **Intelligence-First Identity & Revenue Ecosyst
 *   **Value:** Hosted backend for identity and payments. No need for devs to manage databases or security protocols.
 
 ### C. Revenue Sharing / Transaction Fees
-*   **Model:** 1% - 2% fee on all transactions processed through the GG Billing Engine.
-*   **Scale:** As client apps grow, GG's revenue grows linearly without additional marketing spend.
-*   **Integration:** Seamlessly integrated with Khalti and eSewa, making GG the preferred choice for the Nepali market.
+*   **Model**: 2.5% platform fee on all transactions processed through the GG Billing Engine.
+*   **Scale**: As client apps grow, GG's revenue grows linearly without additional marketing spend.
+*   **Integration**: Seamlessly integrated with Khalti and eSewa, making GG the preferred choice for the Nepali market.
 
 ### D. AI Agent "Orchestration" Markup
-*   **Model:** Usage-based billing for AI interactions.
-*   **Value:** GG handles prompt engineering, tool-calling (Genkit), and provider fallback (OpenAI/Gemini/Deepseek).
-*   **Markup:** Charge a 10-20% premium on raw token costs for the added value of the orchestration layer and dashboard analytics.
+*   **Model**: Usage-based billing for AI interactions.
+*   **Value**: GG handles prompt engineering, tool-calling (Genkit), and provider fallback (OpenAI/Gemini/Deepseek).
+*   **Markup**: Charge a 15% premium on raw token costs for the added value of the orchestration layer and dashboard analytics.
 
 ---
 

@@ -12,6 +12,10 @@ const envSchema = z.object({
   KHALTI_SECRET_KEY: z.string().optional(),
   ESEWA_SECRET_KEY: z.string().optional(),
   
+  // Uploadcare
+  NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY: z.string().optional(),
+  UPLOADCARE_SECRET_KEY: z.string().optional(),
+  
   // Auth
   SUPABASE_URL: z.string().url().catch(''),
   SUPABASE_ANON_KEY: z.string().catch(''),

@@ -26,6 +26,15 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
 
+## 🤖 Intelligence-First Identity & Revenue Ecosystem
+
+Going Genius is a premium Next.js platform that provides a "Plug-and-Play" infrastructure for identity, AI orchestration, and universal billing.
+
+### 🔑 Key Pillars
+1. **Universal Identity**: Seamless OAuth2 authentication across all apps in the ecosystem.
+2. **Universal Wallet**: Centralized billing powered by Khalti & eSewa with a 2.5% platform fee.
+3. **AI Orchestration**: Genkit-powered agents (Wallet Assistant, Lead Gen) that drive user engagement and capture revenue.
+
 ## 🚀 Quickstart
 
 Get your own instance of Going Genius running in seconds:
@@ -49,6 +58,8 @@ For detailed instructions, see [DEVELOPER_QUICKSTART.md](./DEVELOPER_QUICKSTART.
 npm install
 npx prisma db push
 npm run dev
+# Start the AI tool server
+npm run mcp
 ```
 
 ### Production (Vercel)
