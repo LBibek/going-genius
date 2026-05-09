@@ -12,7 +12,7 @@ import {
   getRecentLeads 
 } from './actions';
 import { Grid2Col } from '../developer/components/ResponsiveGrids';
-import { ShieldCheck, Activity, Users, Zap, FileText } from 'lucide-react';
+import { ShieldCheck, Activity, Users, FileText, BarChart2 } from 'lucide-react';
 
 import { AdminTransactions } from './components/AdminTransactions';
 import { AdminDashboardStyles } from './components/AdminDashboardStyles';
@@ -61,6 +61,15 @@ export default async function AdminDashboardPage() {
               <div>
                 <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase' }}>Audit Trail</div>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>View Logs</div>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/reconciliation" style={{ textDecoration: 'none' }}>
+            <div className="glass-card" style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+              <BarChart2 size={18} style={{ color: '#22c55e' }} />
+              <div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase' }}>Revenue</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Reconciliation</div>
               </div>
             </div>
           </Link>

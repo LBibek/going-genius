@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { appBotFlow } from '@/lib/ai/flows';
 import { prisma } from '@/lib/prisma';
+import { captureError } from '@/lib/monitoring';
 
 export async function POST(
   req: Request,
@@ -42,7 +43,7 @@ export async function POST(
 
     return NextResponse.json(result, { headers: corsHeaders });
   } catch (error: any) {
-    console.error('Public AI Agent Error:', error);
+    captureError(error, { appId: 'unknown', action: 'public_bot_api' });
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }

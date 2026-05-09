@@ -20,6 +20,13 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url().catch(''),
   SUPABASE_ANON_KEY: z.string().catch(''),
   CRON_SECRET: z.string().optional(),
+
+  // Monitoring (Sentry)
+  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+  SENTRY_ORG: z.string().optional(),
+  SENTRY_PROJECT: z.string().optional(),
+  SENTRY_AUTH_TOKEN: z.string().optional(),
+
 });
 
 export const env = envSchema.parse(process.env);

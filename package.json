@@ -16,6 +16,7 @@
     "@going-genius/react": "file:packages/react-sdk",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@sentry/nextjs": "^10.52.0",
     "@supabase/supabase-js": "^2.105.3",
     "@uploadcare/react-uploader": "^1.15.0",
     "ai": "^6.0.177",
