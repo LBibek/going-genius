@@ -217,6 +217,7 @@ model OAuthCode {
   createdAt     DateTime  @default(now())
 
   @@index([userId])
+  @@index([appId])
 }
 
 // ─── OAuth Access + Refresh Tokens ───────────────────────────────────────────
@@ -234,6 +235,7 @@ model OAuthToken {
   createdAt    DateTime @default(now())
 
   @@index([userId])
+  @@index([appId])
 }
 
 // ─── Cart & Checkout ────────────────────────────────────────────────────────

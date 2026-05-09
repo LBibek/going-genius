@@ -3,6 +3,10 @@ import "./globals.css";
 
 
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { validateEnv } from '@/lib/env';
+
+// Run validation on startup
+validateEnv();
 
 export const metadata: Metadata = {
   title: "Going Genius | Next.js Boilerplate",

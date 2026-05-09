@@ -7,7 +7,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { getOverallAnalytics } from './actions';
 import { StatsRow, AppsGrid, DashboardStyles, Grid2Col } from './components/ResponsiveGrids';
 import { OptimizedImage } from '@/components/OptimizedImage';
-import { Activity, Shield, Cpu } from 'lucide-react';
+import { Activity, Shield, Cpu, Sparkles } from 'lucide-react';
 
 export default async function DeveloperDashboard() {
   const session = await getSession();
@@ -73,6 +73,27 @@ export default async function DeveloperDashboard() {
           </div>
         </StatsRow>
 
+        {apps.length > 0 && !apps.some((a: any) => a.isPremium) && (
+          <div className="glass-card premium-banner" style={{ marginBottom: '2.5rem', background: 'linear-gradient(90deg, rgba(255, 177, 22, 0.1), rgba(255, 140, 0, 0.1))', border: '1px solid rgba(255, 177, 22, 0.3)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#FFB116', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Sparkles size={20} /> Unlock Premium Capabilities
+                </h3>
+                <p style={{ color: 'var(--muted)', margin: '0.5rem 0 0', maxWidth: '600px' }}>
+                  Get access to AI Agent Orchestration, Multi-tenant Billing, Khalti/eSewa integrations, and priority support.
+                </p>
+              </div>
+              <Link href="/#pricing" className="btn btn-primary" style={{ background: '#FFB116', color: '#000', fontWeight: 700, borderRadius: '12px' }}>
+                Upgrade Now
+              </Link>
+            </div>
+            <div style={{ position: 'absolute', right: '-50px', top: '-50px', opacity: 0.1 }}>
+              <Sparkles size={200} />
+            </div>
+          </div>
+        )}
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Your Applications</h2>
           <div style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{apps.length} total</div>
@@ -90,11 +111,11 @@ export default async function DeveloperDashboard() {
         ) : (
           <AppsGrid>
             {apps.map((app: any) => (
-              <Link href={`/developer/apps/${app.id}`} key={app.id} className="app-card">
+              <Link href={`/developer/apps/${app.id}`} key={app.id} className="app-card" style={{ position: 'relative' }}>
                 <div className="app-card-content">
                   <div className="app-logo-wrapper">
                     <OptimizedImage 
-                      src={app.logoUrl} 
+                      src={app.logoUrl || '/images/app-placeholder.png'} 
                       alt={app.name} 
                       width={48} 
                       height={48} 
@@ -102,7 +123,12 @@ export default async function DeveloperDashboard() {
                     />
                   </div>
                   <div className="app-info">
-                    <h3 className="app-name">{app.name}</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <h3 className="app-name">{app.name}</h3>
+                      {app.isPremium && (
+                        <div className="id-badge" style={{ padding: '2px 6px', fontSize: '10px', background: 'linear-gradient(135deg, #FFB116, #FF8C00)', color: '#000', fontWeight: 900 }}>PRO</div>
+                      )}
+                    </div>
                     <div className="app-meta">
                       <span>{app._count.appUsers} Users</span>
                       <span className="dot" />
@@ -117,6 +143,7 @@ export default async function DeveloperDashboard() {
             ))}
           </AppsGrid>
         )}
+
       </DashboardStyles>
     </div>
   );

@@ -40,6 +40,11 @@ Going Genius is not just an identity provider; it is an **Intelligence-First Ide
 ### C. No-Code Billing Engine
 *   **Concept:** A drag-and-drop builder for creating complex subscription tiers, trial periods, and discount coupons (integrated with Khalti/eSewa).
 
+### D. WordPress Integration Plugin (E-Commerce & Scheduling)
+*   **Concept:** A dedicated WordPress plugin for easy implementation of Going Genius into existing sites, focusing on shopping (e-commerce) and scheduling workflows.
+*   **Feature:** "Drop-in" checkout and booking features similar to the subscription flow. Includes a robust bulk import facility to seamlessly onboard multiple existing users, products, or appointments at once.
+*   **UI/UX:** Premium, high-conversion interfaces using top-tier icon libraries (e.g., Lucide) to ensure a modern, consistent aesthetic within the WordPress environment.
+
 ---
 
 ## 4. Architectural & Performance Optimization
@@ -84,6 +89,12 @@ Going Genius is not just an identity provider; it is an **Intelligence-First Ide
 *   [ ] **Weekly:** Run `prisma-audit` to detect N+1 query patterns.
 *   [ ] **Monthly:** Profile AI Agent costs and prompt efficiency.
 *   [ ] **Per Release:** Mandatory Lighthouse audit in CI/CD pipeline.
+
+---
+
+## 7. Reference Documentation
+*   **eSewa Developer Portal:** [https://developer.esewa.com.np/](https://developer.esewa.com.np/)
+*   **Khalti Documentation:** [https://docs.khalti.com/](https://docs.khalti.com/)
 
 ---
 > **Architect's Note:** Every line of code added to Going Genius must answer one question: *"Does this make it faster for the user, or easier for the developer?"* If the answer is no, we don't build it.

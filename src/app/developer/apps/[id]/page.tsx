@@ -9,6 +9,7 @@ import { AppCredentials } from '../../components/AppCredentials';
 import { AppDocs } from '../../components/AppDocs';
 import { AppInvites } from '../../components/AppInvites';
 import { AppSocialProviders } from '../../components/AppSocialProviders';
+import { AppAPIKeys } from '../../components/AppAPIKeys';
 import { AppAIAgents } from '../../components/AppAIAgents';
 import { AppLoginPreview } from '../../components/AppLoginPreview';
 import { AppBilling } from '../../components/AppBilling';
@@ -17,6 +18,8 @@ import { AppTabs } from '../../components/AppTabs';
 import { AppAIPlayground } from '../../components/AppAIPlayground';
 import { Grid2Col } from '../../components/ResponsiveGrids';
 import { getAppAnalytics } from '../../actions';
+import { AppPaymentGateways } from '../../components/AppPaymentGateways';
+import { AppIntegrations } from '../../components/AppIntegrations';
 import { OptimizedImage } from '@/components/OptimizedImage';
 
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
@@ -56,14 +59,19 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
       <div className="flex-responsive" style={{ marginBottom: '2.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           <OptimizedImage 
-            src={app.logoUrl} 
+            src={app.logoUrl || '/images/app-placeholder.png'} 
             alt={app.name} 
             width={56} 
             height={56} 
             style={{ borderRadius: '14px', objectFit: 'cover' }} 
           />
           <div>
-            <h1 className="fluid-h2" style={{ margin: 0 }}>{app.name}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <h1 className="fluid-h2" style={{ margin: 0 }}>{app.name}</h1>
+              {app.isPremium && (
+                <div className="id-badge" style={{ background: 'linear-gradient(135deg, #FFB116, #FF8C00)', color: '#000', fontWeight: 900 }}>PRO</div>
+              )}
+            </div>
             <p style={{ color: 'var(--muted)', fontSize: '0.8rem', wordBreak: 'break-all' }}>ID: {app.id}</p>
           </div>
         </div>
@@ -75,6 +83,7 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
       </div>
 
       <AppTabs 
+        isPremium={app.isPremium}
         overview={
           <>
             <div className="glass-card">
@@ -94,7 +103,10 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
               </div>
 
               <div className="glass-card">
-                <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>AI Agent Preview</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <h2 style={{ fontSize: '1.25rem', margin: 0 }}>AI Agent Preview</h2>
+                  {!app.isPremium && <span className="id-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>PREMIUM</span>}
+                </div>
                 <AppBotPreview app={app} />
               </div>
             </Grid2Col>
@@ -106,21 +118,36 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
           </>
         }
         config={
-          <Grid2Col>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <Grid2Col>
+              <div className="glass-card">
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>Core OAuth Credentials</h2>
+                <AppCredentials app={app} />
+              </div>
+              <div className="glass-card">
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>Social Providers</h2>
+                <AppSocialProviders app={app} />
+              </div>
+            </Grid2Col>
+            
             <div className="glass-card">
-              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>API Credentials</h2>
-              <AppCredentials app={app} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: '1.25rem', margin: 0 }}>API & Provider Credentials</h2>
+                {!app.isPremium && <span className="id-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>PRO FEATURE</span>}
+              </div>
+              <AppAPIKeys app={app} />
             </div>
+
             <div className="glass-card">
-              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>Social Providers</h2>
-              <AppSocialProviders app={app} />
-            </div>
-            <div className="glass-card span-2">
-              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem' }}>AI Agents Config</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <h2 style={{ fontSize: '1.25rem', margin: 0 }}>AI Agents Config</h2>
+                {!app.isPremium && <span className="id-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>PRO FEATURE</span>}
+              </div>
               <AppAIAgents app={app} />
             </div>
-          </Grid2Col>
+          </div>
         }
+        integrations={<AppIntegrations app={app} />}
         access={
           <Grid2Col>
             <div className="glass-card">
@@ -133,10 +160,20 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
             </div>
           </Grid2Col>
         }
+
         billing={
-          <div className="glass-card">
-            <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Subscription Billing</h2>
-            <AppBilling app={app} plans={app.plans} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div className="glass-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Payment Gateways</h2>
+                {!app.isPremium && <span className="id-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>PRO FEATURE</span>}
+              </div>
+              <AppPaymentGateways app={app} />
+            </div>
+            <div className="glass-card">
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Subscription Plans</h2>
+              <AppBilling app={app} plans={app.plans} />
+            </div>
           </div>
         }
         settings={
@@ -147,7 +184,10 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
         }
         playground={
           <div className="glass-card">
-            <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>AI Agent Playground</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.25rem', margin: 0 }}>AI Agent Playground</h2>
+              {!app.isPremium && <span className="id-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>PRO FEATURE</span>}
+            </div>
             <AppAIPlayground app={app} />
           </div>
         }
