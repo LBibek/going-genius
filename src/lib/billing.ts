@@ -82,7 +82,7 @@ export async function getEcosystemBillingSummary(userId: string) {
     prisma.subscription.findMany({
       where: { userId, status: 'active' },
       include: { 
-        app: { select: { name: true, logo: true } },
+        app: { select: { name: true, logoUrl: true } },
         plan: { select: { name: true, price: true, interval: true } }
       }
     }),
