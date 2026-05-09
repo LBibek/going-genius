@@ -58,7 +58,8 @@ export const appBotFlow = ai.defineFlow(
       select: { 
         geminiApiKey: true,
         systemPrompt: true,
-        name: true
+        name: true,
+        leadCaptureEnabled: true
       }
     });
 
@@ -84,9 +85,21 @@ export const appBotFlow = ai.defineFlow(
       content: typeof msg.content === 'string' ? [{ text: msg.content }] : msg.content,
     })) || []), { role: 'user', content: [{ text: message }] }];
 
+    const isLeadGen = app?.leadCaptureEnabled;
+
     const response = await activeAi.generate({
       model: 'googleAI/gemini-2.0-flash',
-      system: `You are the ${app?.name || 'Going Genius'} App Assistant.
+      system: isLeadGen 
+        ? `You are the Lead Qualification Assistant for ${app?.name || 'Going Genius'}.
+        
+        Your Goal:
+        1. Be helpful and professional.
+        2. Answer questions about the product/service based on: ${app?.systemPrompt || 'General application context'}.
+        3. Proactively ask for name, email, or phone number if the user seems interested.
+        4. Once you have enough info, use the 'saveLead' tool to record their interest.
+        
+        Current App Context: ${appId}`
+        : `You are the ${app?.name || 'Going Genius'} App Assistant.
       
       ${app?.systemPrompt || 'You help users interact with the application and provide helpful guidance based on the application context.'}
       
@@ -95,7 +108,92 @@ export const appBotFlow = ai.defineFlow(
       2. Keep responses concise and focused on the application: ${app?.name}.
       3. Environment: Current App ID is ${appId}.`,
       messages,
-      tools: [getAppInfo],
+      tools: isLeadGen ? [getAppInfo, saveLead] : [getAppInfo],
+    });
+
+    return { text: response.text };
+  }
+);
+/**
+ * Tool to capture and save a lead to the database.
+ */
+export const saveLead = ai.defineTool(
+  {
+    name: 'saveLead',
+    description: 'Saves a potential customer (lead) information to the application database.',
+    inputSchema: z.object({
+      appId: z.string(),
+      name: z.string().optional(),
+      email: z.string().optional(),
+      phone: z.string().optional(),
+      interest: z.string().optional(),
+      metadata: z.any().optional(),
+    }),
+    outputSchema: z.object({ success: z.boolean(), leadId: z.string().optional() }),
+  },
+  async ({ appId, name, email, phone, interest, metadata }) => {
+    try {
+      const lead = await prisma.lead.create({
+        data: {
+          appId,
+          name,
+          email,
+          phone,
+          source: 'AI Chat Agent',
+          metadata: { ...metadata, interest },
+        }
+      });
+      return { success: true, leadId: lead.id };
+    } catch (error) {
+      console.error('Save Lead Error:', error);
+      return { success: false };
+    }
+  }
+);
+
+/**
+ * Specialized Lead Generation Agent Flow.
+ * Focuses on qualifying users and capturing contact details.
+ */
+export const leadGenFlow = ai.defineFlow(
+  {
+    name: 'leadGenFlow',
+    inputSchema: z.object({
+      appId: z.string(),
+      message: z.string(),
+      history: z.array(z.any()).optional(),
+    }),
+    outputSchema: z.object({ text: z.string() }),
+  },
+  async ({ appId, message, history }) => {
+    const app = await prisma.oAuthApp.findUnique({
+      where: { id: appId },
+      select: { name: true, systemPrompt: true, geminiApiKey: true }
+    });
+
+    const apiKey = app?.geminiApiKey || process.env.GOOGLE_GENAI_API_KEY;
+    
+    let activeAi = ai;
+    if (app?.geminiApiKey) {
+      activeAi = genkit({
+        plugins: [googleAI({ apiKey: app.geminiApiKey })],
+        model: googleAI.model('gemini-2.0-flash'),
+      });
+    }
+
+    const response = await activeAi.generate({
+      model: 'googleAI/gemini-2.0-flash',
+      system: `You are the Lead Qualification Assistant for ${app?.name || 'Going Genius'}.
+      
+      Your Goal:
+      1. Be helpful and professional.
+      2. Answer questions about the product/service based on: ${app?.systemPrompt || 'General application context'}.
+      3. Proactively ask for name, email, or phone number if the user seems interested.
+      4. Once you have enough info, use the 'saveLead' tool to record their interest.
+      
+      Current App Context: ${appId}`,
+      messages: [...(history || []), { role: 'user', content: [{ text: message }] }],
+      tools: [saveLead],
     });
 
     return { text: response.text };

@@ -113,17 +113,29 @@ model OAuthApp {
   anthropicApiKey    String?
   deepseekApiKey     String?
   systemPrompt       String?
+  leadCaptureEnabled Boolean   @default(false)
 
   isPremium    Boolean   @default(false)
   khaltiPublicKey   String?
   khaltiSecretKey   String?
   esewaMerchantId   String?
   esewaSecretKey   String?
+
+  // Multi-Channel Connectors
+  whatsappEnabled    Boolean   @default(false)
+  whatsappPhoneId    String?
+  whatsappAccessToken String?
+  whatsappWebhookVerifyToken String?
+  
+  viberEnabled       Boolean   @default(false)
+  viberAuthToken     String?
+  
   plans         SubscriptionPlan[]
   subscriptions Subscription[]
   carts         Cart[]
   transactions  Transaction[]
   apiUsages     ApiUsage[]
+  leads         Lead[]
 
   @@index([ownerId])
 }
@@ -303,4 +315,20 @@ model ApiUsage {
 
   @@index([appId])
   @@index([type])
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  appId     String
+  app       OAuthApp @relation(fields: [appId], references: [id])
+  name      String?
+  email     String?
+  phone     String?
+  source    String?  // e.g. "AI Chat", "WhatsApp"
+  metadata  Json?    // For custom fields like "budget", "interest"
+  status    String   @default("NEW") // NEW, CONTACTED, QUALIFIED, WON, LOST
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([appId])
 }

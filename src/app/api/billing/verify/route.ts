@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { processSuccessfulPayment } from '@/lib/billing';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
 
     if (data.status === 'Completed') {
-      await processSuccessfulPayment(txnId!, data.transaction_id, appId);
+      await processSuccessfulPayment(txnId!, data.transaction_id || pidx, appId);
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/demo/billing/${appId}?status=success`);
     } else {
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/demo/billing/${appId}?status=failed`);
@@ -70,65 +71,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ status: 'Ignored' });
-}
-
-async function processSuccessfulPayment(transactionId: string, referenceId: string, appId: string) {
-  return await (prisma as any).$transaction(async (tx: any) => {
-    // 1. Check if transaction is already completed (Idempotency)
-    const existingTx = await tx.transaction.findUnique({
-      where: { id: transactionId }
-    });
-
-    if (!existingTx || existingTx.status === 'completed') {
-      return;
-    }
-
-    // 2. Update transaction status
-    const transaction = await tx.transaction.update({
-      where: { id: transactionId },
-      data: { 
-        status: 'completed',
-        referenceId: referenceId
-      }
-    });
-
-    // 3. Get items from cart
-    const cart = await tx.cart.findUnique({
-      where: { userId_appId: { userId: transaction.userId, appId } },
-      include: { items: { include: { plan: true } } }
-    });
-
-    if (cart && cart.items.length > 0) {
-      for (const item of cart.items) {
-        let expiresAt: Date | null = null;
-        if (item.plan.interval === 'monthly') {
-          expiresAt = new Date();
-          expiresAt.setMonth(expiresAt.getMonth() + 1);
-        } else if (item.plan.interval === 'yearly') {
-          expiresAt = new Date();
-          expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-        }
-        
-        await tx.subscription.upsert({
-          where: { appId_userId: { appId, userId: transaction.userId } },
-          update: {
-            planId: item.planId,
-            status: 'active',
-            startDate: new Date(),
-            expiresAt: expiresAt
-          },
-          create: {
-            appId,
-            userId: transaction.userId,
-            planId: item.planId,
-            status: 'active',
-            expiresAt: expiresAt
-          }
-        });
-      }
-
-      // 4. Clear cart after successful subscription creation
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
-    }
-  });
 }

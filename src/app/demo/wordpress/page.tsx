@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from 'next/link';
 import { 
@@ -16,7 +18,7 @@ import {
   ShoppingBag,
   Layers
 } from 'lucide-react';
-import { GGFeatureGate } from '@/lib/sdk/GGFeatureGate';
+import { GGFeatureGate } from '@going-genius/react';
 import { BulkImportFacility } from '@/components/wordpress/BulkImportFacility';
 import { BookingAndCheckoutWidget } from '@/components/wordpress/BookingAndCheckoutWidget';
 

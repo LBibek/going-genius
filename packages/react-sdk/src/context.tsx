@@ -1,32 +1,45 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  image?: string;
-}
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import { GoingGenius, GGUser } from './gg-client';
 
 interface GoingGeniusContextType {
-  appId: string;
-  user: User | null;
+  clientId: string;
+  user: GGUser | null;
   isLoading: boolean;
-  login: () => void;
-  logout: () => void;
+  isAuthenticated: boolean;
+  login: (state?: string) => void;
+  logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
 
 const GoingGeniusContext = createContext<GoingGeniusContextType | undefined>(undefined);
 
-export function GoingGeniusProvider({ appId, children }: { appId: string, children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+export function GoingGeniusProvider({ 
+  clientId, 
+  redirectUri,
+  config,
+  children 
+}: { 
+  clientId: string;
+  redirectUri?: string;
+  config?: {
+    apiBase?: string;
+  };
+  children: ReactNode;
+}) {
+  const [user, setUser] = useState<GGUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const gg = useMemo(() => new GoingGenius({ 
+    clientId, 
+    redirectUri: redirectUri || (typeof window !== 'undefined' ? window.location.origin : '') 
+  }), [clientId, redirectUri]);
 
   const refreshSession = async () => {
     setIsLoading(true);
     try {
-      // In a real implementation, this would fetch from the GG session API
-      const res = await fetch('/api/gg/session');
+      const apiBase = config?.apiBase || '/api/gg';
+      // In a real implementation, this would fetch from the host application's GG session bridge
+      const res = await fetch(`${apiBase}/session`);
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
@@ -34,7 +47,7 @@ export function GoingGeniusProvider({ appId, children }: { appId: string, childr
         setUser(null);
       }
     } catch (err) {
-      console.error('GG Session Error:', err);
+      console.error('GG SDK Error: Session refresh failed', err);
     } finally {
       setIsLoading(false);
     }
@@ -44,18 +57,32 @@ export function GoingGeniusProvider({ appId, children }: { appId: string, childr
     refreshSession();
   }, []);
 
-  const login = () => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    window.location.href = `https://going-genius.vercel.app/auth/login?appId=${appId}&redirect=${encodeURIComponent(baseUrl)}`;
+  const login = (state?: string) => {
+    gg.login(state);
   };
 
   const logout = async () => {
-    await fetch('/api/gg/logout', { method: 'POST' });
-    setUser(null);
+    try {
+      const apiBase = config?.apiBase || '/api/gg';
+      await fetch(`${apiBase}/logout`, { method: 'POST' });
+    } finally {
+      setUser(null);
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
+    }
   };
 
   return (
-    <GoingGeniusContext.Provider value={{ appId, user, isLoading, login, logout, refreshSession }}>
+    <GoingGeniusContext.Provider value={{ 
+      clientId, 
+      user, 
+      isLoading, 
+      isAuthenticated: !!user,
+      login, 
+      logout, 
+      refreshSession 
+    }}>
       {children}
     </GoingGeniusContext.Provider>
   );
@@ -66,3 +93,7 @@ export function useGoingGenius() {
   if (!context) throw new Error('useGoingGenius must be used within GoingGeniusProvider');
   return context;
 }
+
+// Alias for migration compatibility
+export const useGGAuth = useGoingGenius;
+export const GGProvider = GoingGeniusProvider;

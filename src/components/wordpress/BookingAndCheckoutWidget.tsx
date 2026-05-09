@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { CreditCard, Calendar, Clock, Lock, ChevronRight, User } from 'lucide-react';
-import { GGBillingButton } from '@/lib/sdk/GGBillingButton';
+import { GGBillingButton } from '@going-genius/react';
 
 export function BookingAndCheckoutWidget() {
   const [step, setStep] = useState(1); // 1: Booking, 2: Checkout, 3: Success
@@ -82,13 +82,14 @@ export function BookingAndCheckoutWidget() {
             
             <GGBillingButton 
               appId="demo_wp_app" 
-              label="Pay NPR 1,500 with Going Genius"
               className="w-full"
               onClick={() => {
                 // Simulate payment success for demo purposes
                 setStep(3);
               }}
-            />
+            >
+              Pay NPR 1,500 with Going Genius
+            </GGBillingButton>
           </div>
           
           <button 

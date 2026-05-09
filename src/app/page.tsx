@@ -81,7 +81,8 @@ export default async function HomePage() {
       </section>
 
       {/* ─── Premium Features Showcase ────────────────────────────────────────── */}
-      <section id="premium" className="premium-showcase-section">
+      <section id="features" className="premium-showcase-section">
+        <div id="premium" style={{ position: 'absolute', top: '-100px' }} />
         <div className="container">
           <div className="section-header">
             <div className="hero-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>ELITE CAPABILITIES</div>
@@ -321,9 +322,9 @@ export default async function HomePage() {
             <div className="footer-col">
               <h4>Resources</h4>
               <Link href="/developer">Documentation</Link>
-              <Link href="/demo">Demo App</Link>
+              <Link href="/demo/sdk">SDK Demo</Link>
               <Link href="/demo/wordpress">WordPress Plugin</Link>
-              <Link href="/auth/register">Sign Up</Link>
+              <Link href="https://github.com/LBibek/going-genius/blob/main/DEVELOPER_QUICKSTART.md">Quickstart Guide</Link>
             </div>
             <div className="footer-col">
               <h4>Legal</h4>

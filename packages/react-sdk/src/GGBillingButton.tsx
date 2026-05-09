@@ -1,10 +1,11 @@
 import React from 'react';
+import { Zap, CreditCard } from 'lucide-react';
 
 interface GGBillingButtonProps {
   appId: string;
   planId?: string;
   className?: string;
-  label?: string;
+  children?: React.ReactNode;
   variant?: 'primary' | 'outline' | 'ghost';
   onClick?: () => void;
 }
@@ -13,7 +14,7 @@ export function GGBillingButton({
   appId, 
   planId, 
   className = '', 
-  label = 'Upgrade with Going Genius',
+  children,
   variant = 'primary',
   onClick
 }: GGBillingButtonProps) {
@@ -31,33 +32,40 @@ export function GGBillingButton({
     window.location.href = checkoutUrl.toString();
   };
 
-  const baseStyles = {
+  const baseStyles: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '10px 20px',
+    gap: '8px',
+    padding: '12px 24px',
     borderRadius: '12px',
-    fontWeight: 600,
+    fontWeight: 700,
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    transition: 'transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease',
     border: 'none',
-    fontSize: '14px'
+    fontSize: '14px',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
   };
 
   const variants = {
     primary: {
-      backgroundColor: '#6366f1',
-      color: '#ffffff'
+      backgroundColor: '#3b82f6',
+      color: '#ffffff',
+      boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.39)'
     },
     outline: {
       backgroundColor: 'transparent',
-      border: '1px solid #374151',
-      color: '#d1d5db'
+      border: '1px solid rgba(148, 163, 184, 0.2)',
+      color: 'inherit'
     },
     ghost: {
       backgroundColor: 'transparent',
-      color: '#9ca3af'
+      color: 'inherit'
     }
+  };
+
+  const activeStyles: React.CSSProperties = {
+    transform: 'scale(0.96)'
   };
 
   return (
@@ -65,8 +73,13 @@ export function GGBillingButton({
       onClick={handleCheckout}
       className={`gg-billing-button ${className}`}
       style={{ ...baseStyles, ...variants[variant] }}
+      onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.96)'}
+      onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
     >
-      {label}
+      <Zap size={16} fill={variant === 'primary' ? 'currentColor' : 'none'} />
+      <span>{children || 'Upgrade with Going Genius'}</span>
+      <CreditCard size={14} style={{ opacity: 0.6 }} />
     </button>
   );
 }

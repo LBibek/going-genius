@@ -321,7 +321,8 @@ export async function updateAppAIAgents(appId: string, data: {
   geminiApiKey?: string,
   anthropicApiKey?: string,
   deepseekApiKey?: string,
-  systemPrompt?: string
+  systemPrompt?: string,
+  leadCaptureEnabled?: boolean
 }) {
   const session = await getSession();
   if (!session) return { message: 'Unauthorized' };
@@ -337,6 +338,7 @@ export async function updateAppAIAgents(appId: string, data: {
       anthropicApiKey: data.anthropicApiKey || null,
       deepseekApiKey: data.deepseekApiKey || null,
       systemPrompt: data.systemPrompt || null,
+      leadCaptureEnabled: data.leadCaptureEnabled || false,
     },
   });
 

@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "going-genius": {
+      "command": "npm",
+      "args": ["run", "mcp"]
+    },
     "vercel": {
       "url": "https://mcp.vercel.com"
     }

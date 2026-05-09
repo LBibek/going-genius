@@ -1,5 +1,9 @@
 {
   "mcp": {
+    "going-genius": {
+      "type": "local",
+      "command": "npm run mcp"
+    },
     "vercel": {
       "type": "remote",
       "url": "https://mcp.vercel.com",

@@ -13,7 +13,8 @@ export function AppAIAgents({ app }: { app: any }) {
     geminiApiKey: app.geminiApiKey || '',
     anthropicApiKey: app.anthropicApiKey || '',
     deepseekApiKey: app.deepseekApiKey || '',
-    systemPrompt: app.systemPrompt || ''
+    systemPrompt: app.systemPrompt || '',
+    leadCaptureEnabled: app.leadCaptureEnabled || false
   });
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
@@ -68,6 +69,27 @@ export function AppAIAgents({ app }: { app: any }) {
       </div>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
+
+      {/* Lead Capture Mode */}
+      <div className="provider-group" style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div className="social-icon" style={{ background: '#3b82f6' }}><Bot size={14} /></div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Lead Capture Mode (CRM)</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>Turn your AI agent into a sales qualification machine.</div>
+            </div>
+          </div>
+          <label className="switch">
+            <input 
+              type="checkbox" 
+              checked={formData.leadCaptureEnabled}
+              onChange={(e) => setFormData({...formData, leadCaptureEnabled: e.target.checked})}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+      </div>
 
       <h3 style={{ fontSize: '0.9rem', margin: '0.5rem 0 0.25rem 0', color: 'var(--muted)' }}>Model Provider Keys</h3>
 
@@ -162,6 +184,17 @@ export function AppAIAgents({ app }: { app: any }) {
       <style jsx>{`
         .social-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; }
         .provider-group { display: flex; flex-direction: column; }
+        
+        /* Switch Toggle */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:focus + .slider { box-shadow: 0 0 1px var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .slider.round { border-radius: 20px; }
+        .slider.round:before { border-radius: 50%; }
       `}</style>
     </form>
   );

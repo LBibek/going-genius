@@ -24,10 +24,11 @@ interface TabProps {
   settings: React.ReactNode;
   playground: React.ReactNode;
   integrations: React.ReactNode;
+  leads: React.ReactNode;
   isPremium?: boolean;
 }
 
-export function AppTabs({ overview, access, usage, config, billing, settings, playground, integrations, isPremium = false }: TabProps) {
+export function AppTabs({ overview, access, usage, config, billing, settings, playground, integrations, leads, isPremium = false }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
@@ -36,6 +37,7 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
     { id: 'config', label: 'Configuration', icon: Key },
     { id: 'integrations', label: 'Integrations', icon: Layers },
     { id: 'access', label: 'Access & Users', icon: Users },
+    { id: 'leads', label: 'Leads & CRM', icon: Users, isPremium: true },
     { id: 'billing', label: 'Billing', icon: CreditCard, isPremium: true },
     { id: 'playground', label: 'AI Playground', icon: Bot, isPremium: true },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -67,6 +69,7 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
         {activeTab === 'config' && config}
         {activeTab === 'integrations' && integrations}
         {activeTab === 'access' && access}
+        {activeTab === 'leads' && leads}
         {activeTab === 'billing' && billing}
         {activeTab === 'playground' && playground}
         {activeTab === 'settings' && settings}

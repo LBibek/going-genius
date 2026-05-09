@@ -18,10 +18,14 @@ import {
 import { OptimizedImage } from '@/components/OptimizedImage';
 import Link from 'next/link';
 import { SubscriptionManager } from './components/SubscriptionManager';
+import { WalletAssistantUI } from './components/WalletAssistantUI';
+import { getEcosystemBillingSummary } from '@/lib/billing';
 
 export default async function SubscriptionsPage() {
   const session = await getSession();
   if (!session) redirect('/auth/login');
+
+  const summary = await getEcosystemBillingSummary(session.userId);
 
   const subscriptions = await (prisma as any).subscription.findMany({
     where: { userId: session.userId },
@@ -46,8 +50,6 @@ export default async function SubscriptionsPage() {
     take: 5
   });
 
-  const totalSpent = transactions.reduce((acc: number, curr: any) => acc + (curr.amount || 0), 0);
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header Section */}
@@ -60,13 +62,24 @@ export default async function SubscriptionsPage() {
             Your centralized hub for subscriptions, billing, and access across the Going Genius ecosystem.
           </p>
         </div>
-        <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
-          <div className="bg-primary/10 p-3 rounded-xl">
-            <Wallet className="text-primary w-6 h-6" />
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
+            <div className="bg-primary/10 p-3 rounded-xl">
+              <Zap className="text-primary w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Monthly Burn</p>
+              <p className="text-2xl font-bold font-outfit text-amber-500">NPR {summary.totalMonthlyBurn.toLocaleString()}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Ecosystem Spend</p>
-            <p className="text-2xl font-bold font-outfit">NPR {totalSpent.toLocaleString()}</p>
+          <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
+            <div className="bg-primary/10 p-3 rounded-xl">
+              <Wallet className="text-primary w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Lifetime Spend</p>
+              <p className="text-2xl font-bold font-outfit">NPR {summary.totalLifetimeSpend.toLocaleString()}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -217,6 +230,7 @@ export default async function SubscriptionsPage() {
           </div>
         </div>
       </div>
+      <WalletAssistantUI />
     </div>
   );
 }

@@ -108,3 +108,24 @@ export type SafeUser = {
   emailVerified: boolean;
   phoneVerified: boolean;
 };
+
+// ─── AI & Agents ─────────────────────────────────────────────────────────────
+
+export interface AiMessage {
+  role: 'user' | 'model' | 'system' | 'tool';
+  content: string | any[];
+}
+
+export interface AiChatRequest {
+  message: string;
+  appId: string;
+  history?: AiMessage[];
+}
+
+export interface AiChatResponse {
+  reply: string;
+  model: string;
+  usage?: {
+    totalTokens: number;
+  };
+}

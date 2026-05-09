@@ -1,5 +1,5 @@
 /**
- * Going Genius Developer SDK (Internal Reference)
+ * Going Genius Developer SDK
  * This SDK is designed to be imported by applications integrating with the GG Identity platform.
  */
 
@@ -8,6 +8,7 @@ export interface GGUser {
   email: string;
   displayName: string;
   avatarUrl?: string;
+  role?: string;
 }
 
 export interface GGAppConfig {
@@ -26,7 +27,10 @@ export class GoingGenius {
    * Generates the OAuth 2.0 authorization URL.
    */
   getAuthUrl(state?: string): string {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://gg-identity.vercel.app';
+    const baseUrl = typeof window !== 'undefined' 
+      ? (window as any).GG_AUTH_URL || 'https://going-genius.vercel.app'
+      : 'https://going-genius.vercel.app';
+      
     const params = new URLSearchParams({
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,

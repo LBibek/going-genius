@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "buildCommand": "cd packages/react-sdk && npm install --legacy-peer-deps && npm run build && cd ../.. && npx prisma generate && next build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "nextjs",
+  "regions": ["cle1"],
+  "crons": [
+    {
+      "path": "/api/usage/aggregate",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Monitor } from '@/lib/monitor';
+import { processSuccessfulPayment } from '@/lib/billing';
 import crypto from 'crypto';
 
 export async function GET(req: NextRequest) {
@@ -29,6 +29,11 @@ export async function GET(req: NextRequest) {
         return NextResponse.redirect(new URL('/dashboard/payment/failed?error=not_found', req.url));
       }
 
+      // Idempotency: If already completed, redirect to success
+      if (transaction.status === 'completed') {
+        return NextResponse.redirect(new URL('/dashboard/payment/success?status=already_processed', req.url));
+      }
+
       const app = transaction.app;
       if (!app.esewaSecretKey) {
         return NextResponse.redirect(new URL('/dashboard/payment/failed?error=config_missing', req.url));
@@ -51,35 +56,8 @@ export async function GET(req: NextRequest) {
       }
 
       if (status === 'COMPLETE') {
-        // 4. Update Transaction
-        await prisma.transaction.update({
-          where: { id: transaction.id },
-          data: { status: 'completed' }
-        });
-
-        // 5. Update Subscription
-        if (transaction.planId && transaction.userId) {
-          await prisma.subscription.upsert({
-            where: {
-              appId_userId: {
-                appId: transaction.appId,
-                userId: transaction.userId
-              }
-            },
-            update: {
-              planId: transaction.planId,
-              status: 'active',
-              startDate: new Date(),
-            },
-            create: {
-              appId: transaction.appId,
-              userId: transaction.userId,
-              planId: transaction.planId,
-              status: 'active'
-            }
-          });
-        }
-
+        // 4. Process the successful payment using shared logic
+        await processSuccessfulPayment(transaction.id, data.transaction_code || transaction_uuid, transaction.appId);
         return NextResponse.redirect(new URL('/dashboard/payment/success', req.url));
       }
 

@@ -24,7 +24,40 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
+
+## 🚀 Quickstart
+
+Get your own instance of Going Genius running in seconds:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FLBibek%2Fgoing-genius&env=DATABASE_URL,SUPABASE_URL,SUPABASE_ANON_KEY,GOOGLE_GENAI_API_KEY&project-name=going-genius&repository-name=going-genius)
+
+### 🛠️ Developer Adaptation
+
+To integrate Going Genius into your existing stack:
+
+1. **Install SDK**: `npm i @going-genius/react`
+2. **Setup Provider**: Wrap your app with `GGProvider`.
+3. **Protect Routes**: Use `GGFeatureGate` or `useGGPlan()`.
+
+For detailed instructions, see [DEVELOPER_QUICKSTART.md](./DEVELOPER_QUICKSTART.md).
+
+## 📦 Deployment
+
+### Local Development
+```bash
+npm install
+npx prisma db push
+npm run dev
+```
+
+### Production (Vercel)
+The project is optimized for Vercel deployment. Ensure you provide the following environment variables:
+- `DATABASE_URL`: PostgreSQL connection string.
+- `SUPABASE_URL` & `SUPABASE_ANON_KEY`: For authentication.
+- `GOOGLE_GENAI_API_KEY`: For the integrated AI agents.
+- `KHALTI_SECRET_KEY` & `ESEWA_MERCHANT_ID`: For payment processing.
+
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!

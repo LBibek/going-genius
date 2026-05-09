@@ -23,6 +23,8 @@ import { AppPaymentGateways } from '../../components/AppPaymentGateways';
 import { AppIntegrations } from '../../components/AppIntegrations';
 import { OptimizedImage } from '@/components/OptimizedImage';
 
+import { AppLeads } from '../../components/AppLeads';
+
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
   if (!session) redirect('/auth/login');
@@ -42,6 +44,9 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
         orderBy: { createdAt: 'desc' }
       },
       plans: {
+        orderBy: { createdAt: 'desc' }
+      },
+      leads: {
         orderBy: { createdAt: 'desc' }
       }
     }
@@ -150,6 +155,7 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
           </div>
         }
         integrations={<AppIntegrations app={app} />}
+        leads={<AppLeads appId={app.id} leads={app.leads} />}
         access={
           <Grid2Col>
             <div className="glass-card">

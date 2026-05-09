@@ -1,0 +1,6 @@
+src/
+tsup.config.ts
+tsconfig.json
+.eslintrc
+*.test.ts
+*.test.tsx

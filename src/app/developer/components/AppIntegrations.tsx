@@ -11,8 +11,13 @@ import {
   RefreshCw,
   CheckCircle2,
   AlertTriangle,
-  Code
+  Code,
+  Link as LinkIcon,
+  Copy,
+  Check,
+  Activity
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface AppIntegrationsProps {
   app: any;
@@ -21,6 +26,9 @@ interface AppIntegrationsProps {
 export function AppIntegrations({ app }: AppIntegrationsProps) {
   const [isImporting, setIsImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
+  const [showWPConfig, setShowWPConfig] = useState(false);
+  const [wpUrl, setWpUrl] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleSimulateImport = () => {
     setIsImporting(true);
@@ -37,6 +45,13 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
     }, 400);
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    toast.success('Callback URL copied to clipboard');
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="integrations-view">
       <div className="section-header">
@@ -49,7 +64,7 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
         <div className="integration-card glass-card">
           <div className="card-top">
             <div className="provider-icon wp-icon">W</div>
-            <div className="status-indicator online">Connected</div>
+            <div className="status-indicator online">Standard Integration</div>
           </div>
           <div className="card-body">
             <h3>WordPress Plugin</h3>
@@ -57,17 +72,44 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
             <div className="card-meta">
               <span>Version: 0.1.0</span>
               <span>•</span>
-              <span>Updated 2 days ago</span>
+              <span>Updated Today</span>
             </div>
           </div>
           <div className="card-footer">
             <button className="btn btn-outline btn-sm">
-              <Download size={14} /> Download Plugin
+              <Download size={14} /> Download v0.1.0
             </button>
-            <button className="btn btn-ghost btn-sm">
-              <Settings size={14} /> Configure
+            <button className="btn btn-ghost btn-sm" onClick={() => setShowWPConfig(!showWPConfig)}>
+              <Settings size={14} /> {showWPConfig ? 'Close' : 'Configure'}
             </button>
           </div>
+          
+          {showWPConfig && (
+            <div className="config-panel">
+              <h4>Setup WordPress Sync</h4>
+              <p className="panel-hint">Enter your WordPress site URL to generate a secure connection link.</p>
+              <div className="input-with-button">
+                <input 
+                  type="text" 
+                  placeholder="https://your-site.com" 
+                  value={wpUrl}
+                  onChange={(e) => setWpUrl(e.target.value)}
+                  className="config-input"
+                />
+              </div>
+              {wpUrl && (
+                <div className="setup-step">
+                  <span className="step-label">Step 2: Add this to your WP Settings</span>
+                  <div className="code-block-mini">
+                    <code>{`${wpUrl}/wp-admin/options-general.php?page=going-genius`}</code>
+                    <button onClick={() => copyToClipboard(`${wpUrl}/wp-admin/options-general.php?page=going-genius`)}>
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Bulk Import Card */}
@@ -116,6 +158,52 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
           <div className="card-footer">
             <button className="btn btn-primary btn-sm">
               Setup Webhook
+            </button>
+          </div>
+        </div>
+
+        {/* WhatsApp Connector */}
+        <div className="integration-card glass-card">
+          <div className="card-top">
+            <div className="provider-icon whatsapp-icon">
+              <Activity size={20} />
+            </div>
+            {app.whatsappEnabled ? (
+              <div className="status-indicator online">Active</div>
+            ) : (
+              <div className="status-indicator">Disabled</div>
+            )}
+          </div>
+          <div className="card-body">
+            <h3>WhatsApp Connector</h3>
+            <p>Deploy AI lead-gen agents directly on WhatsApp. Capture leads and answer queries via the Meta Graph API.</p>
+          </div>
+          <div className="card-footer">
+            <button className="btn btn-outline btn-sm">
+              <Settings size={14} /> Configure
+            </button>
+          </div>
+        </div>
+
+        {/* Viber Connector */}
+        <div className="integration-card glass-card">
+          <div className="card-top">
+            <div className="provider-icon viber-icon">
+              <Activity size={20} />
+            </div>
+            {app.viberEnabled ? (
+              <div className="status-indicator online">Active</div>
+            ) : (
+              <div className="status-indicator">Disabled</div>
+            )}
+          </div>
+          <div className="card-body">
+            <h3>Viber Business Chat</h3>
+            <p>Connect your Going Genius AI agent to Viber. Ideal for the Nepali market with deep Viber penetration.</p>
+          </div>
+          <div className="card-footer">
+            <button className="btn btn-outline btn-sm">
+              <Settings size={14} /> Configure
             </button>
           </div>
         </div>
@@ -170,6 +258,8 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
         .wp-icon { background: #21759b; color: #fff; }
         .import-icon { background: #3b82f6; color: #fff; }
         .webhook-icon { background: #10b981; color: #fff; }
+        .whatsapp-icon { background: #25d366; color: #fff; }
+        .viber-icon { background: #7360f2; color: #fff; }
 
         .status-indicator {
           font-size: 0.65rem;
@@ -199,6 +289,43 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
           padding-top: 1.5rem;
           border-top: 1px solid rgba(255,255,255,0.05);
         }
+
+        .config-panel {
+          margin-top: 1rem;
+          padding: 1.25rem;
+          background: rgba(255,255,255,0.03);
+          border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .config-panel h4 { margin: 0 0 0.5rem; font-size: 0.9rem; }
+        .panel-hint { font-size: 0.75rem; color: #666; margin-bottom: 1rem; }
+
+        .config-input {
+          width: 100%;
+          background: #000;
+          border: 1px solid #333;
+          padding: 0.75rem;
+          border-radius: 6px;
+          color: #fff;
+          font-size: 0.85rem;
+        }
+
+        .setup-step { margin-top: 1rem; }
+        .step-label { font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 0.5rem; }
+        
+        .code-block-mini {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #111;
+          padding: 0.5rem 0.75rem;
+          border-radius: 4px;
+          border: 1px solid #222;
+        }
+        .code-block-mini code { font-size: 0.7rem; color: #aaa; overflow: hidden; text-overflow: ellipsis; }
+        .code-block-mini button { background: transparent; border: none; color: #666; cursor: pointer; padding: 4px; }
+        .code-block-mini button:hover { color: #fff; }
 
         .import-action {
           margin-top: 1rem;

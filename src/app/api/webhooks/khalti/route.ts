@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Monitor } from '@/lib/monitor';
+import { processSuccessfulPayment } from '@/lib/billing';
 
 
 export async function POST(req: NextRequest) {
@@ -23,6 +23,11 @@ export async function POST(req: NextRequest) {
       if (!transaction) {
         console.error(`[KHALTI WEBHOOK] Transaction not found for pidx: ${pidx}`);
         return NextResponse.json({ message: 'Transaction not found' }, { status: 404 });
+      }
+
+      // Idempotency: If already completed, just return success
+      if (transaction.status === 'completed') {
+        return NextResponse.json({ success: true, message: 'Already processed' });
       }
 
       // Security Check: Ensure the purchase_order_id from Khalti matches our transaction ID
@@ -54,36 +59,8 @@ export async function POST(req: NextRequest) {
       const verification = await verifyRes.json();
 
       if (verification.status === 'Completed') {
-        // 3. Update Transaction
-        await prisma.transaction.update({
-          where: { id: transaction.id },
-          data: { status: 'completed' }
-        });
-
-        // 4. Update or Create Subscription
-        if (transaction.planId && transaction.userId) {
-          await prisma.subscription.upsert({
-            where: {
-              appId_userId: {
-                appId: transaction.appId,
-                userId: transaction.userId
-              }
-            },
-            update: {
-              planId: transaction.planId,
-              status: 'active',
-              startDate: new Date(),
-              // Logic for expiresAt based on plan interval would go here
-            },
-            create: {
-              appId: transaction.appId,
-              userId: transaction.userId,
-              planId: transaction.planId,
-              status: 'active'
-            }
-          });
-        }
-
+        // 3. Process the successful payment using shared logic
+        await processSuccessfulPayment(transaction.id, verification.transaction_id || pidx, transaction.appId);
         return NextResponse.json({ success: true });
       }
 

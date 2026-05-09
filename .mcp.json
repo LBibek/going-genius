@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "going-genius": {
+      "command": "npm",
+      "args": ["run", "mcp"],
+      "env": {
+        "GOOGLE_GENAI_API_KEY": ""
+      }
+    },
     "vercel": {
       "type": "http",
       "url": "https://mcp.vercel.com"
