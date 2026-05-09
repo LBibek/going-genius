@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const result = await appBotFlow.run({
       appId,
       message,
-      history: history || []
+      history: (history || []) as any
     }) as any;
 
     const reply = typeof result === 'string' ? result : result.text;

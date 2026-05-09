@@ -7,6 +7,10 @@ import { getEcosystemBillingSummary } from '@/lib/billing';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 
+/**
+ * Server Action for the Wallet Assistant.
+ * Uses Vercel AI SDK with Gemini 1.5 Flash for high-performance billing insights.
+ */
 export async function walletAssistant(prompt: string) {
   const session = await getSession();
   if (!session) return { error: 'Not authenticated' };
@@ -22,7 +26,7 @@ export async function walletAssistant(prompt: string) {
         getBillingSummary: {
           description: 'Get a summary of the user\'s ecosystem billing, including total spend and active subscriptions.',
           parameters: z.object({}),
-          execute: async ({}) => {
+          execute: async () => {
             const summary = await getEcosystemBillingSummary(session.userId);
             return summary;
           },
@@ -37,7 +41,7 @@ export async function walletAssistant(prompt: string) {
               where: { name: { contains: name, mode: 'insensitive' } },
               select: { id: true, name: true, description: true }
             });
-            return (app as any) || { error: 'App not found' };
+            return app || { error: 'App not found' };
           },
         },
       } as any,
@@ -46,8 +50,8 @@ export async function walletAssistant(prompt: string) {
     } as any);
 
     return { text: result.text };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Wallet Assistant Error:', error);
-    return { error: 'Failed to process request' };
+    return { error: 'Failed to process request', details: error.message };
   }
 }

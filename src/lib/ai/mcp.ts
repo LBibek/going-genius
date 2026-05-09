@@ -1,7 +1,8 @@
 import { createMcpServer } from '@genkit-ai/mcp';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ai } from '../genkit';
-import { appBotFlow, getAppInfo, saveLead } from './flows';
+// Import flows/tools to ensure they are registered with the ai instance
+import './flows';
 
 /**
  * Genkit MCP Server for Going Genius.
@@ -11,13 +12,6 @@ export const mcpServer = createMcpServer(ai, {
   name: 'going-genius-agent',
   version: '1.0.0',
 });
-
-// Register tools
-mcpServer.addTool(getAppInfo);
-mcpServer.addTool(saveLead);
-
-// Register flows
-mcpServer.addFlow(appBotFlow);
 
 /**
  * Starts the MCP server using Stdio transport.

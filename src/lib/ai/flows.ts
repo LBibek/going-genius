@@ -199,3 +199,49 @@ export const leadGenFlow = ai.defineFlow(
     return { text: response.text };
   }
 );
+
+/**
+ * Tool to fetch user's ecosystem billing summary.
+ */
+export const getBillingSummaryTool = ai.defineTool(
+  {
+    name: 'getBillingSummary',
+    description: 'Retrieves a summary of the user\'s subscriptions and spending across the entire Going Genius ecosystem.',
+    inputSchema: z.object({ userId: z.string() }),
+    outputSchema: z.any(),
+  },
+  async ({ userId }) => {
+    const { getEcosystemBillingSummary } = await import('../billing');
+    return await getEcosystemBillingSummary(userId);
+  }
+);
+
+/**
+ * Wallet Assistant Flow for the Universal Wallet dashboard.
+ * Helps users manage their subscriptions and understand their spending.
+ */
+export const walletAssistantFlow = ai.defineFlow(
+  {
+    name: 'walletAssistantFlow',
+    inputSchema: z.object({
+      userId: z.string(),
+      message: z.string(),
+      history: z.array(z.any()).optional(),
+    }),
+    outputSchema: z.object({ text: z.string() }),
+  },
+  async ({ userId, message, history }) => {
+    const response = await ai.generate({
+      model: 'googleAI/gemini-2.0-flash',
+      system: `You are the Going Genius Wallet Assistant. 
+      Your job is to help users understand their spending and manage their subscriptions across the GG ecosystem.
+      You have access to their real-time billing data. Always be professional, concise, and helpful.
+      
+      User Context: User ID is ${userId}`,
+      messages: [...(history || []), { role: 'user', content: [{ text: message }] }],
+      tools: [getBillingSummaryTool],
+    });
+
+    return { text: response.text };
+  }
+);
