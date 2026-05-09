@@ -112,6 +112,7 @@ model OAuthApp {
   geminiApiKey       String?
   anthropicApiKey    String?
   deepseekApiKey     String?
+  systemPrompt       String?
 
   isPremium    Boolean   @default(false)
   khaltiPublicKey   String?

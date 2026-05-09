@@ -18,6 +18,7 @@ import {
 interface TabProps {
   overview: React.ReactNode;
   access: React.ReactNode;
+  usage: React.ReactNode;
   config: React.ReactNode;
   billing: React.ReactNode;
   settings: React.ReactNode;
@@ -26,11 +27,12 @@ interface TabProps {
   isPremium?: boolean;
 }
 
-export function AppTabs({ overview, access, config, billing, settings, playground, integrations, isPremium = false }: TabProps) {
+export function AppTabs({ overview, access, usage, config, billing, settings, playground, integrations, isPremium = false }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'usage', label: 'Usage & AI', icon: Sparkles, isPremium: true },
     { id: 'config', label: 'Configuration', icon: Key },
     { id: 'integrations', label: 'Integrations', icon: Layers },
     { id: 'access', label: 'Access & Users', icon: Users },
@@ -61,6 +63,7 @@ export function AppTabs({ overview, access, config, billing, settings, playgroun
 
       <div className="tab-content animate-fade-in">
         {activeTab === 'overview' && overview}
+        {activeTab === 'usage' && usage}
         {activeTab === 'config' && config}
         {activeTab === 'integrations' && integrations}
         {activeTab === 'access' && access}

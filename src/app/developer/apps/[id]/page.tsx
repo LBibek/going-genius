@@ -13,6 +13,7 @@ import { AppAPIKeys } from '../../components/AppAPIKeys';
 import { AppAIAgents } from '../../components/AppAIAgents';
 import { AppLoginPreview } from '../../components/AppLoginPreview';
 import { AppBilling } from '../../components/AppBilling';
+import { AppUsage } from '../../components/AppUsage';
 import { AppBotPreview } from '../../components/AppBotPreview';
 import { AppTabs } from '../../components/AppTabs';
 import { AppAIPlayground } from '../../components/AppAIPlayground';
@@ -117,6 +118,7 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
             </div>
           </>
         }
+        usage={<AppUsage appId={app.id} />}
         config={
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <Grid2Col>

@@ -150,7 +150,7 @@ export default async function DeveloperDashboard() {
           </div>
           <Grid2Col>
             <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-              <div style={{ background: 'rgba(59, 130, 246, 0.1)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyCenter: 'center', marginBottom: '1rem', color: '#3b82f6' }}>
+              <div style={{ background: 'rgba(59, 130, 246, 0.1)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#3b82f6' }}>
                 <Cpu size={20} className="mx-auto" />
               </div>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>GG-SDK (React Alpha)</h3>
@@ -168,7 +168,7 @@ export default async function DeveloperDashboard() {
             </div>
 
             <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-              <div style={{ background: 'rgba(168, 85, 247, 0.1)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyCenter: 'center', marginBottom: '1rem', color: '#a855f7' }}>
+              <div style={{ background: 'rgba(168, 85, 247, 0.1)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#a855f7' }}>
                 <Activity size={20} className="mx-auto" />
               </div>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>Universal Wallet</h3>

@@ -52,10 +52,14 @@ export const appBotFlow = ai.defineFlow(
     }),
   },
   async ({ appId, message, history }) => {
-    // Fetch the app to get its specific API key if configured
+    // Fetch the app to get its specific API key and system prompt if configured
     const app = await prisma.oAuthApp.findUnique({
       where: { id: appId },
-      select: { geminiApiKey: true }
+      select: { 
+        geminiApiKey: true,
+        systemPrompt: true,
+        name: true
+      }
     });
 
     // Determine which API key to use
@@ -66,27 +70,30 @@ export const appBotFlow = ai.defineFlow(
     }
 
     // Initialize a temporary AI instance if using a specific app key
-    // Otherwise use the default 'ai' instance
     let activeAi = ai;
     if (app?.geminiApiKey) {
       activeAi = genkit({
         plugins: [googleAI({ apiKey: app.geminiApiKey })],
-        model: googleAI.model('gemini-2.5-flash'),
+        model: googleAI.model('gemini-2.0-flash'),
       });
     }
 
-    // Map history roles to Genkit's expected roles (bot -> model)
+    // Map history roles to Genkit's expected roles
     const messages = [...(history?.map((msg: any) => ({
       role: msg.role === 'bot' ? 'model' : msg.role,
       content: typeof msg.content === 'string' ? [{ text: msg.content }] : msg.content,
     })) || []), { role: 'user', content: [{ text: message }] }];
 
     const response = await activeAi.generate({
-      model: 'googleAI/gemini-2.5-flash',
-      system: `You are the Going Genius App Assistant. 
-      You help developers manage their OAuth applications. 
-      Use the provided tools to fetch information about the application if needed.
-      Current App Context: ID=${appId}`,
+      model: 'googleAI/gemini-2.0-flash',
+      system: `You are the ${app?.name || 'Going Genius'} App Assistant.
+      
+      ${app?.systemPrompt || 'You help users interact with the application and provide helpful guidance based on the application context.'}
+      
+      Contextual Rules:
+      1. Use the provided tools to fetch real-time application data when asked about users, config, or metrics.
+      2. Keep responses concise and focused on the application: ${app?.name}.
+      3. Environment: Current App ID is ${appId}.`,
       messages,
       tools: [getAppInfo],
     });

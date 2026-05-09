@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateAppAIAgents } from '@/app/actions/developer';
-import { Bot, Save, Sparkles, Cpu, MessagesSquare } from 'lucide-react';
+import { Bot, Save, Sparkles, Cpu, MessagesSquare, Zap } from 'lucide-react';
 
 export function AppAIAgents({ app }: { app: any }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -12,7 +12,8 @@ export function AppAIAgents({ app }: { app: any }) {
     openaiApiKey: app.openaiApiKey || '',
     geminiApiKey: app.geminiApiKey || '',
     anthropicApiKey: app.anthropicApiKey || '',
-    deepseekApiKey: app.deepseekApiKey || ''
+    deepseekApiKey: app.deepseekApiKey || '',
+    systemPrompt: app.systemPrompt || ''
   });
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
@@ -26,10 +27,10 @@ export function AppAIAgents({ app }: { app: any }) {
     try {
       const result = await updateAppAIAgents(app.id, formData);
       if (result.success) {
-        setMessage({ text: 'AI Agent keys saved successfully.', type: 'success' });
+        setMessage({ text: 'AI Agent configurations saved successfully.', type: 'success' });
         router.refresh();
       } else {
-        setMessage({ text: result.message || 'Failed to save keys.', type: 'error' });
+        setMessage({ text: result.message || 'Failed to save config.', type: 'error' });
       }
     } catch {
       setMessage({ text: 'Error communicating with server.', type: 'error' });
@@ -45,6 +46,30 @@ export function AppAIAgents({ app }: { app: any }) {
           {message.text}
         </div>
       )}
+
+      {/* System Prompt Section */}
+      <div className="provider-group">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <div className="social-icon" style={{ background: 'var(--primary)' }}><Sparkles size={14} style={{ color: '#000' }} /></div>
+          <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Global System Prompt</span>
+        </div>
+        <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+          Define the personality, rules, and knowledge base for your AI agent. This will be applied to all chat sessions.
+        </p>
+        <div className="form-group">
+          <textarea 
+            className="form-input" 
+            style={{ fontSize: '0.85rem', minHeight: '120px', resize: 'vertical', fontFamily: 'monospace' }}
+            placeholder="You are a helpful assistant for Going Genius users..."
+            value={formData.systemPrompt}
+            onChange={(e) => setFormData({...formData, systemPrompt: e.target.value})}
+          />
+        </div>
+      </div>
+
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0.5rem 0' }} />
+
+      <h3 style={{ fontSize: '0.9rem', margin: '0.5rem 0 0.25rem 0', color: 'var(--muted)' }}>Model Provider Keys</h3>
 
       {/* OpenAI / ChatGPT */}
       <div className="provider-group">
@@ -69,7 +94,7 @@ export function AppAIAgents({ app }: { app: any }) {
       {/* Gemini */}
       <div className="provider-group">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <div className="social-icon" style={{ background: '#1a73e8' }}><Sparkles size={14} /></div>
+          <div className="social-icon" style={{ background: '#1a73e8' }}><Zap size={14} /></div>
           <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Google Gemini</span>
         </div>
         <div className="form-group">

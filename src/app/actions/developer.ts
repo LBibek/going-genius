@@ -320,7 +320,8 @@ export async function updateAppAIAgents(appId: string, data: {
   openaiApiKey?: string,
   geminiApiKey?: string,
   anthropicApiKey?: string,
-  deepseekApiKey?: string
+  deepseekApiKey?: string,
+  systemPrompt?: string
 }) {
   const session = await getSession();
   if (!session) return { message: 'Unauthorized' };
@@ -335,6 +336,7 @@ export async function updateAppAIAgents(appId: string, data: {
       geminiApiKey: data.geminiApiKey || null,
       anthropicApiKey: data.anthropicApiKey || null,
       deepseekApiKey: data.deepseekApiKey || null,
+      systemPrompt: data.systemPrompt || null,
     },
   });
 

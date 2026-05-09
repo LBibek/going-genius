@@ -141,6 +141,61 @@ export async function saveAppKeys(appId: string, keys: {
       ...keys
     }
   });
+}export async function getAppUsageStats(appId: string) {
+  const session = await getSession();
+  if (!session) throw new Error('Unauthorized');
+
+  // Verify ownership
+  const app = await prisma.oAuthApp.findUnique({
+    where: { id: appId },
+    select: { ownerId: true }
+  });
+
+  if (!app || app.ownerId !== session.userId) {
+    throw new Error('Forbidden');
+  }
+
+  const days = 30;
+  const startDate = subDays(startOfDay(new Date()), days);
+
+  const usageData = await prisma.apiUsage.findMany({
+    where: {
+      appId,
+      timestamp: { gte: startDate }
+    },
+    orderBy: { timestamp: 'asc' }
+  });
+
+  // Aggregate by day
+  const dailyUsage: Record<string, { tokens: number; calls: number; cost: number }> = {};
+  for (let i = 0; i <= days; i++) {
+    const dateStr = format(subDays(new Date(), i), 'MMM dd');
+    dailyUsage[dateStr] = { tokens: 0, calls: 0, cost: 0 };
+  }
+
+  usageData.forEach((record: any) => {
+    const dateStr = format(record.timestamp, 'MMM dd');
+    if (dailyUsage[dateStr]) {
+      dailyUsage[dateStr].tokens += record.tokensUsed;
+      dailyUsage[dateStr].calls += 1;
+      dailyUsage[dateStr].cost += Number(record.cost);
+    }
+  });
+
+  const chartData = Object.entries(dailyUsage)
+    .map(([name, data]) => ({ name, ...data }))
+    .reverse();
+
+  const totalTokens = usageData.reduce((acc: number, curr: any) => acc + curr.tokensUsed, 0);
+  const totalCalls = usageData.length;
+  const totalCost = usageData.reduce((acc: number, curr: any) => acc + Number(curr.cost), 0);
+
+  return {
+    chartData,
+    summary: {
+      totalTokens,
+      totalCalls,
+      totalCost: totalCost.toFixed(4)
+    }
+  };
 }
-
-
