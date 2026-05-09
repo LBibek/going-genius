@@ -1,6 +1,7 @@
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { redirect, notFound } from 'next/navigation';
+import Link from 'next/link';
 import { AdminStats } from './components/AdminStats';
 import { AppList } from './components/AppList';
 import { AppChart } from '../developer/components/AppChart';
@@ -11,7 +12,7 @@ import {
   getRecentLeads 
 } from './actions';
 import { Grid2Col } from '../developer/components/ResponsiveGrids';
-import { ShieldCheck, Activity, Users, Zap } from 'lucide-react';
+import { ShieldCheck, Activity, Users, Zap, FileText } from 'lucide-react';
 
 import { AdminTransactions } from './components/AdminTransactions';
 import { AdminDashboardStyles } from './components/AdminDashboardStyles';
@@ -54,13 +55,15 @@ export default async function AdminDashboardPage() {
               <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Optimal (99.9%)</div>
             </div>
           </div>
-          <div className="glass-card" style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Zap size={18} style={{ color: '#fbbf24' }} />
-            <div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase' }}>API Load</div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Low (12ms)</div>
+          <Link href="/admin/audit" style={{ textDecoration: 'none' }}>
+            <div className="glass-card" style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+              <FileText size={18} style={{ color: '#818cf8' }} />
+              <div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase' }}>Audit Trail</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>View Logs</div>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
 

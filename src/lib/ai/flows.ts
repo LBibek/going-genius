@@ -43,6 +43,8 @@ export const appBotFlow = ai.defineFlow(
     inputSchema: z.object({
       appId: z.string(),
       message: z.string(),
+      threadId: z.string().optional(),   // For persistent memory
+      userId: z.string().optional(),     // Optional: tie thread to a user
       history: z.array(z.object({
         role: z.enum(['user', 'model']),
         content: z.array(z.object({ text: z.string() }))
@@ -50,9 +52,10 @@ export const appBotFlow = ai.defineFlow(
     }),
     outputSchema: z.object({
       text: z.string(),
+      threadId: z.string(),             // Always return threadId for SDK to persist
     }),
   },
-  async ({ appId, message, history }) => {
+  async ({ appId, message, threadId, userId, history }) => {
     // Fetch the app to get its specific API key and system prompt if configured
     const app = await prisma.oAuthApp.findUnique({
       where: { id: appId },
@@ -80,11 +83,38 @@ export const appBotFlow = ai.defineFlow(
       });
     }
 
-    // Map history roles to Genkit's expected roles
-    const messages = [...(history?.map((msg: any) => ({
+    // --- MEMORY: Load or create a Thread ---
+    let thread = threadId
+      ? await prisma.thread.findUnique({
+          where: { id: threadId },
+          include: { messages: { orderBy: { createdAt: 'asc' }, take: 40 } }
+        })
+      : null;
+
+    if (!thread) {
+      // Create a new thread for this conversation
+      thread = await prisma.thread.create({
+        data: {
+          appId,
+          userId: userId ?? null,
+          title: message.slice(0, 80), // Use first message as title
+        },
+        include: { messages: true }
+      });
+    }
+
+    // Build message history: DB memory takes precedence over client-provided history
+    const dbHistory = thread.messages.map((m: any) => ({
+      role: m.role as 'user' | 'model',
+      content: [{ text: m.content }]
+    }));
+
+    const historyToUse = dbHistory.length > 0 ? dbHistory : (history?.map((msg: any) => ({
       role: msg.role === 'bot' ? 'model' : msg.role,
       content: typeof msg.content === 'string' ? [{ text: msg.content }] : msg.content,
-    })) || []), { role: 'user', content: [{ text: message }] }];
+    })) || []);
+
+    const messages = [...historyToUse, { role: 'user' as const, content: [{ text: message }] }];
 
     const isLeadGen = app?.leadCaptureEnabled;
 
@@ -112,6 +142,14 @@ export const appBotFlow = ai.defineFlow(
       tools: isLeadGen ? [getAppInfo, saveLead] : [getAppInfo],
     });
 
+    // --- MEMORY: Persist messages to Thread ---
+    await prisma.message.createMany({
+      data: [
+        { threadId: thread.id, role: 'user', content: message },
+        { threadId: thread.id, role: 'model', content: response.text }
+      ]
+    });
+
     // Log AI usage for metering and billing
     const usage = (response as any).usage || {};
     await logAiUsage({
@@ -121,7 +159,7 @@ export const appBotFlow = ai.defineFlow(
       type: 'ai_tokens'
     });
 
-    return { text: response.text };
+    return { text: response.text, threadId: thread.id };
   }
 );
 /**

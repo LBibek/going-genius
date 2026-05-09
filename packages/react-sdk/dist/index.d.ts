@@ -83,7 +83,10 @@ interface AISalesBotProps {
     theme?: 'light' | 'dark' | 'glass';
     position?: 'bottom-right' | 'bottom-left';
     apiHost?: string;
+    apiUrl?: string;
+    userId?: string;
+    botName?: string;
 }
-declare function AISalesBot({ appId, agentType, greeting, theme, position, apiHost }: AISalesBotProps): react_jsx_runtime.JSX.Element;
+declare function AISalesBot({ appId, agentType, greeting, theme, position, apiHost, apiUrl, userId, botName }: AISalesBotProps): react_jsx_runtime.JSX.Element;
 
 export { AISalesBot, type AISalesBotProps, type GGAppConfig, GGBillingButton, GGFeatureGate, GGProvider, type GGUser, GoingGenius, GoingGeniusProvider, useGGAuth, useGGPlan, useGoingGenius };

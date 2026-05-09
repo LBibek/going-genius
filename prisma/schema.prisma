@@ -51,6 +51,7 @@ model GGUser {
   subscriptions  Subscription[]
   carts          Cart[]
   transactions   Transaction[]
+  threads        Thread[]
 }
 
 // ─── Sessions ─────────────────────────────────────────────────────────────────
@@ -138,6 +139,7 @@ model OAuthApp {
   transactions  Transaction[]
   apiUsages     ApiUsage[]
   leads         Lead[]
+  threads       Thread[]
 
   @@index([ownerId])
 }
@@ -346,4 +348,33 @@ model AuditLog {
 
   @@index([action])
   @@index([targetId])
+}
+
+// ─── AI Memory (Persistent Chat Threads) ─────────────────────────────────────
+
+model Thread {
+  id        String    @id @default(cuid())
+  appId     String
+  userId    String?
+  app       OAuthApp  @relation(fields: [appId], references: [id], onDelete: Cascade)
+  user      GGUser?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  title     String?   // Auto-generated from first message
+  metadata  Json?
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([appId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  threadId  String
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  role      String   // "user" or "model"
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([threadId])
 }

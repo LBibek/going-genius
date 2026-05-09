@@ -9,14 +9,13 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await req.json();
-    const { message, history } = body;
+    const { message, history, threadId, userId } = body;
 
-    // 1. Basic Validation
     if (!id || !message) {
       return NextResponse.json({ error: 'Missing appId or message' }, { status: 400 });
     }
 
-    // 2. Fetch App Configuration to ensure it exists
+    // Verify the app exists
     const app = await prisma.oAuthApp.findUnique({
       where: { id },
       select: { id: true, name: true }
@@ -26,22 +25,22 @@ export async function POST(
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
-    // 3. Run the Flow directly
-    // Since we are in a server component/route, we call the flow function directly.
+    // Run the AI flow (handles memory internally)
     const result = await appBotFlow({
       appId: id,
       message,
+      threadId,  // Pass through for memory persistence
+      userId,    // Optional: tie to a user
       history
     });
 
-    // 4. Set CORS headers for the SDK
-    return NextResponse.json(result, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
-    });
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+
+    return NextResponse.json(result, { headers: corsHeaders });
   } catch (error: any) {
     console.error('Public AI Agent Error:', error);
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });

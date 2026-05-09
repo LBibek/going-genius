@@ -1,0 +1,48 @@
+name: Publish @going-genius/react SDK
+
+on:
+  push:
+    tags:
+      - 'sdk-v*'  # Trigger on tags like sdk-v0.2.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Required for npm provenance
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install SDK dependencies
+        run: npm ci
+        working-directory: packages/react-sdk
+
+      - name: Build SDK
+        run: npm run build
+        working-directory: packages/react-sdk
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/sdk-v}" >> $GITHUB_OUTPUT
+
+      - name: Set SDK version from tag
+        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version
+        working-directory: packages/react-sdk
+
+      - name: Publish to NPM
+        run: npm publish --provenance --access public
+        working-directory: packages/react-sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

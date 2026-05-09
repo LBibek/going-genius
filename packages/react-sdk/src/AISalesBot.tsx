@@ -8,6 +8,9 @@ export interface AISalesBotProps {
   theme?: 'light' | 'dark' | 'glass';
   position?: 'bottom-right' | 'bottom-left';
   apiHost?: string;
+  apiUrl?: string;   // Override the full API URL directly
+  userId?: string;   // Optional: link conversations to a user
+  botName?: string;  // Customize bot display name
 }
 
 export function AISalesBot({ 
@@ -16,7 +19,10 @@ export function AISalesBot({
   greeting = "Hi! I'm your AI assistant. How can I help you today?",
   theme = 'glass',
   position = 'bottom-right',
-  apiHost = 'https://goinggenius.com'
+  apiHost = 'https://goinggenius.com',
+  apiUrl,
+  userId,
+  botName = 'AI Assistant'
 }: AISalesBotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -25,6 +31,7 @@ export function AISalesBot({
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(null); // Persistent memory
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,17 +52,16 @@ export function AISalesBot({
     setIsTyping(true);
 
     try {
-      const history = messages.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        content: [{ text: m.content }]
-      }));
+      // Resolve the endpoint — apiUrl takes priority
+      const endpoint = apiUrl || `${apiHost}/api/v1/apps/${appId}/bot`;
 
-      const res = await fetch(`${apiHost}/api/v1/apps/${appId}/bot`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          history,
+          threadId,   // Send persisted threadId (null on first message)
+          userId,     // Optional user linking
           agentType
         })
       });
@@ -63,6 +69,11 @@ export function AISalesBot({
       if (!res.ok) throw new Error('Failed to fetch from AI agent');
       
       const response = await res.json();
+
+      // Persist the threadId returned by the server for future turns
+      if (response.threadId && !threadId) {
+        setThreadId(response.threadId);
+      }
 
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -147,7 +158,7 @@ export function AISalesBot({
             <Bot size={18} color="#000" />
           </div>
           <div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>AI Assistant</div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{botName}</div>
             <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: '4px' }}>
               <span style={{ width: '6px', height: '6px', background: '#27c93f', borderRadius: '50%' }} /> Online
             </div>
