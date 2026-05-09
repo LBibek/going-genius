@@ -40,11 +40,7 @@ export default async function SubscriptionsPage() {
     where: { userId: session.userId },
     include: {
       app: true,
-      subscription: {
-        include: {
-          plan: true
-        }
-      }
+      plan: true
     },
     orderBy: { createdAt: 'desc' },
     take: 5

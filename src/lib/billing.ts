@@ -117,7 +117,7 @@ export async function getEcosystemBillingSummary(userId: string) {
     recentTransactions: transactions.map((tx: any) => ({
       id: tx.id,
       amount: tx.amount,
-      gateway: tx.gateway,
+      gateway: tx.provider,
       date: tx.createdAt.toISOString()
     }))
   };

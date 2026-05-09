@@ -33,7 +33,7 @@ export async function walletAssistant(prompt: string) {
             name: z.string(),
           }),
           execute: async ({ name }: { name: string }) => {
-            const app = await prisma.app.findFirst({
+            const app = await prisma.oAuthApp.findFirst({
               where: { name: { contains: name, mode: 'insensitive' } },
               select: { id: true, name: true, description: true }
             });
