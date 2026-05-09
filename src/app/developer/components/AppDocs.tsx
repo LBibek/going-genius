@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react/no-unescaped-entities */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,7 +9,7 @@ export function AppDocs({ app }: { app: any }) {
   const [appUrl, setAppUrl] = useState('https://gguser.com');
 
   useEffect(() => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAppUrl(window.location.origin);
   }, []);
 

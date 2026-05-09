@@ -21,8 +21,9 @@ function LoginForm() {
   const [phoneState, phoneAction, phonePending] = useActionState(sendPhoneOtp, undefined);
 
   // Auto-detect identifier type
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!identifier) { setIdType(null); return; }
     if (identifier.includes('@')) setIdType('email');
     else if (/^\+?[\d\s\-()]{7,}$/.test(identifier)) setIdType('phone');

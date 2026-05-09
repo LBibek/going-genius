@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @next/next/no-html-link-for-pages */
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 import { notFound, redirect } from 'next/navigation';

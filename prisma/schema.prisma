@@ -122,6 +122,7 @@ model OAuthApp {
   subscriptions Subscription[]
   carts         Cart[]
   transactions  Transaction[]
+  apiUsages     ApiUsage[]
 
   @@index([ownerId])
 }
@@ -286,4 +287,19 @@ model Transaction {
 
   @@index([userId])
   @@index([appId])
+}
+
+model ApiUsage {
+  id        String   @id @default(cuid())
+  appId     String
+  app       OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  userId    String?
+  type      String   // e.g., "ai_tokens", "api_calls"
+  model     String?  // e.g., "gpt-4", "gemini-pro"
+  quantity  Int      @default(0)
+  cost      Float    @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([appId])
+  @@index([type])
 }

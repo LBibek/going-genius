@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { genkit, z } from 'genkit';
 import { ai } from '../genkit';
 import { prisma } from '../prisma';

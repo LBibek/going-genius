@@ -9,6 +9,7 @@ interface GGBillingButtonProps {
   className?: string;
   label?: string;
   variant?: 'primary' | 'outline' | 'ghost';
+  onClick?: () => void;
 }
 
 export function GGBillingButton({ 
@@ -16,10 +17,15 @@ export function GGBillingButton({
   planId, 
   className = '', 
   label = 'Upgrade with Going Genius',
-  variant = 'primary'
+  variant = 'primary',
+  onClick
 }: GGBillingButtonProps) {
   
   const handleCheckout = () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
     const baseUrl = window.location.origin;
     const checkoutUrl = new URL(`${baseUrl}/demo/billing/${appId}`);
     if (planId) checkoutUrl.searchParams.append('planId', planId);

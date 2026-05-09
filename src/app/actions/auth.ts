@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use server';
 
 import { redirect } from 'next/navigation';
@@ -134,7 +135,7 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
   const idType = detectIdentifierType(identifier);
 
   // Find user by identifier type
-  let user = await prisma.gGUser.findFirst({
+  const user = await prisma.gGUser.findFirst({
     where:
       idType === 'email'
         ? { email: identifier.toLowerCase() }

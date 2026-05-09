@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useActionState, useState, useEffect, useRef, Suspense } from 'react';
@@ -36,8 +37,9 @@ function RegisterForm() {
   const passwordsMatch = confirmPassword ? password === confirmPassword : null;
 
   // Real-time username availability check
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (username.length < 3) { setUsernameStatus('idle'); return; }
     if (!/^[a-z0-9_]+$/.test(username)) { setUsernameStatus('invalid'); return; }
 

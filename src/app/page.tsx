@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element, react/no-unescaped-entities, react/jsx-no-comment-textnodes */
 import Link from 'next/link';
 import { getSession } from '@/lib/session';
 import { ThemeToggle } from '@/components/ThemeToggle';

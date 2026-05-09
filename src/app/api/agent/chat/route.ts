@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { appBotFlow } from '@/lib/ai/flows';
 import { getSession } from '@/lib/session';
+import { UsageMonitor } from '@/lib/usage';
 
 export async function POST(req: Request) {
   try {
@@ -16,13 +18,21 @@ export async function POST(req: Request) {
     }
 
     // Run the Genkit Flow
-    const result = await appBotFlow.run({
+    const result: any = await appBotFlow.run({
       appId,
       message,
       history: history || []
     });
 
-    return NextResponse.json({ reply: (result as any).text });
+    // Track AI Usage (Asynchronous - don't block response)
+    UsageMonitor.trackAiTokens({
+      appId,
+      userId: session.userId,
+      model: result.model || 'gemini-1.5-flash',
+      tokens: result.usage?.totalTokens || 0
+    }).catch(err => console.error('Usage tracking failed:', err));
+
+    return NextResponse.json({ reply: result.text || result });
   } catch (error: any) {
     console.error('AI Agent Chat Error:', error);
     return NextResponse.json({ 

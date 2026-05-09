@@ -144,6 +144,43 @@ export default async function DeveloperDashboard() {
           </AppsGrid>
         )}
 
+        <div style={{ marginTop: '4rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Ecosystem Resources</h2>
+          </div>
+          <Grid2Col>
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+              <div style={{ background: 'rgba(59, 130, 246, 0.1)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyCenter: 'center', marginBottom: '1rem', color: '#3b82f6' }}>
+                <Cpu size={20} className="mx-auto" />
+              </div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>GG-SDK (React Alpha)</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                Drop-in components and hooks to integrate authentication, billing, and feature gating in minutes.
+              </p>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <Link href="/demo/wordpress" className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem', borderRadius: '8px' }}>
+                  View Demo
+                </Link>
+                <code style={{ fontSize: '0.75rem', background: 'rgba(0,0,0,0.3)', padding: '0.4rem 0.6rem', borderRadius: '8px', color: '#4ade80' }}>
+                  npm install @going-genius/react
+                </code>
+              </div>
+            </div>
+
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+              <div style={{ background: 'rgba(168, 85, 247, 0.1)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyCenter: 'center', marginBottom: '1rem', color: '#a855f7' }}>
+                <Activity size={20} className="mx-auto" />
+              </div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>Universal Wallet</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                The centralized hub for your users to manage subscriptions across all apps in the GG ecosystem.
+              </p>
+              <Link href="/dashboard/subscriptions" className="btn btn-outline" style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem', borderRadius: '8px' }}>
+                Manage My Wallet
+              </Link>
+            </div>
+          </Grid2Col>
+        </div>
       </DashboardStyles>
     </div>
   );

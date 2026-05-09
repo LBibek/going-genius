@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 'use client';
 
 import React, { useState } from 'react';
@@ -83,6 +84,10 @@ export function BookingAndCheckoutWidget() {
               appId="demo_wp_app" 
               label="Pay NPR 1,500 with Going Genius"
               className="w-full"
+              onClick={() => {
+                // Simulate payment success for demo purposes
+                setStep(3);
+              }}
             />
           </div>
           

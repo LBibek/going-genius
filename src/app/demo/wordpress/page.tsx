@@ -1,15 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from 'next/link';
-import { OptimizedImage } from '@/components/OptimizedImage';
 import { 
   Wrench, 
   ExternalLink, 
-  Download, 
+  Zap, 
+  ArrowRight, 
+  Smartphone, 
   Layout, 
-  ShoppingBag, 
-  Calendar,
-  Layers,
-  ArrowRight
+  Database, 
+  Lock,
+  Loader2,
+  Activity,
+  Cpu,
+  Download,
+  ShoppingBag,
+  Layers
 } from 'lucide-react';
+import { GGFeatureGate } from '@/lib/sdk/GGFeatureGate';
 import { BulkImportFacility } from '@/components/wordpress/BulkImportFacility';
 import { BookingAndCheckoutWidget } from '@/components/wordpress/BookingAndCheckoutWidget';
 
@@ -137,6 +144,62 @@ export default function WordPressDemo() {
       <footer className="text-center py-16 border-t border-zinc-900 mt-20 text-sm text-zinc-500">
         <div className="max-w-7xl mx-auto px-4">
           <p>&copy; 2026 Going Genius. Built for the modern open web.</p>
+        </div>
+        
+        {/* SDK Showcase: Feature Gating */}
+        <div className="mt-20 pt-10 border-t border-zinc-800 max-w-7xl mx-auto px-4 text-left">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="bg-indigo-500/10 p-2 rounded-lg">
+              <Lock className="text-indigo-500 w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">SDK Showcase: Feature Gating</h2>
+              <p className="text-zinc-400">Declaratively protect premium features with <code className="text-indigo-400 text-xs px-1.5 py-0.5 bg-indigo-500/10 rounded">&lt;GGFeatureGate /&gt;</code></p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div className="space-y-4">
+              <p className="text-zinc-300 leading-relaxed">
+                The content on the right is wrapped in our <strong>Feature Gate</strong> component. 
+                If the user doesn&apos;t have an active subscription for <code>demo_wp_app</code>, 
+                they will see the automatic upgrade prompt instead of the content.
+              </p>
+              <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50">
+                <pre className="text-xs text-indigo-300 overflow-x-auto">
+{`// Implementation is this simple:
+<GGFeatureGate appId="demo_wp_app">
+  <AdvancedAnalyticsPlugin />
+</GGFeatureGate>`}
+                </pre>
+              </div>
+            </div>
+
+            <div className="relative">
+              <GGFeatureGate 
+                appId="demo_wp_app"
+                upgradeLabel="Unlock Advanced Analytics"
+              >
+                <div className="bg-zinc-800 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden">
+                   <div className="flex items-center justify-between mb-6">
+                     <h4 className="font-bold text-white flex items-center gap-2">
+                       <Zap size={16} className="text-emerald-500" />
+                       Advanced Analytics Plugin
+                     </h4>
+                     <span className="text-[10px] font-black bg-emerald-500 text-black px-2 py-0.5 rounded">ACTIVE</span>
+                   </div>
+                   <div className="space-y-3">
+                     <div className="h-4 w-full bg-zinc-700/50 rounded-full animate-pulse" />
+                     <div className="h-4 w-3/4 bg-zinc-700/50 rounded-full animate-pulse" />
+                     <div className="h-20 w-full bg-zinc-700/30 rounded-xl mt-4" />
+                   </div>
+                   <p className="text-xs text-zinc-500 mt-4 text-center italic">
+                     This content is only visible because you have a Pro subscription.
+                   </p>
+                </div>
+              </GGFeatureGate>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

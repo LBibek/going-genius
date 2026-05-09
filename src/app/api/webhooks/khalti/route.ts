@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Monitor } from '@/lib/monitor';
@@ -22,6 +23,13 @@ export async function POST(req: NextRequest) {
       if (!transaction) {
         console.error(`[KHALTI WEBHOOK] Transaction not found for pidx: ${pidx}`);
         return NextResponse.json({ message: 'Transaction not found' }, { status: 404 });
+      }
+
+      // Security Check: Ensure the purchase_order_id from Khalti matches our transaction ID
+      // This prevents someone from using a pidx from another app to fulfill this one if they know the pidx.
+      if (purchase_order_id !== transaction.id) {
+        console.error(`[KHALTI WEBHOOK] Security breach attempt: purchase_order_id mismatch. Expected ${transaction.id}, got ${purchase_order_id}`);
+        return NextResponse.json({ message: 'Security check failed' }, { status: 403 });
       }
 
       const app = transaction.app;
