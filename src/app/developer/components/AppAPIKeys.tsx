@@ -28,7 +28,9 @@ export function AppAPIKeys({ app }: { app: any }) {
     khaltiPublicKey: app.khaltiPublicKey || '',
     khaltiSecretKey: app.khaltiSecretKey || '',
     esewaMerchantId: app.esewaMerchantId || '',
-    esewaSecretKey: app.esewaSecretKey || ''
+    esewaSecretKey: app.esewaSecretKey || '',
+    webhookUrl: app.webhookUrl || '',
+    webhookSecret: app.webhookSecret || ''
   });
 
   const toggleVisibility = (key: string) => {
@@ -154,6 +156,42 @@ export function AppAPIKeys({ app }: { app: any }) {
         </div>
       </div>
 
+      <div className="key-section">
+        <div className="section-header">
+          <Zap className="section-icon webhook-icon" size={20} />
+          <div>
+            <h3>Webhook Configuration</h3>
+            <p>Events will be sent to this URL with a HMAC signature.</p>
+          </div>
+        </div>
+
+        <div className="keys-grid">
+          <div className="form-group">
+            <label>Webhook URL</label>
+            <input 
+              type="url"
+              value={formData.webhookUrl}
+              onChange={(e) => setFormData({...formData, webhookUrl: e.target.value})}
+              placeholder="https://your-app.com/api/gg-webhook"
+            />
+          </div>
+          <div className="form-group">
+            <label>Webhook Secret (Signing Key)</label>
+            <div className="input-wrapper">
+              <input 
+                type={showKeys['webhook_secret'] ? 'text' : 'password'}
+                value={formData.webhookSecret}
+                onChange={(e) => setFormData({...formData, webhookSecret: e.target.value})}
+                placeholder="Auto-generated if empty"
+              />
+              <button type="button" onClick={() => toggleVisibility('webhook_secret')}>
+                {showKeys['webhook_secret'] ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="save-footer">
         <div className="security-note">
           <Lock size={14} />
@@ -190,6 +228,7 @@ export function AppAPIKeys({ app }: { app: any }) {
         }
         .ai-icon { color: #818cf8; background: rgba(129, 140, 248, 0.1); }
         .payment-icon { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+        .webhook-icon { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
         
         h3 { margin: 0; font-size: 1.1rem; }
         p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--muted); }

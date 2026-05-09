@@ -106,6 +106,8 @@ model OAuthApp {
   githubClientId     String?
   githubClientSecret String?
   steamApiKey        String?
+  webhookUrl         String?
+  webhookSecret      String?     @default(cuid())
 
   // AI Agent Config (Developer managed)
   openaiApiKey       String?
@@ -331,4 +333,17 @@ model Lead {
   updatedAt DateTime @updatedAt
 
   @@index([appId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String   // e.g., "REFUND_TRANSACTION", "DELETE_APP"
+  targetType  String   // e.g., "TRANSACTION", "APP", "USER"
+  targetId    String?
+  userId      String?  // The user who performed the action or the subject
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([action])
+  @@index([targetId])
 }

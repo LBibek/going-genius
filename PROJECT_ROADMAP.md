@@ -30,9 +30,9 @@ The "Universal Wallet" is the core revenue driver, allowing cross-app subscripti
     - [x] **Ecosystem Summary**: Logic to aggregate spending across all registered apps.
     - [x] **Pricing UI**: Beautiful, glassmorphic pricing tables for tiered access.
 - **To Be Done**:
-    - [ ] **Live Gateway Integration**: Finalize production webhooks for Khalti and eSewa.
-    - [ ] **Subscription Sync**: Automate the "expiration" check via a serverless CRON job (planned in `vercel.json`).
-    - [ ] **Refund Workflow**: Administrative interface for handling payment disputes and manual adjustments.
+    - [x] **Live Gateway Integration**: Finalized production webhooks for Khalti and eSewa.
+    - [x] **Subscription Sync**: Automated via serverless CRON job (`/api/cron/sync-subscriptions`).
+    - [x] **Refund Workflow**: Admin UI (`AdminTransactions`) with full reversal logic and subscription revocation.
 - **Context for Development**:
     - **No Mock Policy**: All payment verification must hit the real Khalti/eSewa test/prod APIs.
     - **Deployment**: Gateway keys must be secret and configured per-environment.
@@ -58,20 +58,22 @@ AI is the "brain" of Going Genius, used for both lead generation and billing sup
 ---
 
 ## 🛠️ 4. Developer Experience (SDK & Documentation)
-**Status: 🔄 IN PROGRESS**
+**Status: ✅ PHASE 1 COMPLETE — Phase 2 NEXT**
 
 Empowering third-party developers to build on top of Going Genius.
 
 - **Completed**:
-    - [x] **React SDK Alpha**: Initial structure in `packages/react-sdk`.
+    - [x] **React SDK v1.0**: Dual-format (ESM/CJS) `@going-genius/react` with `AISalesBot` component.
+    - [x] **Public Bot API**: `/api/v1/apps/[id]/bot` route with CORS headers and Genkit metering.
     - [x] **Developer Quickstart**: Comprehensive markdown guide for SDK integration.
-    - [x] **App Management**: Dashboard for developers to manage their API keys and branding.
-- **To Be Done**:
-    - [ ] **SDK NPM Packaging**: Configure CI/CD for publishing `@going-genius/react` to NPM.
-    - [ ] **Interactive API Docs**: Dynamic Swagger/OpenAPI documentation for the GG Identity API.
-    - [ ] **Webhook Tester**: A tool in the developer dashboard to simulate GG events (e.g., `payment.success`).
+    - [x] **App Management**: Dashboard for developers to manage API keys, AI config, and branding.
+    - [x] **Webhook Simulator**: Integrated in the developer console for real-time event testing.
+- **To Be Done (Phase 2)**:
+    - [ ] **Automated NPM Publish**: CI/CD pipeline to auto-publish SDK on version tags.
+    - [ ] **Interactive API Docs**: Swagger/OpenAPI documentation for the GG Identity API.
+    - [ ] **Playground**: Live in-browser component playground for SDK exploration.
 - **Context for Deployment**:
-    - SDK should be bundled using `tsup` for dual ESM/CJS compatibility.
+    - SDK bundled with `tsup` — run `npm run build` inside `packages/react-sdk`.
 
 ---
 
@@ -82,11 +84,13 @@ Platform-wide governance and revenue tracking.
 
 - **Completed**:
     - [x] **Super Admin Dashboard**: High-level view of platform growth (users, apps, revenue).
-    - [x] **Usage Monitoring**: Basic token tracking for AI usage.
+    - [x] **Usage Monitoring**: Real token tracking per app with `ApiUsage` model.
+    - [x] **Financial Governance UI**: `AdminTransactions` component for viewing and refunding transactions.
+    - [x] **Audit Log Model**: `AuditLog` table with REFUND_TRANSACTION events for compliance.
 - **To Be Done**:
     - [ ] **Revenue Reconciliation**: Automated reports comparing gateway statements with database records.
-    - [ ] **Audit Logs**: Comprehensive tracking of all administrative actions.
-    - [ ] **Health Monitoring**: Integration with a service like Sentry or Axiom for real-time error tracking.
+    - [ ] **Full Audit Trail UI**: Admin view of all platform actions with filtering.
+    - [ ] **Health Monitoring**: Integration with Sentry or Axiom for real-time error tracking.
 
 ---
 
@@ -98,4 +102,4 @@ Platform-wide governance and revenue tracking.
 
 ---
 
-*Last Updated: 2026-05-09*
+*Last Updated: 2026-05-09 (Phase 2 Governance & SDK Infrastructure Complete)*

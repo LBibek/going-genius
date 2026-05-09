@@ -4,6 +4,8 @@
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 import { startOfDay, subDays, format } from 'date-fns';
+import { Prisma } from '@prisma/client';
+
 
 /**
  * Verifies if the current user is a Super Admin.
@@ -133,5 +135,72 @@ export async function getRecentLeads() {
     include: {
       app: { select: { name: true } }
     }
+  });
+}
+/**
+ * Fetches recent transactions across the platform.
+ */
+export async function getGlobalTransactions() {
+  await verifyAdmin();
+
+  return await prisma.transaction.findMany({
+    take: 20,
+    orderBy: { createdAt: 'desc' },
+    include: {
+      user: { select: { displayName: true, email: true } },
+      app: { select: { name: true } }
+    }
+  });
+}
+
+/**
+ * Refunds a transaction and revokes associated subscriptions.
+ */
+export async function refundTransaction(transactionId: string) {
+  await verifyAdmin();
+
+  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const transaction = await tx.transaction.findUnique({
+      where: { id: transactionId },
+      include: { app: true }
+    });
+
+    if (!transaction || transaction.status !== 'completed') {
+      throw new Error('Transaction not found or not eligible for refund');
+    }
+
+    // 1. Update transaction status
+    await tx.transaction.update({
+      where: { id: transactionId },
+      data: { status: 'refunded' }
+    });
+
+    // 2. Revoke associated subscriptions for this user on this app
+    // In a real scenario, we might want to check which plan was purchased
+    await tx.subscription.updateMany({
+      where: { 
+        userId: transaction.userId, 
+        appId: transaction.appId,
+        status: 'active'
+      },
+      data: { status: 'cancelled' }
+    });
+
+    // 3. Log the administrative action (Governance)
+    await tx.auditLog.create({
+      data: {
+        action: 'REFUND_TRANSACTION',
+        targetType: 'TRANSACTION',
+        targetId: transactionId,
+        userId: transaction.userId,
+        metadata: {
+          amount: transaction.amount,
+          appId: transaction.appId,
+          reason: 'Manual Admin Refund'
+        }
+      }
+    });
+
+    return { success: true };
   });
 }

@@ -76,4 +76,14 @@ interface GGFeatureGateProps {
 }
 declare function GGFeatureGate({ appId, children, fallback, loadingComponent, showUpgradeButton, upgradeLabel }: GGFeatureGateProps): string | number | bigint | true | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | react_jsx_runtime.JSX.Element;
 
-export { type GGAppConfig, GGBillingButton, GGFeatureGate, GGProvider, type GGUser, GoingGenius, GoingGeniusProvider, useGGAuth, useGGPlan, useGoingGenius };
+interface AISalesBotProps {
+    appId: string;
+    agentType?: 'sales' | 'support' | 'custom';
+    greeting?: string;
+    theme?: 'light' | 'dark' | 'glass';
+    position?: 'bottom-right' | 'bottom-left';
+    apiHost?: string;
+}
+declare function AISalesBot({ appId, agentType, greeting, theme, position, apiHost }: AISalesBotProps): react_jsx_runtime.JSX.Element;
+
+export { AISalesBot, type AISalesBotProps, type GGAppConfig, GGBillingButton, GGFeatureGate, GGProvider, type GGUser, GoingGenius, GoingGeniusProvider, useGGAuth, useGGPlan, useGoingGenius };

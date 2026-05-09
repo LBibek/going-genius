@@ -19,6 +19,7 @@ const envSchema = z.object({
   // Auth
   SUPABASE_URL: z.string().url().catch(''),
   SUPABASE_ANON_KEY: z.string().catch(''),
+  CRON_SECRET: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);

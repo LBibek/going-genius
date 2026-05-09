@@ -30,25 +30,28 @@ export function SubscriptionManager({ subscriptionId, appName }: { subscriptionI
 
   if (isConfirming) {
     return (
-      <div className="flex flex-col gap-3 animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center gap-2 text-amber-500 text-[10px] font-bold uppercase">
-          <AlertTriangle size={12} />
-          Confirm Cancellation
+      <div className="flex flex-col gap-3 p-3 bg-red-500/5 border border-red-500/20 rounded-2xl animate-in slide-in-from-bottom-2 duration-300">
+        <div className="flex items-center gap-2 text-red-500 text-[10px] font-black uppercase tracking-widest">
+          <AlertTriangle size={12} className="animate-pulse" />
+          Final Confirmation
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <p className="text-[10px] text-muted-foreground leading-tight">
+          You'll lose access to {appName} premium features at the end of this billing cycle.
+        </p>
+        <div className="grid grid-cols-2 gap-2 mt-1">
           <button 
             disabled={isPending}
             onClick={() => setIsConfirming(false)}
-            className="py-2 px-3 rounded-lg border border-border text-[10px] font-bold hover:bg-muted"
+            className="py-2 px-3 rounded-xl bg-muted/50 border border-border text-[10px] font-bold hover:bg-muted transition-all"
           >
-            Keep Plan
+            Keep Pro
           </button>
           <button 
             disabled={isPending}
             onClick={handleCancel}
-            className="py-2 px-3 rounded-lg bg-red-500 text-white text-[10px] font-bold hover:bg-red-600 flex items-center justify-center"
+            className="py-2 px-3 rounded-xl bg-red-500 text-white text-[10px] font-black hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-1"
           >
-            {isPending ? <Loader2 size={12} className="animate-spin" /> : 'Yes, Cancel'}
+            {isPending ? <Loader2 size={12} className="animate-spin" /> : 'Confirm'}
           </button>
         </div>
       </div>
@@ -58,10 +61,10 @@ export function SubscriptionManager({ subscriptionId, appName }: { subscriptionI
   return (
     <button 
       onClick={() => setIsConfirming(true)}
-      className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border bg-background hover:bg-muted font-bold text-xs transition-colors"
+      className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl border border-border bg-card/50 hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-500 font-bold text-xs transition-all group"
     >
-      <XCircle size={14} className="text-muted-foreground" />
-      Cancel
+      <XCircle size={14} className="text-muted-foreground group-hover:text-red-500 transition-colors" />
+      Manage Plan
     </button>
   );
 }

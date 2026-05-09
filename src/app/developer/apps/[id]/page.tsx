@@ -21,6 +21,7 @@ import { Grid2Col } from '../../components/ResponsiveGrids';
 import { getAppAnalytics } from '../../actions';
 import { AppPaymentGateways } from '../../components/AppPaymentGateways';
 import { AppIntegrations } from '../../components/AppIntegrations';
+import { AppWebhookSimulator } from '../../components/AppWebhookSimulator';
 import { OptimizedImage } from '@/components/OptimizedImage';
 
 import { AppLeads } from '../../components/AppLeads';
@@ -156,6 +157,11 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
         }
         integrations={<AppIntegrations app={app} />}
         leads={<AppLeads appId={app.id} leads={app.leads} />}
+        simulator={
+          <div className="glass-card">
+            <AppWebhookSimulator app={app} />
+          </div>
+        }
         access={
           <Grid2Col>
             <div className="glass-card">

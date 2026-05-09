@@ -121,6 +121,8 @@ export async function saveAppKeys(appId: string, keys: {
   khaltiSecretKey?: string;
   esewaMerchantId?: string;
   esewaSecretKey?: string;
+  webhookUrl?: string;
+  webhookSecret?: string;
 }) {
   const session = await getSession();
   if (!session) throw new Error('Unauthorized');
@@ -198,4 +200,57 @@ export async function saveAppKeys(appId: string, keys: {
       totalCost: totalCost.toFixed(4)
     }
   };
+}
+
+export async function simulateWebhook(appId: string, event: string, payload: any) {
+  const session = await getSession();
+  if (!session) throw new Error('Unauthorized');
+
+  const app = await prisma.oAuthApp.findUnique({
+    where: { id: appId }
+  });
+
+  if (!app || app.ownerId !== session.userId) {
+    throw new Error('Forbidden');
+  }
+
+  if (!app.webhookUrl) {
+    throw new Error('Webhook URL not configured');
+  }
+
+  const crypto = await import('crypto');
+  const body = JSON.stringify({
+    event,
+    timestamp: new Date().toISOString(),
+    payload
+  });
+
+  const signature = crypto
+    .createHmac('sha256', app.webhookSecret || 'default')
+    .update(body)
+    .digest('hex');
+
+  try {
+    const res = await fetch(app.webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-GG-Signature': signature,
+        'User-Agent': 'Going-Genius-Webhook-Simulator/1.0'
+      },
+      body
+    });
+
+    return {
+      success: true,
+      status: res.status,
+      statusText: res.statusText,
+      response: await res.text().catch(() => 'No response body')
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message
+    };
+  }
 }

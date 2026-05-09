@@ -12,7 +12,8 @@ import {
   Bot,
   FileText,
   Sparkles,
-  Layers
+  Layers,
+  Terminal
 } from 'lucide-react';
 
 interface TabProps {
@@ -25,10 +26,11 @@ interface TabProps {
   playground: React.ReactNode;
   integrations: React.ReactNode;
   leads: React.ReactNode;
+  simulator: React.ReactNode;
   isPremium?: boolean;
 }
 
-export function AppTabs({ overview, access, usage, config, billing, settings, playground, integrations, leads, isPremium = false }: TabProps) {
+export function AppTabs({ overview, access, usage, config, billing, settings, playground, integrations, leads, simulator, isPremium = false }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
@@ -40,6 +42,7 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
     { id: 'leads', label: 'Leads & CRM', icon: Users, isPremium: true },
     { id: 'billing', label: 'Billing', icon: CreditCard, isPremium: true },
     { id: 'playground', label: 'AI Playground', icon: Bot, isPremium: true },
+    { id: 'simulator', label: 'Webhook Simulator', icon: Terminal },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -72,6 +75,7 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
         {activeTab === 'leads' && leads}
         {activeTab === 'billing' && billing}
         {activeTab === 'playground' && playground}
+        {activeTab === 'simulator' && simulator}
         {activeTab === 'settings' && settings}
       </div>
 

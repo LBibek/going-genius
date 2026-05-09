@@ -2,14 +2,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Terminal, Book, Code2, ShieldCheck, DollarSign, Bot } from 'lucide-react';
+import { Terminal, Book, Code2, ShieldCheck, DollarSign, Bot, Zap } from 'lucide-react';
 
 export function AppDocs({ app }: { app: any }) {
-  const [tab, setTab] = useState<'flow' | 'node' | 'react' | 'curl' | 'billing' | 'bot'>('flow');
+  const [tab, setTab] = useState<'flow' | 'node' | 'react' | 'curl' | 'billing' | 'bot' | 'webhooks'>('flow');
   const [appUrl, setAppUrl] = useState('https://gguser.com');
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAppUrl(window.location.origin);
   }, []);
 
@@ -33,6 +32,9 @@ export function AppDocs({ app }: { app: any }) {
         </button>
         <button className={`docs-tab ${tab === 'bot' ? 'active' : ''}`} onClick={() => setTab('bot')}>
           <Bot size={14} /> AI Sales Bot
+        </button>
+        <button className={`docs-tab ${tab === 'webhooks' ? 'active' : ''}`} onClick={() => setTab('webhooks')}>
+          <Zap size={14} /> Webhooks
         </button>
       </div>
 
@@ -58,7 +60,7 @@ export function AppDocs({ app }: { app: any }) {
               <span className="step-num">3</span>
               <div>
                 <h4>Get User Profile</h4>
-                <p>Use the access token to fetch the user's profile information.</p>
+                <p>Use the access token to fetch the user&apos;s profile information.</p>
                 <code className="code-inline">GET /api/gg/userinfo</code>
               </div>
             </div>
@@ -166,23 +168,24 @@ export async function GET(request) {
             </div>
           </div>
         )}
+
         {tab === 'bot' && (
           <div className="docs-step-list">
             <div className="docs-step">
               <span className="step-num">1</span>
               <div>
-                <h4>React Component Integration</h4>
-                <p>Drop this pre-built chat component into your application to provide instant CSD support and drive sales.</p>
+                <h4>React SDK Component</h4>
+                <p>Drop the pre-built <code className="code-inline">AISalesBot</code> into your app for instant AI support powered by your configuration.</p>
                 <div className="code-block" style={{ marginTop: '0.75rem' }}>
                   <pre>
-{`import { AISalesBot } from '@gguser/react';
+{`import { AISalesBot } from '@going-genius/react';
 
 export default function SupportPage() {
   return (
     <AISalesBot 
       appId="${app.id}"
-      agentType="sales" // or "support"
-      greeting="Hi! I can help you find the right subscription plan."
+      apiUrl="https://gguser.com/api/v1/apps/${app.id}/bot"
+      greeting="Hi! How can I help you today?"
       theme="dark"
     />
   );
@@ -194,18 +197,64 @@ export default function SupportPage() {
             <div className="docs-step">
               <span className="step-num">2</span>
               <div>
-                <h4>WhatsApp Integration</h4>
-                <p>Connect your AI agent directly to WhatsApp Business to answer queries and sell services automatically.</p>
+                <h4>Direct API Usage</h4>
+                <p>Call the bot endpoint from any environment without the SDK component.</p>
                 <div className="code-block" style={{ marginTop: '0.75rem' }}>
                   <pre>
-{`// 1. In your GGUser Console, ensure you have saved your AI Provider Keys.
-// 2. Set up your WhatsApp Webhook to point to GGUser:
-https://gguser.com/api/v1/apps/${app.id}/webhooks/whatsapp
-
-// 3. The AI agent will automatically process incoming messages, 
-// learn from your application's context, and reply to users.`}
+{`const res = await fetch('https://gguser.com/api/v1/apps/${app.id}/bot', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ 
+    message: 'What plans do you offer?', 
+    history: [] 
+  })
+});
+const { text } = await res.json();`}
                   </pre>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'webhooks' && (
+          <div className="docs-step-list">
+            <div className="docs-step">
+              <span className="step-num">1</span>
+              <div>
+                <h4>Configure Endpoint</h4>
+                <p>Go to <b>Configuration → API & Provider Credentials</b> and set your Webhook URL.</p>
+              </div>
+            </div>
+            <div className="docs-step">
+              <span className="step-num">2</span>
+              <div>
+                <h4>Verify Signature</h4>
+                <p>Verify the <code className="code-inline">X-GG-Signature</code> header to ensure the request came from Going Genius.</p>
+                <div className="code-block" style={{ marginTop: '0.75rem' }}>
+                  <pre>
+{`// Node.js / Next.js Example
+import crypto from 'crypto';
+
+const signature = req.headers.get('x-gg-signature');
+const body = await req.text();
+const expectedSignature = crypto
+  .createHmac('sha256', process.env.GG_WEBHOOK_SECRET)
+  .update(body)
+  .digest('hex');
+
+if (signature !== expectedSignature) {
+  return new Response('Unauthorized', { status: 401 });
+}`}
+                  </pre>
+                </div>
+              </div>
+            </div>
+            <div className="docs-step">
+              <span className="step-num">3</span>
+              <div>
+                <h4>Handle Events</h4>
+                <p>Currently supported events: <code className="code-inline">payment.success</code>, <code className="code-inline">subscription.created</code>, <code className="code-inline">lead.captured</code>.</p>
               </div>
             </div>
           </div>

@@ -13,6 +13,7 @@ import {
 import { Grid2Col } from '../developer/components/ResponsiveGrids';
 import { ShieldCheck, Activity, Users, Zap } from 'lucide-react';
 
+import { AdminTransactions } from './components/AdminTransactions';
 import { AdminDashboardStyles } from './components/AdminDashboardStyles';
 
 export default async function AdminDashboardPage() {
@@ -100,6 +101,8 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
       </Grid2Col>
+
+      <AdminTransactions />
     </div>
   );
 }
