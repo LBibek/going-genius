@@ -23,8 +23,10 @@ import { AppPaymentGateways } from '../../components/AppPaymentGateways';
 import { AppIntegrations } from '../../components/AppIntegrations';
 import { AppWebhookSimulator } from '../../components/AppWebhookSimulator';
 import { OptimizedImage } from '@/components/OptimizedImage';
+import { AppDomains } from '../../components/AppDomains';
 
 import { AppLeads } from '../../components/AppLeads';
+import { AppPrompts } from '../../components/AppPrompts';
 
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
@@ -205,6 +207,8 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
             <AppAIPlayground app={app} />
           </div>
         }
+        prompts={<AppPrompts app={app} />}
+        domains={<AppDomains app={app} />}
       />
     </div>
   );

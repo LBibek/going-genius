@@ -86,28 +86,62 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
           
           {showWPConfig && (
             <div className="config-panel">
-              <h4>Setup WordPress Sync</h4>
-              <p className="panel-hint">Enter your WordPress site URL to generate a secure connection link.</p>
-              <div className="input-with-button">
-                <input 
-                  type="text" 
-                  placeholder="https://your-site.com" 
-                  value={wpUrl}
-                  onChange={(e) => setWpUrl(e.target.value)}
-                  className="config-input"
-                />
+              <div className="panel-header">
+                <h4>WordPress Connection Credentials</h4>
+                <div className="badge-premium">Secure Handshake</div>
               </div>
-              {wpUrl && (
-                <div className="setup-step">
-                  <span className="step-label">Step 2: Add this to your WP Settings</span>
+              
+              <p className="panel-hint">Use these credentials in your WordPress GG-Plugin settings to enable content gating and SSO.</p>
+              
+              <div className="config-fields">
+                <div className="field-group">
+                  <label>Client ID</label>
                   <div className="code-block-mini">
-                    <code>{`${wpUrl}/wp-admin/options-general.php?page=going-genius`}</code>
-                    <button onClick={() => copyToClipboard(`${wpUrl}/wp-admin/options-general.php?page=going-genius`)}>
+                    <code>{app.clientId}</code>
+                    <button onClick={() => copyToClipboard(app.clientId)}>
                       {copied ? <Check size={14} /> : <Copy size={14} />}
                     </button>
                   </div>
                 </div>
-              )}
+
+                <div className="field-group">
+                  <label>Client Secret</label>
+                  <div className="code-block-mini">
+                    <code>••••••••••••••••••••••••</code>
+                    <button onClick={() => copyToClipboard(app.clientSecret)}>
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="field-group">
+                  <label>OAuth Callback URL</label>
+                  <p className="field-hint">Whitelist this URL in your WP plugin settings.</p>
+                  <div className="code-block-mini">
+                    <code>{`${wpUrl || 'https://your-site.com'}/wp-json/gg/v1/callback`}</code>
+                    <button onClick={() => copyToClipboard(`${wpUrl || 'https://your-site.com'}/wp-json/gg/v1/callback`)}>
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="handshake-status">
+                <div className="status-item">
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                  <span>OAuth 2.0 Ready</span>
+                </div>
+                <div className="status-item">
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                  <span>PKCE Supported</span>
+                </div>
+              </div>
+
+              <div className="action-row">
+                <button className="btn btn-primary btn-xs w-full" onClick={() => window.open('/demo/wordpress', '_blank')}>
+                  <ExternalLink size={12} /> Test Handshake in Demo
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -293,35 +327,85 @@ export function AppIntegrations({ app }: AppIntegrationsProps) {
         .config-panel {
           margin-top: 1rem;
           padding: 1.25rem;
-          background: rgba(255,255,255,0.03);
-          border-radius: 8px;
+          background: rgba(255,255,255,0.02);
+          border-radius: 12px;
           border: 1px solid rgba(255,255,255,0.05);
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
         }
 
-        .config-panel h4 { margin: 0 0 0.5rem; font-size: 0.9rem; }
-        .panel-hint { font-size: 0.75rem; color: #666; margin-bottom: 1rem; }
-
-        .config-input {
-          width: 100%;
-          background: #000;
-          border: 1px solid #333;
-          padding: 0.75rem;
-          border-radius: 6px;
-          color: #fff;
-          font-size: 0.85rem;
+        .panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
 
-        .setup-step { margin-top: 1rem; }
-        .step-label { font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 0.5rem; }
+        .panel-header h4 { margin: 0; font-size: 0.95rem; font-weight: 600; }
         
+        .badge-premium {
+          font-size: 0.6rem;
+          background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+          color: white;
+          padding: 2px 8px;
+          border-radius: 4px;
+          text-transform: uppercase;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+        }
+
+        .panel-hint { font-size: 0.8rem; color: #71717a; margin: 0; }
+
+        .config-fields {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .field-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .field-group label {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #a1a1aa;
+        }
+
+        .field-hint {
+          font-size: 0.65rem;
+          color: #52525b;
+          margin: 0;
+        }
+
+        .handshake-status {
+          display: flex;
+          gap: 1rem;
+          padding: 0.75rem;
+          background: rgba(16, 185, 129, 0.03);
+          border-radius: 8px;
+          border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .status-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.75rem;
+          color: #10b981;
+          font-weight: 500;
+        }
+
         .code-block-mini {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          background: #111;
-          padding: 0.5rem 0.75rem;
-          border-radius: 4px;
-          border: 1px solid #222;
+          background: #09090b;
+          padding: 0.6rem 0.8rem;
+          border-radius: 8px;
+          border: 1px solid #27272a;
         }
         .code-block-mini code { font-size: 0.7rem; color: #aaa; overflow: hidden; text-overflow: ellipsis; }
         .code-block-mini button { background: transparent; border: none; color: #666; cursor: pointer; padding: 4px; }

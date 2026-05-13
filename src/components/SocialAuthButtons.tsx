@@ -1,6 +1,8 @@
 'use client';
 
 import { OptimizedImage } from './OptimizedImage';
+import { supabase } from '@/lib/supabase';
+import { Provider } from '@supabase/supabase-js';
 
 interface SocialAuthButtonsProps {
   onLogin?: (provider: string) => void;
@@ -8,13 +10,24 @@ interface SocialAuthButtonsProps {
 }
 
 export function SocialAuthButtons({ onLogin, isLoading }: SocialAuthButtonsProps) {
-  const handleLogin = (provider: string) => {
+  const handleLogin = async (provider: string) => {
     if (onLogin) onLogin(provider);
-    else {
-      // Default behavior if no handler is provided
+    
+    if (provider.toLowerCase() === 'google') {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google' as Provider,
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        console.error('OAuth error:', error.message);
+        alert('Failed to initialize Google login. Please try again.');
+      }
+    } else {
       console.log(`Logging in with ${provider}`);
-      // In a real app, this would redirect to the OAuth endpoint
-      // window.location.href = `/api/auth/${provider.toLowerCase()}`;
+      // In a real app, you'd add more providers here
     }
   };
 

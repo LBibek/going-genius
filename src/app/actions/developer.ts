@@ -13,6 +13,11 @@ const AppSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   redirectUris: z.string().transform((val) => val.split(',').map(s => s.trim()).filter(Boolean)),
   logoUrl: z.string().url().optional().or(z.literal('')),
+  isPublic: z.boolean().optional(),
+  marketplaceCategory: z.string().optional(),
+  marketplaceTagline: z.string().optional(),
+  marketplaceDescription: z.string().optional(),
+  marketplaceScreenshots: z.string().transform((val) => val ? val.split(',').map(s => s.trim()).filter(Boolean) : []).optional(),
 });
 
 export async function createApp(prevState: any, formData: FormData) {
@@ -58,17 +63,40 @@ export async function updateApp(appId: string, prevState: any, formData: FormDat
     name: formData.get('name'),
     redirectUris: formData.get('redirectUris'),
     logoUrl: formData.get('logoUrl'),
+    isPublic: formData.get('isPublic') === 'on',
+    marketplaceCategory: formData.get('marketplaceCategory'),
+    marketplaceTagline: formData.get('marketplaceTagline'),
+    marketplaceDescription: formData.get('marketplaceDescription'),
+    marketplaceScreenshots: formData.get('marketplaceScreenshots'),
   });
 
   if (!validatedFields.success) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
 
-  const { name, redirectUris, logoUrl } = validatedFields.data;
+  const { 
+    name, 
+    redirectUris, 
+    logoUrl, 
+    isPublic, 
+    marketplaceCategory, 
+    marketplaceTagline, 
+    marketplaceDescription,
+    marketplaceScreenshots 
+  } = validatedFields.data;
 
   await prisma.oAuthApp.update({
     where: { id: appId },
-    data: { name, redirectUris, logoUrl: logoUrl || null },
+    data: { 
+      name, 
+      redirectUris, 
+      logoUrl: logoUrl || null,
+      isPublic,
+      marketplaceCategory: marketplaceCategory || null,
+      marketplaceTagline: marketplaceTagline || null,
+      marketplaceDescription: marketplaceDescription || null,
+      marketplaceScreenshots: marketplaceScreenshots || [],
+    },
   });
 
   revalidatePath(`/developer/apps/${appId}`);

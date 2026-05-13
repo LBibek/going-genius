@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DATABASE_URL: z.string().url().catch(''),
+  SESSION_SECRET: z.string().min(32).catch(''),
   NEXTAUTH_SECRET: z.string().min(16).catch(''),
   NEXT_PUBLIC_APP_URL: z.string().url().catch(''),
   
@@ -11,6 +12,8 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().optional(),
   KHALTI_SECRET_KEY: z.string().optional(),
   ESEWA_SECRET_KEY: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
   
   // Uploadcare
   NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY: z.string().optional(),

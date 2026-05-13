@@ -163,9 +163,9 @@ export async function saveAppKeys(appId: string, keys: {
   const usageData = await prisma.apiUsage.findMany({
     where: {
       appId,
-      timestamp: { gte: startDate }
+      createdAt: { gte: startDate }
     },
-    orderBy: { timestamp: 'asc' }
+    orderBy: { createdAt: 'asc' }
   });
 
   // Aggregate by day
@@ -176,9 +176,9 @@ export async function saveAppKeys(appId: string, keys: {
   }
 
   usageData.forEach((record: any) => {
-    const dateStr = format(record.timestamp, 'MMM dd');
+    const dateStr = format(record.createdAt, 'MMM dd');
     if (dailyUsage[dateStr]) {
-      dailyUsage[dateStr].tokens += record.tokensUsed;
+      dailyUsage[dateStr].tokens += record.quantity;
       dailyUsage[dateStr].calls += 1;
       dailyUsage[dateStr].cost += Number(record.cost);
     }
@@ -188,7 +188,7 @@ export async function saveAppKeys(appId: string, keys: {
     .map(([name, data]) => ({ name, ...data }))
     .reverse();
 
-  const totalTokens = usageData.reduce((acc: number, curr: any) => acc + curr.tokensUsed, 0);
+  const totalTokens = usageData.reduce((acc: number, curr: any) => acc + curr.quantity, 0);
   const totalCalls = usageData.length;
   const totalCost = usageData.reduce((acc: number, curr: any) => acc + Number(curr.cost), 0);
 

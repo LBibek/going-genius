@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { prisma } from '@/lib/prisma';
 
+export const runtime = 'edge';
+
 const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET!);
 
 export async function GET(request: NextRequest) {

@@ -8,6 +8,7 @@ import { getOverallAnalytics } from './actions';
 import { StatsRow, AppsGrid, DashboardStyles, Grid2Col } from './components/ResponsiveGrids';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { Activity, Shield, Cpu, Sparkles } from 'lucide-react';
+import { GlobalSearch } from './components/GlobalSearch';
 
 export default async function DeveloperDashboard() {
   const session = await getSession();
@@ -37,7 +38,8 @@ export default async function DeveloperDashboard() {
           <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0 }}>Developer Console</h1>
           <p style={{ color: 'var(--muted)' }}>Manage your applications and users</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+          <GlobalSearch />
           <ThemeToggle />
           <Link href="/dashboard" className="btn btn-outline" style={{ borderRadius: '12px', padding: '0.6rem 1.2rem' }}>
             Dashboard

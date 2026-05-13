@@ -1,6 +1,6 @@
 {
   "name": "@going-genius/react",
-  "version": "0.1.0",
+  "version": "1.0.0-rc",
   "description": "The official React SDK for Going Genius Identity Platform",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

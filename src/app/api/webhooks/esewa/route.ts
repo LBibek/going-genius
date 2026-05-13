@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Monitor } from '@/lib/monitor';
 import { processSuccessfulPayment } from '@/lib/billing';
+import { verifyEsewaSignature } from '@/lib/billing/security';
 import crypto from 'crypto';
 
 export async function GET(req: NextRequest) {
@@ -39,20 +40,18 @@ export async function GET(req: NextRequest) {
         return NextResponse.redirect(new URL('/dashboard/payment/failed?error=config_missing', req.url));
       }
 
-      // 3. Verify Signature
-      const signedFieldNames = data.signed_field_names.split(',');
-      const message = signedFieldNames
-        .map((field: string) => `${field}=${data[field]}`)
-        .join(',');
+      // 3. Verify Signature & Amount
+      const isValid = verifyEsewaSignature(data, app.esewaSecretKey);
 
-      const hash = crypto
-        .createHmac('sha256', app.esewaSecretKey)
-        .update(message)
-        .digest('base64');
-
-      if (hash !== data.signature) {
+      if (!isValid) {
         console.error('[ESEWA WEBHOOK] Signature mismatch');
         return NextResponse.redirect(new URL('/dashboard/payment/failed?error=invalid_signature', req.url));
+      }
+
+      // Integrity Check: Ensure amount matches
+      if (Number(total_amount) !== Number(transaction.amount)) {
+        console.error(`[ESEWA WEBHOOK] Amount mismatch. Expected ${transaction.amount}, got ${total_amount}`);
+        return NextResponse.redirect(new URL('/dashboard/payment/failed?error=amount_mismatch', req.url));
       }
 
       if (status === 'COMPLETE') {

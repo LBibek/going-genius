@@ -1,66 +1,52 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
+import { decrypt } from '@/lib/auth-utils';
+import { cookies } from 'next/headers';
 
-const COOKIE_NAME = 'gg_session';
-const SECRET = process.env.SESSION_SECRET;
+/**
+ * NEXT.JS 16 CONVENTION: middleware.ts is renamed to proxy.ts
+ * This file handles Edge-side authentication, authorization, and routing.
+ */
 
-// Protected routes patterns
-const PROTECTED_ROUTES = ['/dashboard', '/developer', '/api/developer', '/api/billing'];
-const AUTH_ROUTES = ['/auth/login', '/join'];
+const protectedRoutes = ['/developer', '/wallet', '/admin', '/profile', '/settings'];
+const publicRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password', '/'];
+const adminRoutes = ['/admin'];
 
 export async function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const token = req.cookies.get(COOKIE_NAME)?.value;
+  const path = req.nextUrl.pathname;
+  const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
+  const isPublicRoute = publicRoutes.some(route => path === route);
+  const isAdminRoute = adminRoutes.some(route => path.startsWith(route));
 
-  // 1. Check if the route is protected
-  const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
-  const isAuthRoute = AUTH_ROUTES.some(route => pathname.startsWith(route));
+  // 1. Decrypt the session from the cookie
+  const cookie = (await cookies()).get('gg_session')?.value;
+  const session = await decrypt(cookie);
 
-  // 2. Performance: Skip verification for public routes if no token exists
-  if (!isProtectedRoute && !isAuthRoute) {
-    return NextResponse.next();
+  // 2. Redirect to /auth/login if the user is not authenticated for protected routes
+  if (isProtectedRoute && !session?.userId) {
+    const loginUrl = new URL('/auth/login', req.nextUrl.origin);
+    loginUrl.searchParams.set('callbackUrl', path);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // 3. Verify Token at the Edge
-  let payload = null;
-  if (token && SECRET) {
-    try {
-      const encodedKey = new TextEncoder().encode(SECRET);
-      const { payload: verified } = await jwtVerify(token, encodedKey, {
-        algorithms: ['HS256'],
-      });
-      payload = verified;
-    } catch (err) {
-      // Token expired or invalid
-    }
+  // 3. Redirect authenticated users away from public auth pages
+  if (
+    isPublicRoute &&
+    session?.userId &&
+    !req.nextUrl.pathname.startsWith('/developer') &&
+    path !== '/'
+  ) {
+    return NextResponse.redirect(new URL('/developer', req.nextUrl.origin));
   }
 
-  // 4. Protection Logic
-  if (isProtectedRoute && !payload) {
-    const url = new URL('/auth/login', req.url);
-    url.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  // 5. Redirect logged-in users away from auth pages
-  if (isAuthRoute && payload) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
+  // 4. Admin Role Enforcement
+  if (isAdminRoute && session?.role !== 'ADMIN') {
+    return NextResponse.redirect(new URL('/developer', req.nextUrl.origin));
   }
 
   return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+// Routes Proxy should not run on
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api/auth|_next/static|_next/image|favicon.ico|images).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 };

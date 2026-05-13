@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Monitor } from '@/lib/monitor';
 import { processSuccessfulPayment } from '@/lib/billing';
+import { verifyKhaltiPayment } from '@/lib/billing/security';
 
 
 export async function POST(req: NextRequest) {
@@ -43,22 +44,17 @@ export async function POST(req: NextRequest) {
       }
 
       // 2. Verify with Khalti Lookup API
-      const lookupUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://khalti.com/api/v2/epayment/lookup/' 
-        : 'https://a.khalti.com/api/v2/epayment/lookup/';
-
-      const verifyRes = await fetch(lookupUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Key ${app.khaltiSecretKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ pidx })
-      });
-
-      const verification = await verifyRes.json();
+      const verification = await verifyKhaltiPayment(pidx, app.khaltiSecretKey);
 
       if (verification.status === 'Completed') {
+        // Integrity Check: Ensure amount matches
+        // Khalti returns amount in Paisa, so we divide by 100 to compare with our Rupee amount
+        const receivedAmount = Number(verification.amount) / 100;
+        if (receivedAmount !== Number(transaction.amount)) {
+          console.error(`[KHALTI WEBHOOK] Amount mismatch. Expected ${transaction.amount}, got ${receivedAmount}`);
+          return NextResponse.json({ message: 'Amount verification failed' }, { status: 403 });
+        }
+
         // 3. Process the successful payment using shared logic
         await processSuccessfulPayment(transaction.id, verification.transaction_id || pidx, transaction.appId);
         return NextResponse.json({ success: true });

@@ -13,7 +13,8 @@ import {
   FileText,
   Sparkles,
   Layers,
-  Terminal
+  Terminal,
+  Globe
 } from 'lucide-react';
 
 interface TabProps {
@@ -24,25 +25,29 @@ interface TabProps {
   billing: React.ReactNode;
   settings: React.ReactNode;
   playground: React.ReactNode;
+  prompts: React.ReactNode;
   integrations: React.ReactNode;
   leads: React.ReactNode;
   simulator: React.ReactNode;
+  domains: React.ReactNode;
   isPremium?: boolean;
 }
 
-export function AppTabs({ overview, access, usage, config, billing, settings, playground, integrations, leads, simulator, isPremium = false }: TabProps) {
+export function AppTabs({ overview, access, usage, config, billing, settings, playground, prompts, integrations, leads, simulator, domains, isPremium = false }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'usage', label: 'Usage & AI', icon: Sparkles, isPremium: true },
     { id: 'config', label: 'Configuration', icon: Key },
+    { id: 'prompts', label: 'Prompt Manager', icon: FileText, isPremium: true },
     { id: 'integrations', label: 'Integrations', icon: Layers },
     { id: 'access', label: 'Access & Users', icon: Users },
     { id: 'leads', label: 'Leads & CRM', icon: Users, isPremium: true },
     { id: 'billing', label: 'Billing', icon: CreditCard, isPremium: true },
     { id: 'playground', label: 'AI Playground', icon: Bot, isPremium: true },
     { id: 'simulator', label: 'Webhook Simulator', icon: Terminal },
+    { id: 'domains', label: 'Custom Domains', icon: Globe, isPremium: true },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -74,8 +79,10 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
         {activeTab === 'access' && access}
         {activeTab === 'leads' && leads}
         {activeTab === 'billing' && billing}
+        {activeTab === 'prompts' && prompts}
         {activeTab === 'playground' && playground}
         {activeTab === 'simulator' && simulator}
+        {activeTab === 'domains' && domains}
         {activeTab === 'settings' && settings}
       </div>
 

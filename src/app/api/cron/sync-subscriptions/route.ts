@@ -1,26 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { syncAllSubscriptions } from '@/lib/billing';
+import { env } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return new NextResponse('Unauthorized', { status: 401 });
+export async function GET(request: Request) {
+  const authHeader = request.headers.get('authorization');
+  
+  // Security: Check if CRON_SECRET matches
+  if (env.CRON_SECRET && authHeader !== `Bearer ${env.CRON_SECRET}`) {
+    return new Response('Unauthorized', { status: 401 });
   }
 
   try {
     const result = await syncAllSubscriptions();
-    return NextResponse.json({
-      success: true,
-      message: `Synchronized ${result.count} subscriptions`,
+    return NextResponse.json({ 
+      success: true, 
+      expiredCount: result.count,
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('[CRON] Subscription Sync Error:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message 
-    }, { status: 500 });
+    console.error('[CRON SYNC ERROR]', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

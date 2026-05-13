@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -32,12 +33,21 @@ model GGUser {
   bio           String?
   role          Role      @default(USER)
   isActive      Boolean   @default(true)
+  referralCode  String?   @unique // Unique code for referring others
+  referredById  String?   // The user who referred this user
+  referredBy    GGUser?   @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals     GGUser[]  @relation("UserReferrals")
+  referralEarnings Referral[]
 
   // Security tracking
   loginAttempts Int       @default(0)
   lockedUntil   DateTime?
   lastLoginAt   DateTime?
   lastLoginIp   String?
+
+  ssoEnabled    Boolean   @default(false)
+  organizationId String?
+  organization  Organization? @relation(fields: [organizationId], references: [id])
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -50,8 +60,18 @@ model GGUser {
   appMemberships AppUser[]
   subscriptions  Subscription[]
   carts          Cart[]
-  transactions   Transaction[]
+  transactions  Transaction[]
   threads        Thread[]
+}
+
+model Organization {
+  id            String   @id @default(cuid())
+  name          String
+  domain        String   @unique
+  ssoSettings   Json?    // SAML/OIDC config
+  users         GGUser[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 // ─── Sessions ─────────────────────────────────────────────────────────────────
@@ -140,6 +160,21 @@ model OAuthApp {
   apiUsages     ApiUsage[]
   leads         Lead[]
   threads       Thread[]
+  prompts       AIPrompt[]
+
+  // Marketplace Metadata
+  isPublic              Boolean   @default(false)
+  marketplaceCategory   String?   // e.g. "AI", "Productivity", "Marketing"
+  marketplaceTagline    String?
+  marketplaceDescription String?   @db.Text
+  marketplaceScreenshots String[]
+  isFeatured            Boolean   @default(false)
+  isOfficial            Boolean   @default(false)
+  
+  // Fraud & Moderation (Phase 6)
+  riskScore             Float?    @default(0.0)
+  moderationStatus      String    @default("APPROVED") // PENDING, APPROVED, FLAGGED, REJECTED
+  moderationNotes       String?   @db.Text
 
   @@index([ownerId])
 }
@@ -306,6 +341,16 @@ model Transaction {
   @@index([appId])
 }
 
+model ProcessedTransaction {
+  id            String   @id @default(cuid())
+  gateway       String   // khalti, esewa
+  externalId    String   @unique // The gateway's transaction ID (e.g. pidx or refId)
+  internalId    String?  // Our internal transaction ID
+  processedAt   DateTime @default(now())
+
+  @@index([gateway, externalId])
+}
+
 model ApiUsage {
   id        String   @id @default(cuid())
   appId     String
@@ -377,4 +422,50 @@ model Message {
   createdAt DateTime @default(now())
 
   @@index([threadId])
+}
+
+// ─── AI Prompt Management ───────────────────────────────────────────────────
+
+model AIPrompt {
+  id          String   @id @default(cuid())
+  appId       String
+  app         OAuthApp @relation(fields: [appId], references: [id], onDelete: Cascade)
+  name        String   // e.g. "Customer Support Assistant"
+  slug        String   // e.g. "support-bot"
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  versions    AIPromptVersion[]
+
+  @@unique([appId, slug])
+  @@index([appId])
+}
+
+model AIPromptVersion {
+  id          String   @id @default(cuid())
+  promptId    String
+  prompt      AIPrompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  version     Int      @default(1)
+  content     String   @db.Text // The template with handlebars-style variables
+  config      Json?    // temperature, topP, maxTokens, etc.
+  isLive      Boolean  @default(false)
+  variantLabel String? // e.g. "Control", "Variant A"
+  variantWeight Float    @default(1.0) // 0.0 to 1.0
+  createdBy   String?
+  createdAt   DateTime @default(now())
+
+  @@index([promptId])
+}
+
+model Referral {
+  id            String   @id @default(cuid())
+  referrerId    String
+  referrer      GGUser   @relation(fields: [referrerId], references: [id])
+  referredUserId String
+  amount        Float    // Commission amount earned
+  currency      String   @default("NPR")
+  status        String   @default("PENDING") // PENDING, PAID
+  createdAt     DateTime @default(now())
 }

@@ -49,7 +49,7 @@ export function AdminTransactions() {
     });
   };
 
-  const filtered = transactions.filter(tx => 
+  const filtered = transactions.filter((tx: any) => 
     tx.user?.displayName?.toLowerCase().includes(search.toLowerCase()) ||
     tx.app?.name?.toLowerCase().includes(search.toLowerCase()) ||
     tx.referenceId?.toLowerCase().includes(search.toLowerCase())
@@ -94,7 +94,7 @@ export function AdminTransactions() {
             ) : filtered.length === 0 ? (
               <tr><td colSpan={7} style={{ textAlign: 'center', padding: '3rem' }}>No transactions found.</td></tr>
             ) : (
-              filtered.map((tx) => (
+              filtered.map((tx: any) => (
                 <tr key={tx.id}>
                   <td>
                     <div style={{ fontWeight: 600 }}>{tx.user?.displayName || 'Unknown'}</div>

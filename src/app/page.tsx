@@ -16,18 +16,18 @@ export default async function HomePage() {
             <span className="auth-logo-text">Going Genius</span>
           </div>
           <div className="nav-links hide-mobile">
+            <Link href="#solutions" className="nav-link">Solutions</Link>
             <Link href="#features" className="nav-link">Features</Link>
-            <Link href="#premium" className="nav-link">Premium</Link>
-            <Link href="#pricing" className="nav-link">Pricing</Link>
-            <Link href="#developers" className="nav-link">Developers</Link>
+            <Link href="#pricing" className="nav-link">Institutional Plans</Link>
+            <Link href="#developers" className="nav-link">API & SDK</Link>
           </div>
           <div className="nav-actions">
             {session ? (
-              <Link href="/dashboard" className="btn-nav primary-gradient">Dashboard</Link>
+              <Link href="/dashboard" className="btn-nav primary-gradient">Admin Dashboard</Link>
             ) : (
               <>
-                <Link href="/auth/login" className="nav-link hide-mobile">Sign In</Link>
-                <Link href="/auth/register" className="btn-nav primary-gradient">Get Started</Link>
+                <Link href="/auth/login" className="nav-link hide-mobile">Portal Login</Link>
+                <Link href="/auth/register" className="btn-nav primary-gradient">Partner with Us</Link>
               </>
             )}
             <ThemeToggle />
@@ -41,124 +41,125 @@ export default async function HomePage() {
         <div className="auth-bg-glow" />
         
         <div className="container hero-container animate-fade-in">
-          <div className="hero-badge animate-float">🚀 NEXT-GEN INFRASTRUCTURE</div>
+          <div className="hero-badge animate-float">🏫 SMART CAMPUS INFRASTRUCTURE</div>
           <h1 className="hero-title">
-            Scaling Intelligence <br />
-            <span className="gradient-text-golden">Across Nepal</span>
+            The Digital Heart of <br />
+            <span className="gradient-text-golden">Modern Institutions</span>
           </h1>
           <p className="hero-subtitle">
-            The ultimate IDaaS & Billing platform for high-margin digital businesses. 
-            Automate your auth, manage multi-tenant subscriptions, and deploy AI agents in minutes.
+            The unified Identity & Billing platform designed for Schools, Colleges, and Universities in Nepal. 
+            From smart attendance to cashless canteens, we power your campus ecosystem.
           </p>
           <div className="hero-actions">
-            <Link href="/auth/register" className="btn-hero primary-gradient">Build Your App</Link>
-            <Link href="#premium" className="btn-hero btn-outline">See Premium Features →</Link>
+            <Link href="/auth/register" className="btn-hero primary-gradient">Onboard Your School</Link>
+            <Link href="#solutions" className="btn-hero btn-outline">Explore Solutions →</Link>
           </div>
 
           <div className="hero-visual-wrapper">
             <div className="hero-visual-glow"></div>
             <div className="hero-visual-card glass-card">
               <img 
-                src="/images/premium-showcase.png" 
-                alt="Premium Showcase" 
+                src="/images/smart_campus_hero.png" 
+                alt="Smart Campus Ecosystem" 
                 className="hero-visual-img"
               />
               <div className="visual-floating-badge badge-1">
-                <span className="icon">🛡️</span>
-                <span className="text">Secure Auth</span>
+                <span className="icon">🆔</span>
+                <span className="text">Unified Student ID</span>
               </div>
               <div className="visual-floating-badge badge-2">
-                <span className="icon">🤖</span>
-                <span className="text">AI Agents</span>
+                <span className="icon">🤳</span>
+                <span className="text">Biometric Attendance</span>
               </div>
               <div className="visual-floating-badge badge-3">
-                <span className="icon">💳</span>
-                <span className="text">Khalti/eSewa</span>
+                <span className="icon">💸</span>
+                <span className="text">Cashless Canteen</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Premium Features Showcase ────────────────────────────────────────── */}
-      <section id="features" className="premium-showcase-section">
-        <div id="premium" style={{ position: 'absolute', top: '-100px' }} />
+      {/* ─── Solutions Section ────────────────────────────────────────── */}
+      <section id="solutions" className="premium-showcase-section">
         <div className="container">
           <div className="section-header">
-            <div className="hero-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>ELITE CAPABILITIES</div>
-            <h2 className="section-title">Engineered for High-Margin Apps</h2>
-            <p className="section-subtitle">Going Genius provides the specialized tools that modern startups need to outpace the market.</p>
+            <div className="hero-badge" style={{ background: 'rgba(255, 177, 22, 0.1)', color: '#FFB116' }}>END-TO-END SOLUTIONS</div>
+            <h2 className="section-title">Built for Educational Excellence</h2>
+            <p className="section-subtitle">Going Genius provides the specialized infrastructure to digitize every aspect of campus life.</p>
           </div>
 
           <div className="premium-grid">
             <div className="premium-card glass-card">
               <div className="premium-card-gradient"></div>
-              <div className="premium-icon">🏢</div>
-              <h3>Multi-Tenant IDaaS</h3>
-              <p>Built-in support for B2B applications. Manage multiple organizations, teams, and tiered permissions under a single umbrella.</p>
+              <div className="premium-icon">🎓</div>
+              <h3>Universal Student ID</h3>
+              <p>A single digital identity for students that works across the library, labs, and main gate. Secured with biometric encryption.</p>
               <ul className="premium-features-list">
-                <li>Custom Branding</li>
-                <li>Org-level Analytics</li>
-                <li>Team Management</li>
+                <li>QR & NFC Support</li>
+                <li>Digital Profile Vault</li>
+                <li>Parental Access</li>
               </ul>
             </div>
 
             <div className="premium-card glass-card">
               <div className="premium-card-gradient" style={{ background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, transparent 100%)' }}></div>
-              <div className="premium-icon">🧠</div>
-              <h3>AI Orchestration</h3>
-              <p>Leverage Firebase Genkit to deploy intelligent agents that handle support, lead generation, and workflow automation.</p>
+              <div className="premium-icon">💳</div>
+              <h3>Automated Fee Portals</h3>
+              <p>Eliminate queues with real-time fee collection via Khalti and eSewa. Automated receipts and arrears tracking for accounts.</p>
               <ul className="premium-features-list">
-                <li>Tool-Calling Ready</li>
-                <li>RAG Support</li>
-                <li>WhatsApp Integration</li>
+                <li>Instant Settlement</li>
+                <li>Payment Reminders</li>
+                <li>Fee History Logs</li>
               </ul>
             </div>
 
             <div className="premium-card glass-card">
               <div className="premium-card-gradient" style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, transparent 100%)' }}></div>
-              <div className="premium-icon">⚡</div>
-              <h3>Revenue Infrastructure</h3>
-              <p>Complete billing solution with automated webhook verification for Khalti and eSewa. Focus on product, not payments.</p>
+              <div className="premium-icon">🍱</div>
+              <h3>Smart Canteen POS</h3>
+              <p>Fully integrated POS system with face-recognition payments. Students pay with their ID, parents top-up from home.</p>
               <ul className="premium-features-list">
-                <li>Idempotent Webhooks</li>
-                <li>Auto-Subscription Sync</li>
-                <li>Revenue Dashboards</li>
+                <li>Offline-First Design</li>
+                <li>Spending Limits</li>
+                <li>Inventory Alerts</li>
+              </ul>
+            </div>
+
+            <div className="premium-card glass-card">
+              <div className="premium-card-gradient" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, transparent 100%)' }}></div>
+              <div className="premium-icon">📊</div>
+              <h3>Institutional Analytics</h3>
+              <p>Data-driven insights for management. Track attendance patterns, financial health, and student engagement in real-time.</p>
+              <ul className="premium-features-list">
+                <li>Live Dashboards</li>
+                <li>Automated Reports</li>
+                <li>Multi-Campus Support</li>
               </ul>
             </div>
 
             <div className="premium-card glass-card">
               <div className="premium-card-gradient" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, transparent 100%)' }}></div>
-              <div className="premium-icon">💳</div>
-              <h3>Universal Wallet</h3>
-              <p>A single interface for users to manage every subscription across any app built on Going Genius. One-click upgrades and cancellations.</p>
+              <div className="premium-icon">🛡️</div>
+              <h3>Security & Compliance</h3>
+              <p>Enterprise-grade security ensuring student data privacy. Compliant with local regulations and international standards.</p>
               <ul className="premium-features-list">
-                <li>Unified Billing History</li>
-                <li>One-Click Plan Upgrades</li>
-                <li>Global Payment Sync</li>
+                <li>End-to-End Encryption</li>
+                <li>Role-Based Access</li>
+                <li>Audit-Ready Logs</li>
               </ul>
-              <div className="mt-6">
-                <Link href="/dashboard/subscriptions" className="form-link-sm text-red-500 hover:text-red-400 transition-colors">
-                  View Wallet Demo →
-                </Link>
-              </div>
             </div>
 
             <div className="premium-card glass-card">
-              <div className="premium-card-gradient" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, transparent 100%)' }}></div>
-              <div className="premium-icon">🌐</div>
-              <h3>WordPress Integration</h3>
-              <p>Seamlessly integrate E-Commerce and Scheduling drop-ins directly into any WordPress site using our powerful bulk import facility.</p>
+              <div className="premium-card-gradient" style={{ background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, transparent 100%)' }}></div>
+              <div className="premium-icon">🤖</div>
+              <h3>Campus AI Assistants</h3>
+              <p>Deploy AI agents to handle student queries, admission leads, and automated documentation help on your website.</p>
               <ul className="premium-features-list">
-                <li>Drop-in Checkout</li>
-                <li>Scheduling Widgets</li>
-                <li>Bulk Data Import</li>
+                <li>WhatsApp Chatbots</li>
+                <li>Support Automation</li>
+                <li>Admission Guidance</li>
               </ul>
-              <div className="mt-6">
-                <Link href="/demo/wordpress" className="form-link-sm text-blue-500 hover:text-blue-400 transition-colors">
-                  View Live WP Demo →
-                </Link>
-              </div>
             </div>
           </div>
         </div>
@@ -168,13 +169,13 @@ export default async function HomePage() {
       <section id="developers" className="sdk-section py-24 bg-[#080808]">
         <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="animate-fade-in-left">
-            <div className="hero-badge" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6' }}>FOR DEVELOPERS</div>
+            <div className="hero-badge" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6' }}>API & INTEGRATION</div>
             <h2 className="text-4xl md:text-5xl font-black mt-4 mb-6 leading-tight font-outfit">
-              Integrate Revenue <br />
-              <span className="text-blue-500">In 3 Lines of Code</span>
+              Connect Your LMS <br />
+              <span className="text-blue-500">In Minutes</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-              Don't waste months building billing infrastructure. Our React SDK provides drop-in hooks and components for authentication and subscription management.
+              Our powerful SDK allows you to bridge Going Genius with your existing School ERP or Learning Management System (LMS) seamlessly.
             </p>
             
             <div className="space-y-6 mb-10">
@@ -183,8 +184,8 @@ export default async function HomePage() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg">useGGPlan() Hook</h4>
-                  <p className="text-muted-foreground text-sm">Gate your premium content with simple, real-time subscription checks.</p>
+                  <h4 className="font-bold text-lg">Identity Bridge</h4>
+                  <p className="text-muted-foreground text-sm">Synchronize student identities across all your third-party educational tools.</p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -192,14 +193,14 @@ export default async function HomePage() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg">&lt;GGBillingButton /&gt;</h4>
-                  <p className="text-muted-foreground text-sm">Drop a beautiful, pre-configured checkout button that handles all local payment gateways.</p>
+                  <h4 className="font-bold text-lg">Custom Billing Webhooks</h4>
+                  <p className="text-muted-foreground text-sm">Automate your accounting software when fees are paid via our secure portal.</p>
                 </div>
               </div>
             </div>
 
             <Link href="/developer/apps" className="btn-hero primary-gradient inline-flex">
-              Start Building Now
+              Developer Console
             </Link>
           </div>
 
@@ -212,91 +213,90 @@ export default async function HomePage() {
                   <div className="w-3 h-3 rounded-full bg-amber-500/50"></div>
                   <div className="w-3 h-3 rounded-full bg-emerald-500/50"></div>
                 </div>
-                <div className="text-[10px] font-mono text-muted-foreground">PremiumGate.tsx</div>
+                <div className="text-[10px] font-mono text-muted-foreground">FeeGating.tsx</div>
               </div>
               <div className="p-6 font-mono text-sm leading-relaxed overflow-x-auto">
-                <p className="text-purple-400">import <span className="text-blue-400">{"{ useGGPlan, GGBillingButton }"}</span> from <span className="text-emerald-400">'@going-genius/react'</span>;</p>
+                <p className="text-purple-400">import <span className="text-blue-400">{"{ useGGStudent }"}</span> from <span className="text-emerald-400">'@going-genius/react'</span>;</p>
                 <br />
-                <p className="text-purple-400">export default function <span className="text-yellow-400">ProFeatures</span>() {"{"}</p>
-                <p className="pl-4 text-purple-400">const <span className="text-foreground">{"{ hasActiveSubscription, isLoading }"}</span> = <span className="text-yellow-400">useGGPlan</span>(<span className="text-emerald-400">'app_123'</span>);</p>
+                <p className="text-purple-400">export default function <span className="text-yellow-400">ExamPortal</span>() {"{"}</p>
+                <p className="pl-4 text-purple-400">const <span className="text-foreground">{"{ isFeePaid, arrears }"}</span> = <span className="text-yellow-400">useGGStudent</span>(<span className="text-emerald-400">'roll_2024_01'</span>);</p>
                 <br />
-                <p className="pl-4 text-gray-500">// Automatically gate content</p>
-                <p className="pl-4 text-purple-400">if (!hasActiveSubscription) {"{"}</p>
-                <p className="pl-8 text-purple-400">return &lt;<span className="text-blue-400">GGBillingButton</span> appId=<span className="text-emerald-400">"app_123"</span> /&gt;;</p>
+                <p className="pl-4 text-gray-500">// Block exam access if fees are pending</p>
+                <p className="pl-4 text-purple-400">if (!isFeePaid) {"{"}</p>
+                <p className="pl-8 text-purple-400">return &lt;<span className="text-blue-400">ArrearsNotice</span> amount={"{"}arrears{"}"} /&gt;;</p>
                 <p className="pl-4 text-purple-400">{"}"}</p>
                 <br />
-                <p className="pl-4 text-purple-400">return &lt;<span className="text-blue-400">div</span>&gt;Welcome to Pro!&lt;/<span className="text-blue-400">div</span>&gt;;</p>
+                <p className="pl-4 text-purple-400">return &lt;<span className="text-blue-400">div</span>&gt;Access Granted to Exam&lt;/<span className="text-blue-400">div</span>&gt;;</p>
                 <p className="text-purple-400">{"}"}</p>
               </div>
             </div>
             
             <div className="absolute -bottom-6 -right-6 bg-emerald-500 text-black px-4 py-2 rounded-lg font-black text-xs shadow-xl animate-bounce">
-              3 MINUTES TO LIVE ⚡
+              SECURE & SCALABLE ⚡
             </div>
           </div>
         </div>
       </section>
 
-
       {/* ─── Pricing Section ─────────────────────────────────────────────────── */}
       <section id="pricing" className="pricing-section">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Simple, Value-Based Pricing</h2>
-            <p className="section-subtitle">Choose the plan that fits your ambition. Scale seamlessly from prototype to enterprise.</p>
+            <h2 className="section-title">Institutional Engagement Plans</h2>
+            <p className="section-subtitle">Scale your digital transformation with predictable, value-driven pricing.</p>
           </div>
 
           <div className="pricing-grid">
             <div className="pricing-card glass-card">
               <div className="pricing-header">
-                <h3>Starter Kit</h3>
+                <h3>Academy Starter</h3>
                 <div className="price">NPR 0<span>/mo</span></div>
-                <p>Perfect for individual developers and testing.</p>
+                <p>Perfect for small schools or initial testing.</p>
               </div>
               <ul className="pricing-features">
-                <li>✅ Up to 500 Active Users</li>
-                <li>✅ Standard OAuth 2.0 Auth</li>
-                <li>✅ 1 Social Provider</li>
-                <li>✅ Basic Developer Console</li>
-                <li>❌ Premium Webhooks</li>
-                <li>❌ AI Agent Orchestration</li>
+                <li>✅ Up to 200 Students</li>
+                <li>✅ Basic Digital IDs</li>
+                <li>✅ Fee Collection Portal</li>
+                <li>✅ Web Dashboards</li>
+                <li>❌ Biometric POS</li>
+                <li>❌ Multi-Campus Support</li>
               </ul>
-              <Link href="/auth/register" className="btn-pricing">Get Started Free</Link>
+              <Link href="/auth/register" className="btn-pricing">Request Demo</Link>
             </div>
 
             <div className="pricing-card glass-card premium-tier">
-              <div className="popular-badge">MOST POPULAR</div>
+              <div className="popular-badge">RECOMMENDED</div>
               <div className="pricing-header">
-                <h3>Developer Pro</h3>
-                <div className="price">NPR 1,499<span>/mo</span></div>
-                <p>For growing apps that need premium infra.</p>
+                <h3>Smart Campus Pro</h3>
+                <div className="price">NPR 9,999<span>/mo</span></div>
+                <p>For growing institutions needing full automation.</p>
               </div>
               <ul className="pricing-features">
-                <li>✅ Unlimited Active Users</li>
-                <li>✅ All Social Providers</li>
-                <li>✅ **Khalti/eSewa Webhooks**</li>
-                <li>✅ **AI Agent Builder (Genkit)**</li>
-                <li>✅ **Multi-tenant Org Support**</li>
-                <li>✅ Priority Dev Support</li>
+                <li>✅ Unlimited Students</li>
+                <li>✅ **Biometric Attendance**</li>
+                <li>✅ **Cashless Canteen Integration**</li>
+                <li>✅ **Parental Mobile App**</li>
+                <li>✅ **Custom School Branding**</li>
+                <li>✅ SMS/Email Notifications</li>
               </ul>
-              <Link href="/auth/register" className="btn-pricing primary-gradient">Upgrade to Pro</Link>
+              <Link href="/auth/register" className="btn-pricing primary-gradient">Go Pro</Link>
             </div>
 
             <div className="pricing-card glass-card">
               <div className="pricing-header">
-                <h3>Enterprise</h3>
+                <h3>University Global</h3>
                 <div className="price">Custom</div>
-                <p>For large-scale platforms and government projects.</p>
+                <p>For large-scale university systems and multi-campus setups.</p>
               </div>
               <ul className="pricing-features">
-                <li>✅ Custom SLA & Latency</li>
-                <li>✅ White-labeled Auth UI</li>
-                <li>✅ On-premise Deployment</li>
-                <li>✅ Custom Security Audits</li>
-                <li>✅ 24/7 Dedicated Support</li>
-                <li>✅ Managed Integration Service</li>
+                <li>✅ Dedicated Server Clusters</li>
+                <li>✅ On-premise Data Residency</li>
+                <li>✅ Advanced AI Orchestration</li>
+                <li>✅ ERP/LMS Migration Support</li>
+                <li>✅ 24/7 Managed Success Team</li>
+                <li>✅ Custom Security Compliance</li>
               </ul>
-              <a href="mailto:support@goinggenius.com.np" className="btn-pricing">Contact Sales</a>
+              <a href="mailto:support@goinggenius.com.np" className="btn-pricing">Contact Institutional Sales</a>
             </div>
           </div>
         </div>
@@ -310,13 +310,13 @@ export default async function HomePage() {
               <div className="auth-logo-icon">GG</div>
               <span className="auth-logo-text">Going Genius</span>
             </div>
-            <p className="footer-tagline">Providing the infrastructure that powers the next generation of Nepali digital products.</p>
+            <p className="footer-tagline">Powering the next generation of smart educational infrastructure in Nepal.</p>
           </div>
           <div className="footer-links-group">
             <div className="footer-col">
               <h4>Platform</h4>
+              <Link href="#solutions">Solutions</Link>
               <Link href="#features">Features</Link>
-              <Link href="#premium">Premium</Link>
               <Link href="#pricing">Pricing</Link>
             </div>
             <div className="footer-col">
@@ -324,18 +324,18 @@ export default async function HomePage() {
               <Link href="/developer">Documentation</Link>
               <Link href="/demo/sdk">SDK Demo</Link>
               <Link href="/demo/wordpress">WordPress Plugin</Link>
-              <Link href="https://github.com/LBibek/going-genius/blob/main/DEVELOPER_QUICKSTART.md">Quickstart Guide</Link>
+              <Link href="https://github.com/LBibek/going-genius/blob/main/DEVELOPER_QUICKSTART.md">Integration Guide</Link>
             </div>
             <div className="footer-col">
               <h4>Legal</h4>
-              <Link href="/terms">Terms</Link>
-              <Link href="/privacy">Privacy</Link>
-              <Link href="/security">Security</Link>
+              <Link href="/terms">Terms of Service</Link>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/security">Institutional Security</Link>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 Going Genius. Built with passion in Nepal 🇳🇵</p>
+          <p>&copy; 2026 Going Genius. Built with passion for Education in Nepal 🇳🇵</p>
         </div>
       </footer>
 

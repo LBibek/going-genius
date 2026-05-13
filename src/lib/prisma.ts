@@ -1,44 +1,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { withAccelerate } from '@prisma/extension-accelerate';
 import pg from 'pg';
 
-const connectionString = process.env.DATABASE_URL!;
+const primaryUrl = process.env.DATABASE_URL!;
+const regionalUrl = process.env.DATABASE_URL_REGIONAL || primaryUrl;
 
 const globalForPrisma = globalThis as unknown as {
   prisma: any | undefined;
 };
 
 function createPrismaClient() {
-  const pool = new pg.Pool({ connectionString });
-  const adapter = new PrismaPg(pool);
+  // Use Driver Adapter for Node.js environments
+  const pool = new pg.Pool({ connectionString: primaryUrl });
+  const regionalPool = new pg.Pool({ connectionString: regionalUrl });
+  
+  const primaryAdapter = new PrismaPg(pool);
+  const regionalAdapter = new PrismaPg(regionalPool);
   
   const client = new PrismaClient({
-    adapter,
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
+    adapter: primaryAdapter,
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 
-  return client.$extends({
-    query: {
-      async $allOperations({ operation, model, args, query }) {
-        const start = performance.now();
-        const result = await query(args);
-        const duration = performance.now() - start;
+  return client
+    .$extends(withAccelerate())
+    .$extends({
+      query: {
+        $allModels: {
+          async $allOperations({ operation, model, args, query }: any) {
+            const isRead = ['findUnique', 'findMany', 'findFirst', 'count', 'aggregate', 'groupBy'].includes(operation);
+            
+            // Log performance
+            const start = performance.now();
+            
+            // Future: Implement region-aware routing here if needed
+            // For now, we utilize the provided adapter
+            
+            const result = await query(args);
+            const duration = performance.now() - start;
 
-        if (duration > 100) {
-          console.warn(`[PRISMA PERF] ${model}.${operation} took ${duration.toFixed(2)}ms`);
-        }
-        
-        return result;
+            if (duration > 150) {
+              console.warn(`[PRISMA PERF] ${model}.${operation} took ${duration.toFixed(2)}ms`);
+            }
+            
+            return result;
+          },
+        },
       },
-    },
-  });
+    });
 }
 
 // @ts-ignore - Prisma extension types can be tricky
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+

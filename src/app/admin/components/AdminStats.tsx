@@ -25,7 +25,7 @@ export function AdminStats({ stats }: AdminStatsProps) {
 
   return (
     <div className="admin-stats-grid">
-      {cards.map((card, i) => (
+      {cards.map((card: any, i: number) => (
         <div key={i} className="stat-card">
           <div className="stat-icon" style={{ background: `${card.color}20`, color: card.color }}>
             <card.icon size={20} />

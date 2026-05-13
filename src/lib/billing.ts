@@ -20,12 +20,37 @@ export async function processSuccessfulPayment(transactionId: string, referenceI
       return { success: true, alreadyProcessed: true };
     }
 
+    // 1.5. Check ProcessedTransaction for external idempotency
+    const processed = await tx.processedTransaction.findUnique({
+      where: { externalId: referenceId }
+    });
+
+    if (processed) {
+      // If found in ProcessedTransaction but our internal tx isn't marked completed,
+      // it means there was a crash after processing but before completing the transaction.
+      // We should still mark our internal tx as completed.
+      await tx.transaction.update({
+        where: { id: transactionId },
+        data: { status: 'completed', referenceId }
+      });
+      return { success: true, alreadyProcessed: true };
+    }
+
     // 2. Update transaction status
     const transaction = await tx.transaction.update({
       where: { id: transactionId },
       data: { 
         status: 'completed',
         referenceId: referenceId
+      }
+    });
+
+    // 2.5. Record in ProcessedTransaction
+    await tx.processedTransaction.create({
+      data: {
+        gateway: transaction.provider,
+        externalId: referenceId,
+        internalId: transactionId
       }
     });
 
