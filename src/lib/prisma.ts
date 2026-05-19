@@ -12,9 +12,21 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  // Use Driver Adapter for Node.js environments
-  const pool = new pg.Pool({ connectionString: primaryUrl });
-  const regionalPool = new pg.Pool({ connectionString: regionalUrl });
+  // Use Driver Adapter for Node.js environments with optimized connection pooling
+  // In serverless/production, limiting pool size prevents database connection starvation.
+  const pool = new pg.Pool({
+    connectionString: primaryUrl,
+    max: process.env.NODE_ENV === 'production' ? 3 : 10,
+    idleTimeoutMillis: 15000,
+    connectionTimeoutMillis: 5000,
+  });
+
+  const regionalPool = new pg.Pool({
+    connectionString: regionalUrl,
+    max: process.env.NODE_ENV === 'production' ? 3 : 10,
+    idleTimeoutMillis: 15000,
+    connectionTimeoutMillis: 5000,
+  });
   
   const primaryAdapter = new PrismaPg(pool);
   const regionalAdapter = new PrismaPg(regionalPool);

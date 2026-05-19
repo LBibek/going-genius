@@ -18,36 +18,59 @@ export async function GET(request: Request) {
       const supaUser = data.user;
       const email = supaUser.email!;
       
-      // 1. Find or create user in Prisma
-      let user = await prisma.gGUser.findUnique({
-        where: { email },
-      });
+      // 1. Find or create user in Prisma with transaction isolation and exponential backoff retries
+      let user = null;
+      let retries = 3;
+      let delay = 200;
+
+      while (retries > 0) {
+        try {
+          user = await prisma.$transaction(async (tx: any) => {
+            let u = await tx.gGUser.findUnique({
+              where: { email },
+            });
+
+            if (!u) {
+              const baseUsername = supaUser.user_metadata.full_name?.toLowerCase().replace(/\s+/g, '_') || email.split('@')[0];
+              const uniqueUsername = `${baseUsername}_${Math.random().toString(36).substring(2, 7)}`;
+
+              u = await tx.gGUser.create({
+                data: {
+                  email,
+                  displayName: supaUser.user_metadata.full_name || 'GG User',
+                  username: uniqueUsername,
+                  avatarUrl: supaUser.user_metadata.avatar_url,
+                  emailVerified: true,
+                  isActive: true,
+                },
+              });
+            } else {
+              u = await tx.gGUser.update({
+                where: { id: u.id },
+                data: {
+                  avatarUrl: supaUser.user_metadata.avatar_url || u.avatarUrl,
+                  emailVerified: true,
+                  lastLoginAt: new Date(),
+                },
+              });
+            }
+            return u;
+          });
+          break; // Success, break out of retry loop
+        } catch (dbError) {
+          retries--;
+          if (retries === 0) {
+            console.error('[AUTH CALLBACK ERROR] Database transaction failed after 3 retries:', dbError);
+            return NextResponse.redirect(new URL('/auth/login?error=Database synchronization failed. Please try again.', request.url));
+          }
+          console.warn(`[AUTH CALLBACK RETRY] Transient database issue encountered. Retrying in ${delay}ms...`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          delay *= 2;
+        }
+      }
 
       if (!user) {
-        // Create new user if they don't exist
-        const baseUsername = supaUser.user_metadata.full_name?.toLowerCase().replace(/\s+/g, '_') || email.split('@')[0];
-        const uniqueUsername = `${baseUsername}_${Math.random().toString(36).substring(2, 7)}`;
-        
-        user = await prisma.gGUser.create({
-          data: {
-            email,
-            displayName: supaUser.user_metadata.full_name || 'GG User',
-            username: uniqueUsername,
-            avatarUrl: supaUser.user_metadata.avatar_url,
-            emailVerified: true,
-            isActive: true,
-          },
-        });
-      } else {
-        // Update user if they already exist (e.g. update avatar)
-        await prisma.gGUser.update({
-          where: { id: user.id },
-          data: {
-            avatarUrl: supaUser.user_metadata.avatar_url || user.avatarUrl,
-            emailVerified: true,
-            lastLoginAt: new Date(),
-          },
-        });
+        return NextResponse.redirect(new URL('/auth/login?error=Session initialization failed', request.url));
       }
 
       // 2. Create session
