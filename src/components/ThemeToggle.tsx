@@ -14,28 +14,21 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div style={{ width: 36, height: 36 }} />;
+    return <div className="theme-toggle-skeleton" aria-hidden="true" />;
   }
 
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      style={{
-        background: 'transparent',
-        border: '1px solid var(--border)',
-        borderRadius: '50%',
-        width: 36,
-        height: 36,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        color: 'var(--foreground)',
-        transition: 'all 0.2s',
-      }}
+      className="btn-theme-toggle"
       aria-label="Toggle theme"
     >
-      {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+      {theme === 'dark' ? (
+        <Sun size={18} className="icon-rotate" />
+      ) : (
+        <Moon size={18} className="icon-rotate" />
+      )}
     </button>
   );
 }
+

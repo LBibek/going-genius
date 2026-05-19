@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
  * This file handles Edge-side authentication, authorization, and routing.
  */
 
-const protectedRoutes = ['/developer', '/wallet', '/admin', '/profile', '/settings'];
+const protectedRoutes = ['/dashboard', '/developer', '/wallet', '/admin', '/profile', '/settings', '/billing', '/apps'];
 const publicRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password', '/'];
 const adminRoutes = ['/admin'];
 
@@ -32,15 +32,17 @@ export async function proxy(req: NextRequest) {
   if (
     isPublicRoute &&
     session?.userId &&
-    !req.nextUrl.pathname.startsWith('/developer') &&
     path !== '/'
   ) {
-    return NextResponse.redirect(new URL('/developer', req.nextUrl.origin));
+    if (session.role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/admin', req.nextUrl.origin));
+    }
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl.origin));
   }
 
   // 4. Admin Role Enforcement
   if (isAdminRoute && session?.role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/developer', req.nextUrl.origin));
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl.origin));
   }
 
   return NextResponse.next();

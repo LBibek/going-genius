@@ -2,20 +2,18 @@
 
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
-import { getSession } from '@/lib/session';
+import { createSafeAction } from '@/lib/safe-action';
 import { getEcosystemBillingSummary } from '@/lib/billing';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 
-/**
- * Server Action for the Wallet Assistant.
- * Uses Vercel AI SDK with Gemini 1.5 Flash for high-performance billing insights.
- */
-export async function walletAssistant(prompt: string) {
-  const session = await getSession();
-  if (!session) return { error: 'Not authenticated' };
+const walletAssistantSchema = z.object({
+  prompt: z.string().min(1, 'Prompt cannot be empty'),
+});
 
-  try {
+const walletAssistantAction = createSafeAction(
+  walletAssistantSchema,
+  async ({ prompt }, userId) => {
     const result = await generateText({
       model: google('gemini-1.5-flash'),
       system: `You are the Going Genius Wallet Assistant. 
@@ -27,7 +25,7 @@ export async function walletAssistant(prompt: string) {
           description: 'Get a summary of the user\'s ecosystem billing, including total spend and active subscriptions.',
           parameters: z.object({}),
           execute: async () => {
-            const summary = await getEcosystemBillingSummary(session.userId);
+            const summary = await getEcosystemBillingSummary(userId);
             return summary;
           },
         },
@@ -50,8 +48,18 @@ export async function walletAssistant(prompt: string) {
     } as any);
 
     return { text: result.text };
-  } catch (error: any) {
-    console.error('Wallet Assistant Error:', error);
-    return { error: 'Failed to process request', details: error.message };
   }
+);
+
+/**
+ * Public Server Action for the Wallet Assistant.
+ * Uses Vercel AI SDK with Gemini 1.5 Flash for high-performance billing insights.
+ */
+export async function walletAssistant(prompt: string): Promise<{ text: string; error?: never } | { error: string; text?: never }> {
+  const result = await walletAssistantAction({ prompt });
+  if (!result.success) {
+    return { error: result.error || 'Failed to process request' };
+  }
+  return { text: result.data?.text || '' };
 }
+

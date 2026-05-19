@@ -27,21 +27,11 @@ export function ImageUpload({ onUploadComplete, value, label }: ImageUploadProps
   }, [onUploadComplete]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {label && <label className="form-label" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.75rem' }}>{label}</label>}
+    <div className="image-upload-wrapper">
+      {label && <label className="form-label image-upload-label">{label}</label>}
       
-      <div style={{ position: 'relative' }}>
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          padding: '2rem', 
-          border: '2px dashed var(--border)', 
-          borderRadius: '1.25rem', 
-          background: 'var(--glass)',
-          transition: 'all 0.2s'
-        }}>
+      <div className="image-upload-container">
+        <div className="image-upload-dropzone">
           <UC.FileUploaderRegular
             pubkey={publicKey}
             multiple={false}
@@ -51,32 +41,23 @@ export function ImageUpload({ onUploadComplete, value, label }: ImageUploadProps
             onChange={handleEntryChange}
           />
           
-          <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-            <p style={{ fontSize: '0.875rem', color: 'var(--muted-light)' }}>
+          <div className="image-upload-info">
+            <p className="image-upload-text">
               {value ? 'Change image' : 'Click to upload or drag and drop'}
             </p>
-            <p style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.025em', marginTop: '0.25rem' }}>
+            <p className="image-upload-subtext">
               Supports PNG, JPG, WebP
             </p>
           </div>
         </div>
 
         {value && (
-          <div style={{ 
-            marginTop: '1rem', 
-            position: 'relative', 
-            width: '8rem', 
-            height: '8rem', 
-            borderRadius: '0.75rem', 
-            overflow: 'hidden', 
-            border: '1px solid var(--border)', 
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' 
-          }}>
+          <div className="image-upload-preview-container">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={uploadcare.getOptimizedUrl(value, { width: 128, height: 128 }) || ''} 
               alt="Preview" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              className="image-upload-preview"
             />
           </div>
         )}
@@ -109,3 +90,4 @@ export function ImageUpload({ onUploadComplete, value, label }: ImageUploadProps
     </div>
   );
 }
+

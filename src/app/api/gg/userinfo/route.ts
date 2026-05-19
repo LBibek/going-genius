@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { prisma } from '@/lib/prisma';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET!);
 

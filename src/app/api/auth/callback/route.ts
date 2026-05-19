@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { createSession } from '@/lib/session';
 import { headers } from 'next/headers';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);

@@ -1,36 +1,66 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { getSession } from '@/lib/session';
+import { createSafeAction } from '@/lib/safe-action';
+import { z } from 'zod';
 import { scanAppForRisk, predictUserChurn } from '@/lib/ai/flows';
 
-export async function triggerSafetyScan(appId: string) {
-  const session = await getSession();
-  if (!session || session.role !== 'ADMIN') {
-    return { error: 'Unauthorized' };
-  }
+const triggerSafetyScanSchema = z.object({
+  appId: z.string().min(1, 'App ID is required'),
+});
 
-  try {
+const triggerSafetyScanAction = createSafeAction(
+  triggerSafetyScanSchema,
+  async ({ appId }, userId, role) => {
+    if (role !== 'ADMIN') {
+      throw new Error('Unauthorized');
+    }
     const result = await scanAppForRisk.run({ appId });
     revalidatePath('/admin/safety');
     return { success: true, result };
-  } catch (error) {
-    console.error('Safety scan error:', error);
-    return { error: 'Failed to complete safety scan.' };
   }
+);
+
+export async function triggerSafetyScan(appId: string): Promise<
+  | { success: true; result: any; error?: never }
+  | { success: false; error: string; result?: never }
+> {
+  const result = await triggerSafetyScanAction({ appId });
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to complete safety scan.' };
+  }
+  return {
+    success: true,
+    result: result.data?.result
+  };
 }
 
-export async function runChurnPrediction(userId: string) {
-  const session = await getSession();
-  if (!session || session.role !== 'ADMIN') {
-    return { error: 'Unauthorized' };
-  }
+const runChurnPredictionSchema = z.object({
+  userId: z.string().min(1, 'User ID is required'),
+});
 
-  try {
-    const result = await predictUserChurn.run({ userId });
+const runChurnPredictionAction = createSafeAction(
+  runChurnPredictionSchema,
+  async ({ userId: targetUserId }, userId, role) => {
+    if (role !== 'ADMIN') {
+      throw new Error('Unauthorized');
+    }
+    const result = await predictUserChurn.run({ userId: targetUserId });
     return { success: true, result };
-  } catch (error) {
-    console.error('Churn prediction error:', error);
-    return { error: 'Failed to run churn prediction.' };
   }
+);
+
+export async function runChurnPrediction(userId: string): Promise<
+  | { success: true; result: any; error?: never }
+  | { success: false; error: string; result?: never }
+> {
+  const result = await runChurnPredictionAction({ userId });
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to run churn prediction.' };
+  }
+  return {
+    success: true,
+    result: result.data?.result
+  };
 }
+
