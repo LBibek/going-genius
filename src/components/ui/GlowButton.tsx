@@ -2,64 +2,95 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
-interface GlowButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline' | 'glowing';
-  glowColor?: 'golden' | 'blue' | 'purple' | 'emerald';
-  fullWidth?: boolean;
+const buttonVariants = cva(
+  "relative inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary text-white hover:bg-primary-hover shadow-lg",
+        secondary: "bg-muted text-foreground hover:bg-muted-light",
+        outline: "border-2 border-primary/50 text-foreground hover:border-primary bg-transparent",
+        glowing: "bg-gradient-to-br from-primary to-primary-hover text-white shadow-[0_0_20px_var(--primary-glow)] hover:shadow-[0_0_30px_var(--primary-glow)] hover:-translate-y-0.5",
+      },
+      glowColor: {
+        golden: "shadow-[0_0_20px_rgba(255,177,22,0.4)]",
+        blue: "shadow-[0_0_20px_rgba(59,130,246,0.4)] from-blue-500 to-blue-600 ring-blue-500",
+        purple: "shadow-[0_0_20px_rgba(168,85,247,0.4)] from-purple-500 to-purple-600 ring-purple-500",
+        emerald: "shadow-[0_0_20px_rgba(16,185,129,0.4)] from-emerald-500 to-emerald-600 ring-emerald-500",
+        none: "",
+      },
+      fullWidth: {
+        true: "w-full",
+        false: "w-auto",
+      },
+      size: {
+        default: "px-6 py-3",
+        sm: "px-4 py-2 text-sm",
+        lg: "px-8 py-4 text-lg",
+      }
+    },
+    defaultVariants: {
+      variant: "glowing",
+      glowColor: "golden",
+      fullWidth: false,
+      size: "default",
+    },
+  }
+);
+
+export interface GlowButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   href?: string;
 }
 
 export function GlowButton({
   children,
-  className = '',
-  variant = 'glowing',
-  glowColor = 'golden',
-  fullWidth = false,
+  className,
+  variant,
+  glowColor,
+  fullWidth,
+  size,
   href,
   ...props
 }: GlowButtonProps) {
   
-  const buttonClass = [
-    "btn-glow",
-    `btn-glow-${variant}`,
-    fullWidth ? "btn-glow-w-full" : "",
-    className
-  ].filter(Boolean).join(' ');
-
   const content = (
     <>
       <span className="relative z-10 flex items-center gap-2 justify-center">
         {children}
       </span>
       {variant === 'glowing' && (
-        <span className="absolute inset-0 rounded-2xl bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+        <span className="absolute inset-0 rounded-2xl bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       )}
     </>
   );
 
-  // If href is specified, render as either an external link or a Next.js Link
+  const mergedClasses = cn(buttonVariants({ variant, glowColor, fullWidth, size, className }));
+
   if (href) {
     const isExternal = href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:');
     
     if (isExternal) {
       return (
-        <a href={href} className={buttonClass}>
+        <a href={href} className={mergedClasses}>
           {content}
         </a>
       );
     }
     
     return (
-      <Link href={href} className={buttonClass}>
+      <Link href={href} className={mergedClasses}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button className={buttonClass} {...props}>
+    <button className={mergedClasses} {...props}>
       {content}
     </button>
   );
