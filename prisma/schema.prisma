@@ -217,6 +217,7 @@ model Subscription {
   @@unique([appId, userId])
   @@index([appId])
   @@index([userId])
+  @@index([appId, status])
 }
 
 // ─── App-specific User Metadata ──────────────────────────────────────────────
@@ -271,6 +272,7 @@ model OAuthCode {
 
   @@index([userId])
   @@index([appId])
+  @@index([expiresAt])
 }
 
 // ─── OAuth Access + Refresh Tokens ───────────────────────────────────────────
@@ -289,6 +291,7 @@ model OAuthToken {
 
   @@index([userId])
   @@index([appId])
+  @@index([expiresAt])
 }
 
 // ─── Cart & Checkout ────────────────────────────────────────────────────────
@@ -339,6 +342,7 @@ model Transaction {
 
   @@index([userId])
   @@index([appId])
+  @@index([appId, status])
 }
 
 model ProcessedTransaction {
@@ -364,6 +368,8 @@ model ApiUsage {
 
   @@index([appId])
   @@index([type])
+  @@index([appId, createdAt])
+  @@index([appId, type])
 }
 
 model Lead {
@@ -380,6 +386,8 @@ model Lead {
   updatedAt DateTime @updatedAt
 
   @@index([appId])
+  @@index([appId, status])
+  @@index([appId, createdAt])
 }
 
 model AuditLog {
@@ -422,6 +430,7 @@ model Message {
   createdAt DateTime @default(now())
 
   @@index([threadId])
+  @@index([threadId, createdAt])
 }
 
 // ─── AI Prompt Management ───────────────────────────────────────────────────
@@ -468,4 +477,7 @@ model Referral {
   currency      String   @default("NPR")
   status        String   @default("PENDING") // PENDING, PAID
   createdAt     DateTime @default(now())
+
+  @@index([referrerId])
+  @@index([referredUserId])
 }
