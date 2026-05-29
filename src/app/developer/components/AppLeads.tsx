@@ -76,7 +76,7 @@ export function AppLeads({ appId, leads }: AppLeadsProps) {
     }
   };
 
-  const embedScriptCode = \`<script src="https://goinggenius.com.np/scripts/lead-form.js" id="gg-lead-form-script" data-app-id="\${appId}"></script>\n<div id="gg-lead-container"></div>\`;
+  const embedScriptCode = `<script src="https://goinggenius.com.np/scripts/lead-form.js" id="gg-lead-form-script" data-app-id="${appId}"></script>\n<div id="gg-lead-container"></div>`;
 
   return (
     <div className="leads-container">
