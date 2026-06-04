@@ -18,7 +18,7 @@ export function LandingPricing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-stretch">
-          <GlassCard glowColor="none" hoverEffect="scale" className="p-8 flex flex-col">
+          <GlassCard glowColor="none" hoverEffect="scale" className="p-10 flex flex-col">
             <div className="mb-6">
               <h3 className="text-xl font-bold font-heading">Developer Starter</h3>
               <div className="mt-4 flex items-baseline gap-1">
@@ -44,7 +44,7 @@ export function LandingPricing() {
             </div>
           </GlassCard>
 
-          <GlassCard glowColor="golden" hoverEffect="scale" className="p-8 flex flex-col relative transform md:-translate-y-4 border-primary/30">
+          <GlassCard glowColor="golden" hoverEffect="scale" className="p-10 flex flex-col relative transform md:-translate-y-4 border-primary/30">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
               Recommended
             </div>
@@ -73,7 +73,7 @@ export function LandingPricing() {
             </div>
           </GlassCard>
 
-          <GlassCard glowColor="none" hoverEffect="scale" className="p-8 flex flex-col">
+          <GlassCard glowColor="none" hoverEffect="scale" className="p-10 flex flex-col">
             <div className="mb-6">
               <h3 className="text-xl font-bold font-heading">Enterprise Core</h3>
               <div className="mt-4 flex items-baseline gap-1">

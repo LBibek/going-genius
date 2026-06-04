@@ -63,7 +63,7 @@ export function LandingSolutions() {
 
         <div className="premium-grid">
           {solutions.map((sol, index) => (
-            <GlassCard key={index} glowColor={sol.glow} hoverEffect="translate" className="p-8 flex flex-col justify-between">
+            <GlassCard key={index} glowColor={sol.glow} hoverEffect="translate" className="p-10 flex flex-col justify-between">
               <div className="premium-icon">{sol.icon}</div>
               <h3 className="text-xl font-bold mt-4 mb-2">{sol.title}</h3>
               <p className="text-muted-light text-sm mb-6 leading-relaxed">{sol.desc}</p>
