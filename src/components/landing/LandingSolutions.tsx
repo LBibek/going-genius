@@ -78,7 +78,7 @@ export function LandingSolutions() {
               <GlassCard key={index} glowColor={sol.glow} hoverEffect="translate" className="flex flex-col overflow-hidden">
                 <div className={`p-8 pb-6 relative overflow-hidden bg-gradient-to-br ${getBgGradient(sol.glow)}`}>
                   <div className="absolute -top-4 -right-4 opacity-[0.07] pointer-events-none">
-                    {React.cloneElement(sol.icon as React.ReactElement, { className: "w-40 h-40" })}
+                    {React.cloneElement(sol.icon as React.ReactElement<any>, { className: "w-40 h-40" })}
                   </div>
                   <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-6 shadow-xl backdrop-blur-md">
                     {sol.icon}
