@@ -76,7 +76,7 @@ export default async function AnalyticsPage() {
                 <p className="text-sm text-muted-light">No recent transactions.</p>
               ) : (
                 <ul className="space-y-3">
-                  {rawTransactions.slice(-5).reverse().map(t => (
+                  {rawTransactions.slice(-5).reverse().map((t: { id: string, amount: number, createdAt: Date, status: string }) => (
                     <li key={t.id} className="flex justify-between text-sm">
                       <span className="text-muted-light">{new Date(t.createdAt).toLocaleDateString()}</span>
                       <span className={t.status === 'completed' ? 'text-emerald-500' : 'text-amber-500'}>
