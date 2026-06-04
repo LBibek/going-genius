@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSession } from '@/lib/auth';
+import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
