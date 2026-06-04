@@ -53,7 +53,7 @@ export function LandingSolutions() {
   return (
     <section id="solutions" className="premium-showcase-section">
       <div className="container">
-        <div className="section-header text-center">
+        <div className="section-header text-center animate-fade-up">
           <SparkleBadge variant="emerald" animated={false}>
             PLATFORM CAPABILITIES
           </SparkleBadge>

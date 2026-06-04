@@ -6,14 +6,14 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden",
+  "relative inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden active:scale-[0.98]",
   {
     variants: {
       variant: {
         primary: "bg-primary text-white hover:bg-primary-hover shadow-lg",
         secondary: "bg-muted text-foreground hover:bg-muted-light",
         outline: "border-2 border-primary/50 text-foreground hover:border-primary bg-transparent",
-        glowing: "bg-gradient-to-br from-primary to-primary-hover text-white shadow-[0_0_20px_var(--primary-glow)] hover:shadow-[0_0_30px_var(--primary-glow)] hover:-translate-y-0.5",
+        glowing: "bg-gradient-to-br from-primary to-primary-hover text-black font-bold shadow-[0_0_20px_var(--primary-glow)] hover:shadow-[0_0_35px_var(--primary-glow)] hover:-translate-y-1",
       },
       glowColor: {
         golden: "shadow-[0_0_20px_rgba(255,177,22,0.4)]",
@@ -64,7 +64,10 @@ export function GlowButton({
         {children}
       </span>
       {variant === 'glowing' && (
-        <span className="absolute inset-0 rounded-2xl bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <>
+          <span className="absolute inset-0 rounded-2xl bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <span className="absolute inset-0 rounded-2xl border-2 border-white/20 opacity-0 hover:animate-ping pointer-events-none" style={{ animationDuration: '2s' }} />
+        </>
       )}
     </>
   );

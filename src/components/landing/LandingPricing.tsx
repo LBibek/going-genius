@@ -8,7 +8,7 @@ export function LandingPricing() {
   return (
     <section id="pricing" className="py-24 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 max-w-7xl">
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-16 animate-fade-up">
           <h2 className="text-4xl md:text-5xl font-bold font-heading tracking-tight mb-4 text-foreground">
             Flexible Developer & Team Pricing
           </h2>

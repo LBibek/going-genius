@@ -11,7 +11,11 @@ export default async function HomePage() {
   const session = await getSession();
 
   return (
-    <div className="home-wrapper">
+    <div className="home-wrapper relative">
+      {/* Dynamic Background Orbs */}
+      <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[150px] pointer-events-none animate-pulse z-[-1]" style={{ animationDuration: '10s' }} />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-500/10 blur-[150px] pointer-events-none animate-pulse z-[-1]" style={{ animationDuration: '14s' }} />
+
       {/* ─── Navbar ───────────────────────────────────────────────────────────── */}
       <LandingNavbar session={session} />
 
@@ -141,10 +145,14 @@ export default async function HomePage() {
           display: flex; 
           align-items: center; 
           gap: 0.85rem;
-          border: 1px solid rgba(255, 177, 22, 0.25); 
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15);
+          border: 1px solid rgba(255, 177, 22, 0.35); 
+          box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.25);
           animation: float 5s ease-in-out infinite;
           z-index: 10;
+          transition: transform 0.3s ease;
+        }
+        .visual-floating-badge:hover {
+          transform: scale(1.05) translateY(-5px) !important;
         }
         .badge-1 { top: 12%; left: -6%; animation-delay: 0s; }
         .badge-2 { bottom: 15%; right: -6%; animation-delay: 1.5s; }
@@ -172,7 +180,9 @@ export default async function HomePage() {
         
         .premium-tier { 
           position: relative; border: 2px solid var(--primary) !important; 
-          box-shadow: 0 0 40px var(--primary-glow); background: rgba(255, 177, 22, 0.03); 
+          box-shadow: 0 0 60px rgba(255,177,22,0.15); background: rgba(255, 177, 22, 0.05); 
+          transform: scale(1.03);
+          z-index: 10;
         }
         .popular-badge {
           position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
@@ -186,19 +196,24 @@ export default async function HomePage() {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-16px); }
         }
-        .animate-float { animation: float 6s ease-in-out infinite; }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
         .primary-gradient { 
-          background: linear-gradient(135deg, var(--primary) 0%, #FF8C00 100%); 
+          background: linear-gradient(135deg, var(--primary) 0%, #FF6B00 100%); 
           color: #000; transition: box-shadow 0.3s;
         }
         .primary-gradient:hover { box-shadow: 0 0 35px var(--primary-glow); }
 
         .gradient-text-golden { 
-          background: linear-gradient(135deg, #FFE082 0%, var(--primary) 50%, #FF8C00 100%); 
+          background: linear-gradient(135deg, #FFF3C4 0%, var(--primary) 50%, #FF6B00 100%); 
           -webkit-background-clip: text; 
           background-clip: text;
           -webkit-text-fill-color: transparent; 
+          line-height: 1.05;
         }
 
         /* Footer Styling */
