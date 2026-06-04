@@ -41,8 +41,29 @@ export async function POST(req: NextRequest) {
         history: [] // We can expand this to fetch previous conversation history later
       });
 
-      // TODO: Call WhatsApp API to send back aiResponse.text
-      console.log(`[WhatsApp] Reply to ${phoneNumber}: ${aiResponse.text}`);
+      // WhatsApp API call to send back aiResponse.text
+      if (app.whatsappAccessToken) {
+        try {
+          await fetch(`https://graph.facebook.com/v17.0/${phoneId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${app.whatsappAccessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              messaging_product: 'whatsapp',
+              to: phoneNumber,
+              type: 'text',
+              text: { body: aiResponse.text }
+            })
+          });
+          console.log(`[WhatsApp] Reply sent to ${phoneNumber}`);
+        } catch (err) {
+          console.error(`[WhatsApp] Failed to send reply to ${phoneNumber}`, err);
+        }
+      } else {
+        console.warn(`[WhatsApp] Cannot send reply: missing whatsappAccessToken for app ${app.id}`);
+      }
 
       return NextResponse.json({ success: true });
     }
@@ -64,8 +85,32 @@ export async function POST(req: NextRequest) {
         history: []
       });
 
-      // TODO: Call Viber API to send back aiResponse.text
-      console.log(`[Viber] Reply to ${senderId}: ${aiResponse.text}`);
+      // Viber API call to send back aiResponse.text
+      if (app.viberAuthToken) {
+        try {
+          await fetch('https://chatapi.viber.com/pa/send_message', {
+            method: 'POST',
+            headers: {
+              'X-Viber-Auth-Token': app.viberAuthToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              receiver: senderId,
+              min_api_version: 1,
+              sender: {
+                name: app.name
+              },
+              type: 'text',
+              text: aiResponse.text
+            })
+          });
+          console.log(`[Viber] Reply sent to ${senderId}`);
+        } catch (err) {
+          console.error(`[Viber] Failed to send reply to ${senderId}`, err);
+        }
+      } else {
+        console.warn(`[Viber] Cannot send reply: missing viberAuthToken for app ${app.id}`);
+      }
 
       return NextResponse.json({ success: true });
     }

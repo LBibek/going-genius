@@ -42,6 +42,7 @@
   "devDependencies": {
     "@genkit-ai/mcp": "^1.33.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",

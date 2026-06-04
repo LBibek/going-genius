@@ -21,10 +21,4 @@ export default withSentryConfig(nextConfig, {
 
   // Upload source maps only in CI
   silent: !process.env.CI,
-
-  // Automatically tree-shake Sentry logger statements
-  disableLogger: true,
-
-  // Automatically instrument Next.js data fetching methods
-  autoInstrumentServerFunctions: true,
 });
