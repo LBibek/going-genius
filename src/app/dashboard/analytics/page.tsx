@@ -20,7 +20,7 @@ export default async function AnalyticsPage() {
     select: { id: true, name: true }
   });
 
-  const appIds = apps.map(app => app.id);
+  const appIds = apps.map((app: { id: string }) => app.id);
 
   // Fetch last 30 days of transactions for these apps
   const thirtyDaysAgo = new Date();
