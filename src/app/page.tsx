@@ -154,15 +154,15 @@ export default async function HomePage() {
 
         /* Premium Showcase */
         .premium-showcase-section { padding: 8rem 0; background: var(--background-alt); position: relative; }
-        .premium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 4rem; }
+        .premium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; margin-top: 4rem; }
         .premium-icon { font-size: 3.5rem; margin-bottom: 2rem; position: relative; z-index: 1; }
-        .premium-features-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; position: relative; z-index: 1; text-align: left; }
-        .premium-features-list li { display: flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+        .premium-features-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; position: relative; z-index: 1; text-align: left; }
+        .premium-features-list li { display: flex; align-items: center; gap: 0.75rem; color: var(--primary); font-weight: 600; font-size: 0.9rem; }
         .premium-features-list li::before { content: '→'; }
 
         /* Pricing */
         .pricing-section { padding: 8rem 0; }
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 4rem; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin-top: 4rem; }
         .pricing-card { display: flex; flex-direction: column; gap: 2.5rem; border-radius: 32px; }
         .pricing-header h3 { font-size: 1.5rem; color: var(--muted); margin-bottom: 1rem; }
         .pricing-header .price span { font-size: 1rem; color: var(--muted); font-weight: 500; }
