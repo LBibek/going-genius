@@ -3,6 +3,7 @@
 import React from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlowButton } from '@/components/ui/GlowButton';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 export function LandingPricing() {
   return (
@@ -20,24 +21,26 @@ export function LandingPricing() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-stretch">
           <GlassCard glowColor="none" hoverEffect="scale" className="p-10 flex flex-col">
             <div className="mb-6">
-              <h3 className="text-xl font-bold font-heading">Developer Starter</h3>
+              <h3 className="text-xl font-bold font-heading text-zinc-100">Developer Starter</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-foreground">NPR 0</span>
+                <span className="text-4xl font-extrabold text-white">NPR 0</span>
                 <span className="text-sm font-medium text-muted">/mo</span>
               </div>
-              <p className="text-muted-light text-sm mt-3">Ideal for sandboxes, personal projects, and local testing.</p>
+              <p className="text-muted-light text-sm mt-3 leading-relaxed">Ideal for sandboxes, personal projects, and local testing.</p>
             </div>
             
-            <ul className="flex-1 space-y-4 my-8 text-sm">
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Up to 100 Active Users</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Basic Identity & SSO</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Standard Content Gating</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Local DB Sync</li>
-              <li className="flex items-center gap-3 opacity-50"><span className="text-red-500">❌</span> Production Webhooks</li>
-              <li className="flex items-center gap-3 opacity-50"><span className="text-red-500">❌</span> Multi-Tenant Support</li>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6" />
+
+            <ul className="flex-1 space-y-4 my-4 text-sm">
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Up to 100 Active Users</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Basic Identity & SSO</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Standard Content Gating</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Local DB Sync</span></li>
+              <li className="flex items-center gap-3 opacity-50"><XCircle className="w-5 h-5 text-red-400" /> <span className="text-zinc-500 line-through">Production Webhooks</span></li>
+              <li className="flex items-center gap-3 opacity-50"><XCircle className="w-5 h-5 text-red-400" /> <span className="text-zinc-500 line-through">Multi-Tenant Support</span></li>
             </ul>
             
-            <div className="mt-auto pt-6 border-t border-border/50">
+            <div className="mt-auto pt-6 border-t border-white/5">
               <GlowButton href="/auth/register" variant="outline" fullWidth={true}>
                 Get Started
               </GlowButton>
@@ -45,28 +48,30 @@ export function LandingPricing() {
           </GlassCard>
 
           <GlassCard glowColor="golden" hoverEffect="scale" className="p-10 flex flex-col relative transform md:-translate-y-4 border-primary/30">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-[0_0_15px_var(--primary-glow)]">
               Recommended
             </div>
             <div className="mb-6 mt-2">
               <h3 className="text-xl font-bold font-heading text-primary">Launch Professional</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-foreground">NPR 4,999</span>
-                <span className="text-sm font-medium text-muted">/mo</span>
+                <span className="text-4xl font-extrabold text-white">NPR 4,999</span>
+                <span className="text-sm font-medium text-primary/70">/mo</span>
               </div>
-              <p className="text-muted-light text-sm mt-3">For launching production SaaS apps with live localized billing.</p>
+              <p className="text-muted-light text-sm mt-3 leading-relaxed">For launching production SaaS apps with live localized billing.</p>
             </div>
             
-            <ul className="flex-1 space-y-4 my-8 text-sm">
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Unlimited Active Users</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> <strong className="text-foreground">Production Khalti & eSewa</strong></li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> <strong className="text-foreground">Advanced Role-Based Gating</strong></li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> <strong className="text-foreground">Webhooks & Developer APIs</strong></li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> <strong className="text-foreground">Custom Theme/Branding</strong></li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Email/SMS Support Integrations</li>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent mb-6" />
+
+            <ul className="flex-1 space-y-4 my-4 text-sm">
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-primary" /> <span className="text-zinc-300">Unlimited Active Users</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-primary" /> <span className="text-white font-semibold">Production Khalti & eSewa</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-primary" /> <span className="text-white font-semibold">Advanced Role-Based Gating</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-primary" /> <span className="text-white font-semibold">Webhooks & Developer APIs</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-primary" /> <span className="text-white font-semibold">Custom Theme/Branding</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-primary" /> <span className="text-zinc-300">Email/SMS Support Integrations</span></li>
             </ul>
             
-            <div className="mt-auto pt-6 border-t border-border/50">
+            <div className="mt-auto pt-6 border-t border-white/5">
               <GlowButton href="/auth/register" variant="glowing" glowColor="golden" fullWidth={true}>
                 Go Pro
               </GlowButton>
@@ -75,23 +80,25 @@ export function LandingPricing() {
 
           <GlassCard glowColor="none" hoverEffect="scale" className="p-10 flex flex-col">
             <div className="mb-6">
-              <h3 className="text-xl font-bold font-heading">Enterprise Core</h3>
+              <h3 className="text-xl font-bold font-heading text-zinc-100">Enterprise Core</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-foreground">Custom</span>
+                <span className="text-4xl font-extrabold text-white">Custom</span>
               </div>
-              <p className="text-muted-light text-sm mt-3">For high-traffic platforms, custom regulatory compliance, and multi-tenant networks.</p>
+              <p className="text-muted-light text-sm mt-3 leading-relaxed">For high-traffic platforms, custom regulatory compliance, and multi-tenant networks.</p>
             </div>
             
-            <ul className="flex-1 space-y-4 my-8 text-sm">
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Dedicated Database Pools</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Custom On-premises Setup</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Advanced Genkit AI Nodes</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Zero-downtime Migration Help</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> 24/7 Priority Support SLAs</li>
-              <li className="flex items-center gap-3"><span className="text-emerald-500">✅</span> Custom Security Compliance</li>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6" />
+
+            <ul className="flex-1 space-y-4 my-4 text-sm">
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Dedicated Database Pools</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Custom On-premises Setup</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Advanced Genkit AI Nodes</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Zero-downtime Migration Help</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">24/7 Priority Support SLAs</span></li>
+              <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-400" /> <span className="text-zinc-300">Custom Security Compliance</span></li>
             </ul>
             
-            <div className="mt-auto pt-6 border-t border-border/50">
+            <div className="mt-auto pt-6 border-t border-white/5">
               <GlowButton href="mailto:support@goinggenius.com.np" variant="outline" fullWidth={true}>
                 Contact Sales
               </GlowButton>
