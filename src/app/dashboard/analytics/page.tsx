@@ -61,7 +61,7 @@ export default async function AnalyticsPage() {
             <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-bold text-foreground mb-4">Top Applications</h3>
               <ul className="space-y-4">
-                {apps.map(app => (
+                {apps.map((app: { id: string, name: string }) => (
                   <li key={app.id} className="flex justify-between items-center p-4 bg-background rounded-lg border border-border">
                     <span className="font-semibold">{app.name}</span>
                     <span className="text-primary text-sm font-bold">Active</span>
