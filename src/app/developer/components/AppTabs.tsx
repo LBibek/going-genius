@@ -14,7 +14,8 @@ import {
   Sparkles,
   Layers,
   Terminal,
-  Globe
+  Globe,
+  MessageSquare
 } from 'lucide-react';
 
 interface TabProps {
@@ -30,10 +31,11 @@ interface TabProps {
   leads: React.ReactNode;
   simulator: React.ReactNode;
   domains: React.ReactNode;
+  threads: React.ReactNode;
   isPremium?: boolean;
 }
 
-export function AppTabs({ overview, access, usage, config, billing, settings, playground, prompts, integrations, leads, simulator, domains, isPremium = false }: TabProps) {
+export function AppTabs({ overview, access, usage, config, billing, settings, playground, prompts, integrations, leads, simulator, domains, threads, isPremium = false }: TabProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
@@ -41,6 +43,7 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
     { id: 'usage', label: 'Usage & AI', icon: Sparkles, isPremium: true },
     { id: 'config', label: 'Configuration', icon: Key },
     { id: 'prompts', label: 'Prompt Manager', icon: FileText, isPremium: true },
+    { id: 'threads', label: 'Conversations', icon: MessageSquare, isPremium: true },
     { id: 'integrations', label: 'Integrations', icon: Layers },
     { id: 'access', label: 'Access & Users', icon: Users },
     { id: 'leads', label: 'Leads & CRM', icon: Users, isPremium: true },
@@ -80,6 +83,7 @@ export function AppTabs({ overview, access, usage, config, billing, settings, pl
         {activeTab === 'leads' && leads}
         {activeTab === 'billing' && billing}
         {activeTab === 'prompts' && prompts}
+        {activeTab === 'threads' && threads}
         {activeTab === 'playground' && playground}
         {activeTab === 'simulator' && simulator}
         {activeTab === 'domains' && domains}

@@ -27,6 +27,7 @@ import { AppDomains } from '../../components/AppDomains';
 
 import { AppLeads } from '../../components/AppLeads';
 import { AppPrompts } from '../../components/AppPrompts';
+import { AppThreads } from '../../components/AppThreads';
 
 export default async function AppDetailsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
@@ -208,6 +209,7 @@ export default async function AppDetailsPage({ params }: { params: { id: string 
           </div>
         }
         prompts={<AppPrompts app={app} />}
+        threads={<AppThreads app={app} />}
         domains={<AppDomains app={app} />}
       />
     </div>
