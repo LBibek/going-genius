@@ -63,6 +63,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL('/dashboard/payment/failed', req.url));
 
     } catch (error: any) {
+      if (error?.digest === 'NEXT_PRERENDER_INTERRUPTED') throw error;
       console.error('[ESEWA WEBHOOK ERROR]', error);
       return NextResponse.redirect(new URL('/dashboard/payment/failed?error=server_error', req.url));
     }

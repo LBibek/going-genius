@@ -3,8 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 import { MarketplaceClient } from './components/MarketplaceClient';
 
-export const experimental_ppr = true;
-
 async function MarketplaceData() {
   const session = await getSession();
 

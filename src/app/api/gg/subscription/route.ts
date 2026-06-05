@@ -36,7 +36,8 @@ export async function GET(req: NextRequest) {
       active: !!subscription,
       planId: subscription?.planId
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest === 'NEXT_PRERENDER_INTERRUPTED') throw error;
     console.error('Subscription Check API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
