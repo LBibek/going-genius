@@ -6,7 +6,7 @@ import { prisma } from './prisma';
  * Implements idempotency to ensure a transaction is only processed once.
  */
 export async function processSuccessfulPayment(transactionId: string, referenceId: string, appId: string) {
-  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     // 1. Check if transaction is already completed (Idempotency)
     const existingTx = await tx.transaction.findUnique({
       where: { id: transactionId }
@@ -54,19 +54,32 @@ export async function processSuccessfulPayment(transactionId: string, referenceI
       }
     });
 
-    // 3. Get items from cart for this user/app
-    const cart = await tx.cart.findUnique({
-      where: { userId_appId: { userId: transaction.userId, appId } },
-      include: { items: { include: { plan: true } } }
-    });
+    // 3. Get items from cart OR from direct transaction planId
+    let plansToSubscribe = [];
 
-    if (cart && cart.items.length > 0) {
-      for (const item of cart.items) {
+    if (transaction.planId) {
+      const directPlan = await tx.subscriptionPlan.findUnique({ where: { id: transaction.planId } });
+      if (directPlan) plansToSubscribe.push(directPlan);
+    } else {
+      const cart = await tx.cart.findUnique({
+        where: { userId_appId: { userId: transaction.userId, appId } },
+        include: { items: { include: { plan: true } } }
+      });
+
+      if (cart && cart.items.length > 0) {
+        plansToSubscribe = cart.items.map(item => item.plan);
+        // Clear cart after pulling items
+        await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+      }
+    }
+
+    if (plansToSubscribe.length > 0) {
+      for (const plan of plansToSubscribe) {
         let expiresAt: Date | null = null;
-        if (item.plan.interval === 'monthly') {
+        if (plan.interval === 'monthly') {
           expiresAt = new Date();
           expiresAt.setMonth(expiresAt.getMonth() + 1);
-        } else if (item.plan.interval === 'yearly') {
+        } else if (plan.interval === 'yearly') {
           expiresAt = new Date();
           expiresAt.setFullYear(expiresAt.getFullYear() + 1);
         }
@@ -75,7 +88,7 @@ export async function processSuccessfulPayment(transactionId: string, referenceI
         await tx.subscription.upsert({
           where: { appId_userId: { appId, userId: transaction.userId } },
           update: {
-            planId: item.planId,
+            planId: plan.id,
             status: 'active',
             startDate: new Date(),
             expiresAt: expiresAt
@@ -83,19 +96,35 @@ export async function processSuccessfulPayment(transactionId: string, referenceI
           create: {
             appId,
             userId: transaction.userId,
-            planId: item.planId,
+            planId: plan.id,
             status: 'active',
             expiresAt: expiresAt
           }
         });
       }
-
-      // 4. Clear cart after successful subscription creation
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
     }
 
-    return { success: true, alreadyProcessed: false };
+    return { success: true, alreadyProcessed: false, transaction };
   });
+
+  // Post-transaction tasks (Webhooks)
+  if (result.success && !result.alreadyProcessed && result.transaction) {
+    const app = await prisma.oAuthApp.findUnique({ where: { id: appId } });
+    if (app && app.webhookUrl && app.webhookSecret) {
+      // Fire webhook asynchronously
+      import('./webhooks').then(({ dispatchWebhook }) => {
+        dispatchWebhook(app.webhookUrl!, app.webhookSecret!, 'subscription.created', {
+          transactionId: result.transaction!.id,
+          userId: result.transaction!.userId,
+          amount: result.transaction!.amount,
+          planId: result.transaction!.planId,
+          referenceId
+        });
+      });
+    }
+  }
+
+  return result;
 }
 
 /**
