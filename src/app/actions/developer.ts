@@ -85,6 +85,9 @@ export async function updateApp(appId: string, prevState: any, formData: FormDat
     marketplaceScreenshots 
   } = validatedFields.data;
 
+  // Check if we are turning isPublic ON for the first time, or updating a public app
+  const needsModeration = isPublic && (!app.isPublic || app.marketplaceDescription !== marketplaceDescription);
+
   await prisma.oAuthApp.update({
     where: { id: appId },
     data: { 
@@ -96,8 +99,17 @@ export async function updateApp(appId: string, prevState: any, formData: FormDat
       marketplaceTagline: marketplaceTagline || null,
       marketplaceDescription: marketplaceDescription || null,
       marketplaceScreenshots: marketplaceScreenshots || [],
+      ...(needsModeration ? { moderationStatus: 'PENDING' } : {})
     },
   });
+
+  if (needsModeration) {
+    // Fire off the Genkit evaluator asynchronously so it doesn't block the response
+    // In a production environment, this would ideally be queued via a background job
+    import('@/lib/ai/moderation').then(mod => {
+      mod.evaluateMarketplaceListingFlow({ appId }).catch(console.error);
+    });
+  }
 
   revalidatePath(`/developer/apps/${appId}`);
   return { success: true, message: 'App updated successfully' };

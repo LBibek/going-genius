@@ -18,8 +18,16 @@ if (process.env.DEEPSEEK_API_KEY) {
   plugins.push(deepSeek({ apiKey: process.env.DEEPSEEK_API_KEY }));
 }
 
+import { genkitEval, GenkitMetric } from '@genkit-ai/evaluator';
+
 export const ai = genkit({
-  plugins,
+  plugins: [
+    ...plugins,
+    genkitEval({
+      judge: googleAI.model('gemini-2.0-flash'),
+      metrics: [GenkitMetric.MALICIOUSNESS],
+    }),
+  ],
   // Default to Gemini if available, otherwise it relies on explicit model selection in generate() calls
   model: process.env.GOOGLE_GENAI_API_KEY ? googleAI.model('gemini-2.0-flash') : undefined,
 });

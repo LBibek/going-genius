@@ -1,8 +1,11 @@
+import { Suspense } from 'react';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 import { MarketplaceClient } from './components/MarketplaceClient';
 
-export default async function MarketplacePage() {
+export const experimental_ppr = true;
+
+async function MarketplaceData() {
   const session = await getSession();
 
   const featuredApps = await prisma.oAuthApp.findMany({
@@ -25,5 +28,15 @@ export default async function MarketplacePage() {
       allApps={allApps} 
       categories={categories} 
     />
+  );
+}
+
+export default function MarketplacePage() {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Suspense fallback={<div style={{ padding: '4rem', textAlign: 'center' }}>Loading Marketplace...</div>}>
+        <MarketplaceData />
+      </Suspense>
+    </div>
   );
 }

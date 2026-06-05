@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/google": "^3.0.71",
     "@genkit-ai/compat-oai": "^1.33.0",
+    "@genkit-ai/evaluator": "^1.36.0",
     "@genkit-ai/google-genai": "^1.33.0",
     "@genkit-ai/next": "^1.33.0",
     "@going-genius/react": "file:packages/react-sdk",

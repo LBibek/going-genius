@@ -3,7 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { createSafeAction } from '@/lib/safe-action';
 import { z } from 'zod';
-import { scanAppForRisk, predictUserChurn } from '@/lib/ai/flows';
+import { predictUserChurn } from '@/lib/ai/flows';
+import { evaluateMarketplaceListingFlow as scanAppForRisk } from '@/lib/ai/moderation';
 
 const triggerSafetyScanSchema = z.object({
   appId: z.string().min(1, 'App ID is required'),
