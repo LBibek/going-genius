@@ -130,6 +130,35 @@ export async function GET() {
           },
         },
       },
+      '/api/gg/subscription': {
+        get: {
+          tags: ['Identity'],
+          summary: 'Check Subscription',
+          description: 'Checks if the authenticated user has an active subscription for a given App ID.',
+          security: [{ bearerAuth: [] }],
+          parameters: [
+            { name: 'appId', in: 'query', required: true, schema: { type: 'string' }, description: 'The OAuth App ID' },
+          ],
+          responses: {
+            '200': {
+              description: 'Subscription status',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      active: { type: 'boolean' },
+                      planId: { type: 'string', nullable: true },
+                    },
+                  },
+                },
+              },
+            },
+            '400': { description: 'Missing appId' },
+            '401': { description: 'Missing or invalid Bearer token' },
+          },
+        },
+      },
       '/api/v1/apps/{appId}/bot': {
         post: {
           tags: ['AI Agent'],

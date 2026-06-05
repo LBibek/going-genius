@@ -3,6 +3,7 @@ import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
+import { ExportCsvButton } from '@/components/dashboard/ExportCsvButton';
 
 export const metadata = {
   title: 'Analytics | Dashboard',
@@ -44,10 +45,13 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold font-heading text-foreground">Analytics</h1>
-        <p className="text-muted-light mt-2">Track your MRR and transaction volume across your applications.</p>
-      </div>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold font-heading text-foreground">Analytics</h1>
+            <p className="text-muted-light mt-2">Track your MRR and transaction volume across your applications.</p>
+          </div>
+          <ExportCsvButton />
+        </div>
 
       {apps.length === 0 ? (
         <div className="bg-card border border-border rounded-xl p-8 text-center">

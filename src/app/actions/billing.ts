@@ -179,3 +179,84 @@ export async function initiateCheckout(appId: string, provider: 'khalti' | 'esew
     };
   }
 }
+
+/**
+ * Initialize payment directly for a specific plan without a cart.
+ */
+export async function initiateDirectCheckout(appId: string, planId: string, provider: 'khalti' | 'esewa', redirectUrl?: string) {
+  const session = await getSession();
+  if (!session) throw new Error('Unauthorized');
+
+  const app = await prisma.oAuthApp.findUnique({ where: { id: appId } });
+  if (!app) throw new Error('App not found');
+
+  const plan = await prisma.subscriptionPlan.findUnique({ where: { id: planId } });
+  if (!plan) throw new Error('Plan not found');
+
+  const totalAmount = plan.price;
+
+  // Create a pending transaction
+  const transaction = await prisma.transaction.create({
+    data: {
+      userId: session.userId,
+      appId: appId,
+      planId: planId,
+      amount: totalAmount,
+      provider: provider,
+      status: 'pending',
+    }
+  });
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const callbackUrl = redirectUrl || `${baseUrl}/dashboard`;
+
+  if (provider === 'khalti') {
+    if (!app.khaltiSecretKey) throw new Error('Khalti not configured for this app');
+
+    const response = await fetch('https://a.khalti.com/api/v2/epayment/initiate/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Key ${app.khaltiSecretKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        return_url: `${baseUrl}/api/billing/verify?provider=khalti&appId=${appId}&txnId=${transaction.id}&redirect_url=${encodeURIComponent(callbackUrl)}`,
+        website_url: baseUrl,
+        amount: totalAmount * 100, // paisa
+        purchase_order_id: transaction.id,
+        purchase_order_name: `Subscription for ${plan.name}`,
+      })
+    });
+
+    const data = await response.json();
+    if (data.payment_url) {
+      return { url: data.payment_url };
+    } else {
+      console.error('Khalti Error:', data);
+      throw new Error('Failed to initiate Khalti payment');
+    }
+  } else {
+    // eSewa
+    if (!app.esewaSecretKey || !app.esewaMerchantId) throw new Error('eSewa not configured for this app');
+
+    const message = `total_amount=${totalAmount},transaction_uuid=${transaction.id},product_code=${app.esewaMerchantId}`;
+    const signature = crypto.createHmac('sha256', app.esewaSecretKey).update(message).digest('base64');
+
+    return {
+      provider: 'esewa',
+      formData: {
+        amount: totalAmount.toString(),
+        tax_amount: '0',
+        total_amount: totalAmount.toString(),
+        transaction_uuid: transaction.id,
+        product_code: app.esewaMerchantId,
+        product_service_charge: '0',
+        product_delivery_charge: '0',
+        success_url: `${baseUrl}/api/billing/verify?provider=esewa&appId=${appId}&redirect_url=${encodeURIComponent(callbackUrl)}`,
+        failure_url: `${baseUrl}/pay/${planId}?status=failed`,
+        signed_field_names: 'total_amount,transaction_uuid,product_code',
+        signature: signature
+      }
+    };
+  }
+}
