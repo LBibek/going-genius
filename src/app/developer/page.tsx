@@ -41,6 +41,9 @@ export default async function DeveloperDashboard() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
           <GlobalSearch />
           <ThemeToggle />
+          <Link href="/developer/affiliate" className="btn btn-outline" style={{ borderRadius: '12px', padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Sparkles size={14} color="var(--primary)" /> Affiliate
+          </Link>
           <Link href="/dashboard" className="btn btn-outline" style={{ borderRadius: '12px', padding: '0.6rem 1.2rem' }}>
             Dashboard
           </Link>

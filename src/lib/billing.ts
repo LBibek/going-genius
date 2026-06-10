@@ -55,7 +55,7 @@ export async function processSuccessfulPayment(transactionId: string, referenceI
     });
 
     // 3. Get items from cart OR from direct transaction planId
-    let plansToSubscribe = [];
+    let plansToSubscribe: any[] = [];
 
     if (transaction.planId) {
       const directPlan = await tx.subscriptionPlan.findUnique({ where: { id: transaction.planId } });
@@ -102,6 +102,25 @@ export async function processSuccessfulPayment(transactionId: string, referenceI
           }
         });
       }
+    }
+
+    // 4. Handle Affiliate Commission
+    const subscribingUser = await tx.gGUser.findUnique({
+      where: { id: transaction.userId },
+      select: { referredById: true }
+    });
+
+    if (subscribingUser?.referredById && transaction.amount > 0) {
+      const commissionAmount = transaction.amount * 0.20;
+      await tx.referral.create({
+        data: {
+          referrerId: subscribingUser.referredById,
+          referredUserId: transaction.userId,
+          amount: commissionAmount,
+          currency: transaction.currency || 'NPR',
+          status: 'PENDING'
+        }
+      });
     }
 
     return { success: true, alreadyProcessed: false, transaction };

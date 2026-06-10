@@ -25,6 +25,7 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get('invite');
   const appId = searchParams.get('app');
+  const referralCode = searchParams.get('ref');
 
   const [username, setUsername] = useState('');
   const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'invalid'>('idle');
@@ -84,6 +85,12 @@ function RegisterForm() {
           ✨ You've been invited! Register below to join the app.
         </div>
       )}
+      
+      {referralCode && (
+        <div className="form-alert info" style={{ marginBottom: '1.5rem' }}>
+          🤝 You're signing up via a referral link!
+        </div>
+      )}
 
       {/* Social Auth */}
       <SocialAuthButtons isLoading={pending} />
@@ -91,6 +98,7 @@ function RegisterForm() {
       <form action={action} className="auth-form">
         <input type="hidden" name="invite" value={inviteToken || ''} />
         <input type="hidden" name="appId" value={appId || ''} />
+        <input type="hidden" name="ref" value={referralCode || ''} />
 
         {/* Display Name */}
         <div className="form-group">

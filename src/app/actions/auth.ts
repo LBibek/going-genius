@@ -80,6 +80,18 @@ export async function register(state: FormState, formData: FormData): Promise<Fo
     return { message: supaError.message };
   }
 
+  // Handle Affiliate Referral
+  const referralCode = formData.get('ref') as string;
+  let referredById = null;
+  if (referralCode) {
+    const referrer = await prisma.gGUser.findUnique({
+      where: { referralCode }
+    });
+    if (referrer) {
+      referredById = referrer.id;
+    }
+  }
+
   // Create GGUser in Prisma
   const user = await prisma.gGUser.create({
     data: {
@@ -89,6 +101,7 @@ export async function register(state: FormState, formData: FormData): Promise<Fo
       phone: phone || null,
       passwordHash,
       emailVerified: false,
+      referredById,
     },
   });
 

@@ -37,7 +37,9 @@ model GGUser {
   referredById  String?   // The user who referred this user
   referredBy    GGUser?   @relation("UserReferrals", fields: [referredById], references: [id])
   referrals     GGUser[]  @relation("UserReferrals")
-  referralEarnings Referral[]
+  referralEarnings Referral[] @relation("AffiliateReferrer")
+  referredCommissions Referral[] @relation("AffiliateReferred")
+
 
   // Security tracking
   loginAttempts Int       @default(0)
@@ -471,8 +473,9 @@ model AIPromptVersion {
 model Referral {
   id            String   @id @default(cuid())
   referrerId    String
-  referrer      GGUser   @relation(fields: [referrerId], references: [id])
+  referrer      GGUser   @relation("AffiliateReferrer", fields: [referrerId], references: [id])
   referredUserId String
+  referred      GGUser   @relation("AffiliateReferred", fields: [referredUserId], references: [id])
   amount        Float    // Commission amount earned
   currency      String   @default("NPR")
   status        String   @default("PENDING") // PENDING, PAID
