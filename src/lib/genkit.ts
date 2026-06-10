@@ -99,12 +99,20 @@ Keep your answers concise, helpful, and professional.`;
     systemPrompt = `${activePromptVersion.content}\n\n[System Note]: You have access to getAppPricing and captureLead tools. Use them appropriately.`;
   }
 
+  const messages: any[] = [];
+  if (history && history.length > 0) {
+    messages.push(...history);
+  }
+  messages.push({
+    role: 'user',
+    content: [{ text: message }]
+  });
+
   const response = await ai.generate({
     model: 'googleai/gemini-2.5-flash',
-    prompt: message,
     system: systemPrompt,
     tools: [getAppPricingTool, captureLeadTool],
-    history: history || [],
+    messages,
     config: { temperature: 0.7 }
   });
 
